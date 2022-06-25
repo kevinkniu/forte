@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 export default function Home() {
   const { status } = useSession();
 
-  // this needs to be changed after spotify redirect URL is whitelisted
   if (status === 'authenticated') {
     Router.push('/home');
   } else {
