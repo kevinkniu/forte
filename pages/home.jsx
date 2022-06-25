@@ -34,6 +34,7 @@ export default function Home() {
             genres: [],
             songs: [],
             posts: [],
+            recent: [],
           }),
         });
         initializeUser();
