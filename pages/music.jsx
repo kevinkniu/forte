@@ -1,11 +1,10 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import Header from './components/Header';
 import BottomNav from './components/BottomNav';
 
 export default function Home() {
-  const { getSession, status } = useSession();
+  const { getSession } = useSession();
   const sessionObj = getSession?.user;
 
   return (
@@ -13,8 +12,6 @@ export default function Home() {
       <Head>
         <title>forte</title>
       </Head>
-
-      <Header />
 
       <main>
         <h1>
@@ -25,5 +22,5 @@ export default function Home() {
       <BottomNav />
 
     </div>
-  )
+  );
 }

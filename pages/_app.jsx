@@ -1,4 +1,6 @@
-import '../styles/globals.css'
+/* eslint react/jsx-no-constructed-context-values: "off" */
+
+import '../styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
 import { useState, createContext } from 'react';
 
@@ -9,11 +11,11 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <SessionProvider session={pageProps.session}>
-      <AppContext.Provider value={{value, setValue}}>
+      <AppContext.Provider value={{ value, setValue }}>
         <Component {...pageProps} />
       </AppContext.Provider>
     </SessionProvider>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;
