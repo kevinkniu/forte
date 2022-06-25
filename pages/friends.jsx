@@ -14,7 +14,7 @@ export default function Home() {
       </Head>
 
       <main>
-        <h1>
+        <h1 align="center">
           This is a friends page.
         </h1>
       </main>

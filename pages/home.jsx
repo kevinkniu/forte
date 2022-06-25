@@ -4,8 +4,10 @@ import { useSession } from 'next-auth/react';
 import BottomNav from './components/BottomNav';
 
 export default function Home() {
-  const { getSession } = useSession();
+  const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
+
+  console.log(getSession);
 
   return (
     <div>
@@ -14,7 +16,7 @@ export default function Home() {
       </Head>
 
       <main>
-        <h1>
+        <h1 align="center">
           This is a home page.
         </h1>
       </main>
