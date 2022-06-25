@@ -1,11 +1,12 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import BottomNav from './components/BottomNav';
+import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from '../config';
 
 export default function Home() {
   const { getSession } = useSession();
@@ -16,6 +17,26 @@ export default function Home() {
     e.preventDefault();
     console.log(searchRef.current.value);
   };
+
+  useEffect(() => {
+    const clientId = SPOTIFY_CLIENT_ID;
+    const clientSecret = SPOTIFY_CLIENT_SECRET;
+    const getToken = async () => {
+      const result = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret),
+        },
+        body: 'grant_type=client_credentials',
+      });
+
+      const data = await result.json();
+      console.log('token:', data.access_token);
+      return data.access_token;
+    };
+    getToken();
+  }, []);
 
   return (
     <div>
