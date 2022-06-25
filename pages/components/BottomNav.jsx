@@ -11,9 +11,10 @@ import { AppContext } from '../_app';
 
 export default function BottomNav() {
   const { value, setValue } = useContext(AppContext);
+  const { asPath } = Router.useRouter();
 
   return (
-    <Box sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: 1 }} elevation={3}>
+    <Box sx={asPath === '/' ? 'hidden' : { position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: 1 }} elevation={3}>
       <BottomNavigation
         showLabels
         value={value}
