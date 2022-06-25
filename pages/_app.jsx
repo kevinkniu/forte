@@ -7,10 +7,11 @@ export const AppContext = createContext();
 
 function MyApp({ Component, pageProps }) {
   const [value, setValue] = useState(0);
+  const [currentUser, setCurrentUser] = useState(null);
 
   return (
     <SessionProvider session={pageProps.session}>
-      <AppContext.Provider value={{ value, setValue }}>
+      <AppContext.Provider value={{ value, setValue, currentUser, setCurrentUser }}>
         <Component {...pageProps} />
       </AppContext.Provider>
     </SessionProvider>
