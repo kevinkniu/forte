@@ -1,11 +1,13 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import BottomNav from './components/BottomNav';
+import { AppContext } from './_app';
 
 export default function Home() {
   const { data: getSession } = useSession();
+  const { currentUser, setCurrentUser } = useContext(AppContext);
   const sessionObj = getSession?.user;
 
   useEffect(() => {
@@ -32,13 +34,14 @@ export default function Home() {
             genres: [],
             songs: [],
             posts: [],
+            recent: [],
           }),
         });
         initializeUser();
         return;
       }
       const user = result[0]._delegate._document.data.value.mapValue.fields;
-      console.log(user);
+      setCurrentUser(user);
     };
     initializeUser();
   }, [sessionObj]);
