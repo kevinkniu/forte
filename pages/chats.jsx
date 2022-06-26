@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
@@ -16,8 +15,12 @@ export default function Chats() {
   const [message, setMessage] = useState('');
   const [messageRecieved, setMessageReceived] = useState('');
 
+  socket.on('connect', () => {
+    console.log('Successfully connected!');
+  });
+
   const handlepost = () => {
-    socket.emit('send_message', { message });
+    socket.emit('send_message', { message: message });
   };
 
   useEffect(() => {
@@ -36,6 +39,7 @@ export default function Chats() {
         <input
           type="text"
           placeholder="Message..."
+          value={message}
           onChange={(event) => {
             setMessage(event.target.value);
           }}
@@ -61,26 +65,3 @@ const InputContainer = styled.div`
   align-items: flex-end;
   border 1px solid red;
 `;
-
-// return (
-//   <ChatContainer>
-//     <h1 align="center">
-//       chats
-//     </h1>
-//     <button type="button" onClick={() => { Router.push('/messages'); }}>go back to messages</button>
-//     <MessagesContainer>
-//       Messages will be displayed here
-//     </MessagesContainer>
-//     <InputContainer>
-//       <form onSubmit={submitMessage}>
-//         <input
-//           type="text"
-//           value={message}
-//           onChange={messageOnChange}
-//         />
-//         <Button type="submit" endIcon={<SendIcon />} />
-//       </form>
-//     </InputContainer>
-//     <BottomNav />
-//   </ChatContainer>
-// );

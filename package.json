@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "server-chat": "nodemon pages/api/socket.io.js"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
@@ -19,10 +20,10 @@
     "firebase": "^9.8.4",
     "next": "12.1.6",
     "next-auth": "^4.6.1",
+    "nodemon": "^2.0.18",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.0.3",
-    "react-material-ui-keyboard": "^6.2.1",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
     "styled-components": "^5.3.5"
