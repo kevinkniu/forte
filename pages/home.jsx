@@ -1,15 +1,16 @@
 import Head from 'next/head';
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { useSession } from 'next-auth/react';
+import { Box } from '@mui/material';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
+import Header from './components/HomeHeader';
 import Posts from './components/Posts';
 
 export default function Home() {
   const { data: getSession, status } = useSession();
-  const { currentUser, setCurrentUser } = useContext(AppContext);
+  const { setCurrentUser } = useContext(AppContext);
   const sessionObj = getSession?.user;
-  const [drawer, setDrawer] = useState(false);
 
   useEffect(() => {
     if (status !== 'authenticated') {
@@ -57,12 +58,12 @@ export default function Home() {
         <title>forte</title>
       </Head>
 
-      <main>
-        <h1 align="center">
-          This is the home page.
-        </h1>
-        <Posts />
+      <Header />
 
+      <main>
+        <Box sx={{ mb: 8 }}>
+          <Posts />
+        </Box>
       </main>
 
       <BottomNav />

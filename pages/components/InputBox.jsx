@@ -1,12 +1,7 @@
 import { useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import TextField from '@mui/material/TextField';
+import { TextField, Grid, Box, Typography, ImageList, ImageListItem } from '@mui/material';
 import Image from 'next/image';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import SendIcon from '@mui/icons-material/Send';
 

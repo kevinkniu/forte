@@ -1,11 +1,9 @@
 import Head from 'next/head';
 import { useSession, signIn } from 'next-auth/react';
-import { useContext } from 'react';
 import Router from 'next/router';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { Grid, Box } from '@mui/material';
 
-export default function Home() {
+export default function Login() {
   const { status } = useSession();
 
   if (status === 'authenticated') {
@@ -27,9 +25,7 @@ export default function Home() {
             style={{ minHeight: '100vh' }}
           >
             <h1>Welcome to forte.</h1>
-            <Box
-              mt={2}
-            >
+            <Box mt={2}>
               <button type="submit" onClick={() => { signIn(); }}>
                 Sign In
               </button>

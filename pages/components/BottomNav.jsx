@@ -1,8 +1,6 @@
 import { useContext } from 'react';
 import Router from 'next/router';
-import Box from '@mui/material/Box';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
