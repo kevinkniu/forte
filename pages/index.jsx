@@ -1,6 +1,6 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import { useSession, signIn } from 'next-auth/react';
+import { useContext } from 'react';
 import Router from 'next/router';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';

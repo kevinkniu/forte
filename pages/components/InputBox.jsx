@@ -45,7 +45,7 @@ export default function InputBox() {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({
-        user_id: sessionObj.id,
+        userID: sessionObj.id,
         name: sessionObj.name,
         email: sessionObj.email,
         profPic: sessionObj.image,
@@ -66,16 +66,23 @@ export default function InputBox() {
     setPostLength(0);
   };
 
+  const removeImage = (toRemove) => {
+    const newArray = images.filter(
+      (image) => image !== toRemove,
+    );
+    setImages(newArray);
+  };
+
   return (
     <div>
       <h1 align="center">
-        Make a post.
+        Share your thoughts.
       </h1>
       <ImageList sx={{ display: 'flex', justifyContent: 'center' }}>
         {images.length > 0 && (
           images.map((image, number) => (
             <ImageListItem key={number}>
-              <Image src={image} alt="N/A" width={50} height={50} objectFit="contain" />
+              <Image src={image} alt="N/A" width={50} height={50} objectFit="contain" onClick={() => { removeImage(image); }} />
             </ImageListItem>
           ))
         )}

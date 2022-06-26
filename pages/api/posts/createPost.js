@@ -2,10 +2,9 @@ import firebase from 'firebase/compat/app';
 import { db } from '../../../firebase';
 
 export default function handler(req, res) {
-  const { type, id, name, email, profPic, message, photos } = req.body;
+  const { userID, name, email, profPic, message, photos } = req.body;
   db.collection('posts').add({
-    type,
-    id,
+    userID,
     name,
     email,
     profPic,

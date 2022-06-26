@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { Box, Button, Grid, Typography, Card, CardContent } from '@mui/material';
 import { useContext } from 'react';
+import Router from 'next/router';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 
@@ -28,9 +29,9 @@ export default function Profile() {
         <Box container sx={{ border: '1px solid black' }}>
           <Grid item xs={12} sx={{ border: '1px solid black' }}>
             <Grid item sx={{ border: '1px solid black' }}>
-              <Image
+              <img
                 src={`${currentUser?.profPic.stringValue}`}
-                alt="Profile picture"
+                alt="Profile"
                 width={200}
                 height={200}
               />
