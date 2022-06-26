@@ -17,7 +17,6 @@ export default function Home() {
       return;
     }
     const initializeUser = async () => {
-      console.log('sessionObj:', sessionObj);
       const response = await fetch(`/api/users/${sessionObj?.id}`, {
         method: 'GET',
         headers: {

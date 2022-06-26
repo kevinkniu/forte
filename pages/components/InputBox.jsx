@@ -19,7 +19,6 @@ export default function InputBox() {
   };
 
   const addImageToPost = (e) => {
-    console.log('clicked');
     if (images.length === 5) {
       alert('Cannot upload more than 5 photos per post.');
       return;
