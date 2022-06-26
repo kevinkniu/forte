@@ -3,7 +3,10 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Router from 'next/router';
+import { io } from 'socket.io-client';
 import BottomNav from './components/BottomNav';
+
+const socket = io.connect('http://localhost:3001');
 
 const dummydata = [
   {
@@ -29,7 +32,7 @@ export default function Messages() {
 
   const renderFriends = (friendsArray) => (
     friendsArray.map((friend) => (
-      <FriendsContainer key={friend.id} onClick={() => { Router.push('/chats'); }}>
+      <FriendsContainer key={friend.id} onClick={() => Router.push(`/chats/${friend.id}`)}>
         <PhotoContainer>
           <ProfilePhoto src={friend.profPic} alt="" />
         </PhotoContainer>
