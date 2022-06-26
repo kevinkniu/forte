@@ -20,7 +20,8 @@ export default function Chats() {
   });
 
   const handlepost = () => {
-    socket.emit('send_message', { message: message });
+    console.log(message);
+    socket.emit('send_message', { message });
   };
 
   useEffect(() => {
