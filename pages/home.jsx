@@ -35,6 +35,7 @@ export default function Home() {
             songs: [],
             posts: [],
             recent: [],
+            friends: [],
           }),
         });
         initializeUser();

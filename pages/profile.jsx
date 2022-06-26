@@ -1,15 +1,67 @@
 import Head from 'next/head';
-import Image from 'next/image';
+import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack } from '@mui/material';
+import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack } from '@mui/material';
 import { useContext } from 'react';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 
+const friendData = [
+  {
+    id: '22paoydtvhtdv6w2xfoziovby',
+    name: 'Esmy Xu',
+    profPic: 'https://i.scdn.co/image/ab6775700000ee85a892735df8a1324f906d7a34',
+  },
+  {
+    id: 'o001k7jmdq3wdg3hklndxjotq',
+    name: 'Andy Luu',
+    profPic: 'https://scontent-iad3-1.xx.fbcdn.net/v/t1.6435-1/42317090_2330550456971517_4823046255326265344_n.jpg?stp=dst-jpg_p320x320&_nc_cat=108&ccb=1-7&_nc_sid=0c64ff&_nc_ohc=MzkhNOjHUVQAX8vbFA8&_nc_ht=scontent-iad3-1.xx&edm=AP4hL3IEAAAA&oh=00_AT80ipfo_KZcpuRhnSFtIp41iYU5z16alzCAH3hFXDjKwg&oe=62DC19A7',
+  },
+  {
+    id: 'resowner92',
+    name: 'Neil Johnson',
+    profPic: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1485456691670202&height=300&width=300&ext=1658766891&hash=AeSq3Duc6nWchK4KAUg',
+  },
+  {
+    id: '1214925054',
+    name: 'Kevin Niu',
+    profPic: 'https://scontent-iad3-1.xx.fbcdn.net/v/t1.18169-1/29357003_2001555779858728_3528641109814991101_n.jpg?stp=dst-jpg_p320x320&_nc_cat=106&ccb=1-7&_nc_sid=0c64ff&_nc_ohc=Jp_hv-I_99IAX9Sc9ww&_nc_ht=scontent-iad3-1.xx&edm=AP4hL3IEAAAA&oh=00_AT-Y41NB8YToUz-F39q4ozlEYsAzKablTHK8ZFn1haRBZw&oe=62DE1D20',
+  },
+  {
+    id: '31eo5ua2tpijr6lg56pqfnxdew5e',
+    name: 'Spencer Han',
+    profPic: '/userholder.png',
+  },
+  {
+    id: '11111',
+    name: 'John Ong',
+    profPic: '/userholder.png',
+  },
+];
+
+const favSongs = [
+  {
+    id: 1,
+    name: 'Blinding Lights',
+    artist: 'The Weeknd',
+    cover: '/weekndCover.png',
+  },
+  {
+    id: 2,
+    name: 'HUMBLE',
+    artist: 'Kendrick Lamar',
+    cover: '/cover.png',
+  },
+  {
+    id: 3,
+    name: 'Feel Something',
+    artist: 'Illenium, Excision',
+    cover: '/illeniumCover.png',
+  },
+];
+
 export default function mainProfile() {
   const { currentUser } = useContext(AppContext);
-
-  console.log(currentUser);
 
   return (
     <div>
@@ -44,106 +96,62 @@ export default function mainProfile() {
                 Genres
               </Typography>
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
-                <Chip label="EDM" color="info" />
-                <Chip label="POP" color="info" />
+                {
+                  currentUser.genres.arrayValue.values.map((genre) => (
+                    <Chip label={genre.stringValue} color="info" />
+                  ))
+                }
               </Stack>
             </Grid>
             <Grid item sx={{ border: '1px solid black' }}>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-                Friends
-              </Typography>
+              <Grid item sx={{ display: 'flex' }}>
+                <Typography variant="subtitle1" sx={{ margin: '5px' }}>
+                  Friends
+                </Typography>
+              </Grid>
               <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }} spacing={1}>
-                <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: 80 }}
-                    image="/userholder.png"
-                    alt="friend profile picture"
-                  />
-                  <Typography variant="body2">Esmy Xu</Typography>
-                </Grid>
-                <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: 80 }}
-                    image="/userholder.png"
-                    alt="friend profile picture"
-                  />
-                  <Typography variant="body2">John Ong</Typography>
-                </Grid>
-                <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: 80 }}
-                    image="/userholder.png"
-                    alt="friend profile picture"
-                  />
-                  <Typography variant="body2">Kevin Niu</Typography>
-                </Grid>
-                <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: 80 }}
-                    image="/userholder.png"
-                    alt="friend profile picture"
-                  />
-                  <Typography variant="body2">Neill Johnson</Typography>
-                </Grid>
-                <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: 80 }}
-                    image="/userholder.png"
-                    alt="friend profile picture"
-                  />
-                  <Typography variant="body2">Spencer Han</Typography>
-                </Grid>
-                <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: 80 }}
-                    image="/userholder.png"
-                    alt="friend profile picture"
-                  />
-                  <Typography variant="body2">Hansol Ji</Typography>
-                </Grid>
+                {
+                  friendData.map((friend) => (
+                    <Link key={friend.id} href={`/profile/${friend.id}`}>
+                      <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+                        <Grid item sx={{ paddingLeft: '20px' }}>
+                          <CardMedia
+                            component="img"
+                            sx={{ width: 80 }}
+                            image={friend.profPic}
+                            alt="friend profile picture"
+                          />
+                          <Typography variant="body2">{friend.name}</Typography>
+                        </Grid>
+                      </Grid>
+                    </Link>
+                  ))
+                }
               </Grid>
             </Grid>
             <Grid item sx={{ border: '1px solid black' }}>
               <Typography variant="subtitle1" sx={{ margin: '5px' }}> Liked Songs </Typography>
               <Grid item sx={{ border: '1px solid black' }}>
-                <Card sx={{ display: 'flex', margin: '5px' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: 100 }}
-                    image="/cover.png"
-                    alt="album cover"
-                  />
-                  <CardContent>
-                    <Typography component="div" variant="h6">
-                      HUMBLE
-                    </Typography>
-                    <Typography variant="subtitle2" color="text.secondary" component="div">
-                      Kendrick Lamar
-                    </Typography>
-                  </CardContent>
-                </Card>
-                <Card sx={{ display: 'flex', margin: '5px' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: 100 }}
-                    image="/cover.png"
-                    alt="album cover"
-                  />
-                  <CardContent>
-                    <Typography component="div" variant="h6">
-                      HUMBLE
-                    </Typography>
-                    <Typography variant="subtitle2" color="text.secondary" component="div">
-                      Kendrick Lamar
-                    </Typography>
-                  </CardContent>
-                </Card>
+                {
+                  favSongs.map((song) => (
+                    <Card key={song.id} sx={{ display: 'flex', margin: '5px' }}>
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 100 }}
+                        image={song.cover}
+                        alt="album cover"
+                      />
+                      <CardContent>
+                        <Typography component="div" variant="h6">
+                          {song.name}
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" component="div">
+                          {song.artist}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  ))
+                }
               </Grid>
             </Grid>
             <Grid>
