@@ -24,6 +24,8 @@
       "react/jsx-props-no-spreading": "off",
       "object-curly-newline": "off",
       "no-console": "off",
-      "no-underscore-dangle": "off"
+      "no-underscore-dangle": "off",
+      "@next/next/no-img-element": "off",
+      "react/no-array-index-key": "off"
     }
 }
