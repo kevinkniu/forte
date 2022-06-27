@@ -27,6 +27,7 @@ export default function Home() {
   useEffect(() => {
     const clientId = SPOTIFY_CLIENT_ID;
     const clientSecret = SPOTIFY_CLIENT_SECRET;
+
     const getToken = async () => {
       const result = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
@@ -39,7 +40,8 @@ export default function Home() {
 
       const data = await result.json();
 
-      return setTokenId(data.access_token);
+      setTokenId(data.access_token);
+      return data.access_token;
     };
     getToken();
 
@@ -52,7 +54,7 @@ export default function Home() {
       const data = await result.json();
 
       setGenres(data.categories?.items);
-      return data.categories.items;
+      return data.categories?.items;
     };
     getGenres(tokenId);
 
@@ -67,7 +69,7 @@ export default function Home() {
       const data = await result.json();
 
       setPlaylist(data.playlists?.items);
-      return data.playlists.items;
+      return data.playlists?.items;
     };
     getPlaylistByGenre(tokenId, 'toplists');
 
