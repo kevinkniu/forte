@@ -1,11 +1,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack } from '@mui/material';
-import { useContext } from 'react';
-import Router from 'next/router';
+import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField } from '@mui/material';
+import { useContext, useState } from 'react';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
+import getToken from './api/spotify/getToken';
+import getAllGenres from './api/spotify/getAllGenres';
+import updateUserGenre from './api/users/updateUserGenre';
 
 const friendData = [
   {
@@ -34,9 +36,9 @@ const friendData = [
     profPic: '/favicon.ico',
   },
   {
-    id: '11111',
+    id: '226ssnz7grqphzhajvn2xfqxa',
     name: 'John Ong',
-    profPic: '/userholder.png',
+    profPic: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=667637673271813&height=300&width=300&ext=1658762672&hash=AeSUiPcuzqISiuQf6Sc',
   },
 ];
 
@@ -61,8 +63,18 @@ const favSongs = [
   },
 ];
 
-export default function mainProfile() {
+export default function mainProfile({ genreProp }) {
   const { currentUser } = useContext(AppContext);
+  const [open, setOpen] = useState(false);
+  const [genreList, setGenres] = useState(genreProp);
+
+  function handleOpen() {
+    setOpen(true);
+  }
+
+  function handleClose() {
+    setOpen(false);
+  }
 
   return (
     <div>
@@ -71,6 +83,9 @@ export default function mainProfile() {
       </Head>
 
       <main>
+        {
+          console.log(genreList)
+        }
         <h1 align="center">
           This is the main profile page.
         </h1>
@@ -78,8 +93,8 @@ export default function mainProfile() {
           <button type="submit" onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>Sign Out</button>
         </div>
 
-        <Box mb={2} sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: '700px', overflow: 'hidden', overflowY: 'scroll' }}>
-          <Grid item sx={{ border: '1px solid black' }} spacing={1}>
+        <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: 'auto', overflow: 'hidden', overflowY: 'scroll', alignItems: 'center', justifyContent: 'center' }}>
+          <Grid item sx={{ border: '1px solid black' }}>
             <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Avatar
                 src={`${currentUser?.profPic.stringValue}`}
@@ -93,13 +108,38 @@ export default function mainProfile() {
               </Typography>
             </Grid>
             <Grid item sx={{ border: '1px solid black' }}>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-                Genres
-              </Typography>
+              <Grid item sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="subtitle1" sx={{ margin: '5px' }}>
+                  Genres
+                </Typography>
+                <Button onClick={() => handleOpen()}>+</Button>
+                <Dialog
+                  onClose={() => handleClose()}
+                  open={open}
+                  PaperProps={{
+                    style: {
+                      height: '500px',
+                      width: '300px',
+                    },
+                  }}
+                >
+                  <TextField label="search genre" variant="filled" />
+                  {
+                      genreList.genres.map((genre, index) => (
+                        <Grid display="flex">
+                          <Grid display="flex" justifyContent="space-between">
+                            <Typography key={index}>{genre}</Typography>
+                            <Button size="small" onClick={() => updateUserGenre(currentUser, genre)}>+</Button>
+                          </Grid>
+                        </Grid>
+                      ))
+                  }
+                </Dialog>
+              </Grid>
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
                 {
-                  currentUser.genres.arrayValue.values.map((genre) => (
-                    <Chip label={genre.stringValue} color="info" />
+                  currentUser.genres.arrayValue.values.map((genre, index) => (
+                    <Chip key={index} label={genre.stringValue} color="info" />
                   ))
                 }
               </Stack>
@@ -110,7 +150,7 @@ export default function mainProfile() {
                   Friends
                 </Typography>
               </Grid>
-              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }} spacing={1}>
+              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 {
                   friendData.map((friend) => (
                     <Link key={friend.id} href={`/profile/${friend.id}`}>
@@ -168,3 +208,8 @@ export default function mainProfile() {
   );
 }
 
+export async function getServerSideProps() {
+  const tokenProp = await getToken();
+  const genreProp = await getAllGenres(tokenProp);
+  return { props: { genreProp } };
+}
