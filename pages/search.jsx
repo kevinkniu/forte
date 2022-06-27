@@ -119,13 +119,13 @@ export default function Search() {
           <button hidden type="submit" onClick={searchTrack}>Submit</button>
         </Box>
 
-        <input type="search" placeholder="Search for songs" value={searchKey} onChange={handleChange} />
+        <input type="search" placeholder="Search for songs" value={searchKey} onChange={handleChange} style={{ display: 'block', margin: '16px auto', width: '80%', height: '40px' }} />
 
         {tracks.length === 0
-          ? <p>Search for your favorite song</p>
+          ? <p style={{ textAlign: 'center' }}>Search for your favorite song</p>
           : (
             <>
-              <div sx={{ display: 'flex', gap: '16px'}}>
+              <div style={{ display: 'flex', justifyContent: 'space-around', gap: '16px' }}>
                 <span>Songs</span>
                 <span>Artists</span>
               </div>

@@ -6,7 +6,7 @@ export default function SearchList({ tracks }) {
   return (
     <ul className={searchListStyles.searchList}>
       {tracks.map((track) => (
-        <SearchListEntry track={track} />
+        <SearchListEntry key={track.id} track={track} />
       ))}
     </ul>
   );
