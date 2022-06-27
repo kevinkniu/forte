@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack } from '@mui/material';
-import { useContext } from 'react';
-import Router from 'next/router';
+import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, CircularProgress } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
+import { SEAT_GEEK_CLIENT_ID, SEAT_GEEK_SECRET } from '../config';
 
 const friendData = [
   {
@@ -34,9 +34,9 @@ const friendData = [
     profPic: '/favicon.ico',
   },
   {
-    id: '11111',
+    id: '226ssnz7grqphzhajvn2xfqxa',
     name: 'John Ong',
-    profPic: '/userholder.png',
+    profPic: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=667637673271813&height=300&width=300&ext=1658762672&hash=AeSUiPcuzqISiuQf6Sc',
   },
 ];
 
@@ -63,6 +63,19 @@ const favSongs = [
 
 export default function mainProfile() {
   const { currentUser } = useContext(AppContext);
+  const [loaded, setLoaded] = useState(false);
+
+  const initializeEvents = async () => {
+    const response = await fetch('/api/events/getEvents', {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    setEvents(result);
+    setLoaded(true);
+  };
 
   return (
     <div>
@@ -78,8 +91,8 @@ export default function mainProfile() {
           <button type="submit" onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>Sign Out</button>
         </div>
 
-        <Box mb={2} sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: '700px', overflow: 'hidden', overflowY: 'scroll' }}>
-          <Grid item sx={{ border: '1px solid black' }} spacing={1}>
+        <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: 'auto', overflow: 'hidden', overflowY: 'scroll', alignItems: 'center', justifyContent: 'center' }}>
+          <Grid item sx={{ border: '1px solid black' }}>
             <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Avatar
                 src={`${currentUser?.profPic.stringValue}`}
@@ -93,13 +106,16 @@ export default function mainProfile() {
               </Typography>
             </Grid>
             <Grid item sx={{ border: '1px solid black' }}>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-                Genres
-              </Typography>
+              <Grid item sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="subtitle1" sx={{ margin: '5px' }}>
+                  Genres
+                </Typography>
+                <Button>+</Button>
+              </Grid>
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
                 {
-                  currentUser.genres.arrayValue.values.map((genre) => (
-                    <Chip label={genre.stringValue} color="info" />
+                  currentUser.genres.arrayValue.values.map((genre, index) => (
+                    <Chip key={index} label={genre.stringValue} color="info" />
                   ))
                 }
               </Stack>
@@ -110,7 +126,7 @@ export default function mainProfile() {
                   Friends
                 </Typography>
               </Grid>
-              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }} spacing={1}>
+              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 {
                   friendData.map((friend) => (
                     <Link key={friend.id} href={`/profile/${friend.id}`}>
@@ -167,4 +183,3 @@ export default function mainProfile() {
     </div>
   );
 }
-
