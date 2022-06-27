@@ -1,33 +1,32 @@
-.searchList {
+.trackList {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 16px;
 }
 
-.searchListEntry {
+.trackListEntry {
   display: flex;
   gap: 16px;
 }
 
-.searchListEntry img {
+.trackListEntry img {
   width: 40px;
   height: 40px;
 }
 
-.searchListEntryInfo {
+.trackListEntryInfo {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 }
 
-.searchListEntryInfo p {
+.trackListEntryInfo p {
   margin: 0;
   padding: 0;
-  font-size: 14px;
 }
 
-.searchListEntryInfo span {
+.trackListEntryInfo span {
   color: #999;
   font-size: 13px;
 }

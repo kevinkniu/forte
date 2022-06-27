@@ -9,7 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import BottomNav from './components/BottomNav';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from '../config';
 
-import SearchList from './components/SearchList';
+import TrackList from './components/TrackList';
 import ArtistList from './components/ArtistList';
 
 export default function Search() {
@@ -141,7 +141,7 @@ export default function Search() {
               </div>
               {
                 type === 'track'
-                  ? <SearchList tracks={tracks} />
+                  ? <TrackList tracks={tracks} />
                   : <ArtistList artists={artists} />
               }
             </>
