@@ -39,7 +39,7 @@ export default function Home() {
             id: sessionObj?.id,
             name: sessionObj?.name,
             email: sessionObj?.email,
-            profPic: sessionObj?.image,
+            profPic: sessionObj?.image || '/userholder.png',
             genres: [],
             songs: [],
             posts: [],
