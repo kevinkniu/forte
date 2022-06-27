@@ -6,7 +6,6 @@ import { Card, CardHeader, CardContent, CardActions,
   Collapse, Avatar, IconButton, Typography, Checkbox, Box, Grid } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Carousel from 'react-material-ui-carousel';
@@ -88,7 +87,7 @@ export default function Post({ post }) {
       )}
       {postData.photos.arrayValue.values.length > 1 && (
         <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
-          <Box sx={{ width: 300, p: 2 }}>
+          <Box sx={{ width: 300, px: 2 }}>
             <Carousel
               autoPlay={false}
               swipe
@@ -120,9 +119,6 @@ export default function Post({ post }) {
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           <Checkbox icon={<ThumbUpOutlinedIcon />} checkedIcon={<ThumbUpIcon sx={{ color: '#673ab7' }} />} />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
         </IconButton>
         <ExpandMore
           expand={expanded}
