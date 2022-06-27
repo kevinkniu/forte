@@ -9,8 +9,6 @@ import { AppContext } from '../_app';
 export default function userProfile() {
   const { currentUser } = useContext(AppContext);
 
-  console.log(currentUser);
-
   return (
     <div>
       <Head>

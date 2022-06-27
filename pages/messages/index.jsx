@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Router from 'next/router';
-import BottomNav from './components/BottomNav';
+import BottomNav from '../components/BottomNav';
 
 const dummydata = [
   {
@@ -29,7 +29,7 @@ export default function Messages() {
 
   const renderFriends = (friendsArray) => (
     friendsArray.map((friend) => (
-      <FriendsContainer key={friend.id} onClick={() => { Router.push('/chats'); }}>
+      <FriendsContainer key={friend.id} onClick={() => Router.push(`/messages/${friend.name.toLowerCase().replace(/ /g, '-')}/${friend.id}`)}>
         <PhotoContainer>
           <ProfilePhoto src={friend.profPic} alt="" />
         </PhotoContainer>
