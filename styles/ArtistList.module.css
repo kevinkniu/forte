@@ -1,0 +1,23 @@
+.artistList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 16px;
+}
+
+.artistListEntry {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.artistListEntry img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.artistListEntry p {
+  margin: 0;
+}
