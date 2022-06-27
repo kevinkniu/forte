@@ -63,19 +63,6 @@ const favSongs = [
 
 export default function mainProfile() {
   const { currentUser } = useContext(AppContext);
-  const [loaded, setLoaded] = useState(false);
-
-  const initializeEvents = async () => {
-    const response = await fetch('/api/events/getEvents', {
-      method: 'GET',
-      headers: {
-        'Content-type': 'application/json',
-      },
-    });
-    const result = await response.json();
-    setEvents(result);
-    setLoaded(true);
-  };
 
   return (
     <div>

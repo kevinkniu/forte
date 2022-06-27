@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Stack, Chip } from '@mui/material';
 import { useState } from 'react';
