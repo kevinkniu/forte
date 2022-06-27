@@ -1,8 +1,6 @@
 import { useContext } from 'react';
 import Router from 'next/router';
-import Box from '@mui/material/Box';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
@@ -14,7 +12,7 @@ export default function BottomNav() {
   const { asPath } = Router.useRouter();
 
   return (
-    <Box sx={asPath === '/' ? 'hidden' : { position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: 1 }} elevation={3}>
+    <Box sx={asPath === '/' ? 'hidden' : { position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: 1, zIndex: 1500 }} elevation={3}>
       <BottomNavigation
         showLabels
         value={value}

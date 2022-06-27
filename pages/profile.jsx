@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack } from '@mui/material';
 import { useContext } from 'react';
+import Router from 'next/router';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 
