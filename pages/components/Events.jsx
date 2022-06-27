@@ -5,6 +5,9 @@ import { Box, Avatar, Drawer, TextField, Grid, Typography, ImageList, ImageListI
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import EventIcon from '@mui/icons-material/Event';
 import CircularProgress from '@mui/material/CircularProgress';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import BottomNav from './BottomNav';
 import Event from './Event';
 
@@ -18,6 +21,7 @@ export default function Events() {
   const [locLength, setLocLength] = useState(0);
   const [detailLength, setDetailLength] = useState(0);
   const [images, setImages] = useState([]);
+  const [date, setDate] = useState(new Date());
   const fileRef = useRef();
   const nameRef = useRef();
   const locRef = useRef();
@@ -59,36 +63,39 @@ export default function Events() {
   };
 
   const eventRequest = async () => {
-    await fetch('/api/posts/createEvent', {
+    await fetch('/api/events/createEvent', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({
         userID: sessionObj.id,
-        name: sessionObj.name,
-        email: sessionObj.email,
+        userName: sessionObj.name,
         profPic: sessionObj.image,
+        eventName: nameRef.current.value,
+        date,
+        location: locRef.current.value,
         details: detailRef.current.value,
-        message: postRef.current.value,
-        photo: images,
+        photos: images,
+        attendees: [],
       }),
     });
   };
 
   const sendEvent = (e) => {
     e.preventDefault();
-    if (!postRef.current.value) {
+    if (!nameRef.current.value || !locRef.current.value || !detailRef.current.value || !date) {
       return;
     }
     eventRequest();
     nameRef.current.value = null;
     locRef.current.value = null;
     detailRef.current.value = null;
-    setImages([]);
     setNameLength(0);
     setLocLength(0);
     setDetailLength(0);
+    setImages([]);
+    setDate(new Date());
     setTimeout(initializeEvents, 1000);
   };
 
@@ -138,12 +145,22 @@ export default function Events() {
               </Box>
               <TextField required fullWidth multiline label="Event Name" variant="outlined" inputRef={nameRef} onChange={(e) => { onEventChange(e, 'name'); }} inputProps={{ maxLength: 100 }} />
             </Box>
-            <Box sx={[{ mx: 3, mb: 2 }, locLength === 50 && { color: 'red' }]}>
-              <Box sx={{ pb: 1 }}>
-                <div align="right">
-                  {locLength}
-                  /50
-                </div>
+            <Box sx={{ pb: 1, mx: 3 }}>
+              <div align="right">
+                {locLength}
+                /50
+              </div>
+            </Box>
+            <Box sx={[{ mx: 3, mb: 2, display: 'flex' }, locLength === 50 && { color: 'red' }]}>
+              <Box sx={{ mr: 2 }}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <MobileDatePicker
+                    inputFormat="MM/dd/yyyy"
+                    value={date}
+                    onChange={(e) => { setDate(e); }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
               </Box>
               <TextField required fullWidth multiline label="Location" variant="outlined" inputRef={locRef} onChange={(e) => { onEventChange(e, 'location'); }} inputProps={{ maxLength: 50 }} />
             </Box>
@@ -164,7 +181,7 @@ export default function Events() {
                 </Typography>
                 <input type="file" accept="image/*" ref={fileRef} onChange={(e) => { addImageToEvent(e); }} hidden />
               </Box>
-              <Box sx={{ display: 'flex', px: 2, py: 1, boxShadow: 2, borderRadius: 5 }} onClick={() => { }}>
+              <Box sx={{ display: 'flex', px: 2, py: 1, boxShadow: 2, borderRadius: 5 }} onClick={(e) => { sendEvent(e); }}>
                 <EventIcon />
                 <Typography sx={{ ml: 1 }}>
                   create
