@@ -1,11 +1,14 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, CircularProgress } from '@mui/material';
+import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import { SEAT_GEEK_CLIENT_ID, SEAT_GEEK_SECRET } from '../config';
+import getToken from './api/spotify/getToken';
+import getAllGenres from './api/spotify/getAllGenres';
+import updateUserGenre from './api/users/updateUserGenre';
 
 const friendData = [
   {
@@ -61,8 +64,18 @@ const favSongs = [
   },
 ];
 
-export default function mainProfile() {
+export default function mainProfile({ genreProp }) {
   const { currentUser } = useContext(AppContext);
+  const [open, setOpen] = useState(false);
+  const [genreList, setGenres] = useState(genreProp);
+
+  function handleOpen() {
+    setOpen(true);
+  }
+
+  function handleClose() {
+    setOpen(false);
+  }
 
   return (
     <div>
@@ -71,6 +84,9 @@ export default function mainProfile() {
       </Head>
 
       <main>
+        {
+          console.log(genreList)
+        }
         <h1 align="center">
           This is the main profile page.
         </h1>
@@ -97,7 +113,29 @@ export default function mainProfile() {
                 <Typography variant="subtitle1" sx={{ margin: '5px' }}>
                   Genres
                 </Typography>
-                <Button>+</Button>
+                <Button onClick={() => handleOpen()}>+</Button>
+                <Dialog
+                  onClose={() => handleClose()}
+                  open={open}
+                  PaperProps={{
+                    style: {
+                      height: '500px',
+                      width: '300px',
+                    },
+                  }}
+                >
+                  <TextField label="search genre" variant="filled" />
+                  {
+                      genreList.genres.map((genre, index) => (
+                        <Grid display="flex">
+                          <Grid display="flex" justifyContent="space-between">
+                            <Typography key={index}>{genre}</Typography>
+                            <Button size="small" onClick={() => updateUserGenre(currentUser, genre)}>+</Button>
+                          </Grid>
+                        </Grid>
+                      ))
+                  }
+                </Dialog>
               </Grid>
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
                 {
@@ -169,4 +207,10 @@ export default function mainProfile() {
       <BottomNav />
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const tokenProp = await getToken();
+  const genreProp = await getAllGenres(tokenProp);
+  return { props: { genreProp } };
 }

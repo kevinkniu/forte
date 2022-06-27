@@ -2,7 +2,7 @@ import { db } from '../../../firebase';
 
 export default function handler(req, res) {
   const { id, name, email, profPic, genres, songs, posts, recent, friends } = req.body;
-  db.collection('users').add({
+  db.collection('users').doc(id).set({
     id,
     name,
     email,
