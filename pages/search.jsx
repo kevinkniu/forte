@@ -1,12 +1,12 @@
 import axios from 'axios';
 import Head from 'next/head';
-import Image from 'next/image';
+import Link from 'next/link';
+// import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
-import BottomNav from './components/BottomNav';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from '../config';
 
 import TrackList from './components/TrackList';
@@ -121,21 +121,33 @@ export default function Search() {
           <button hidden type="submit" onClick={searchTrack}>Submit</button>
         </Box>
 
-        <input type="search" placeholder="Search for songs" value={searchKey} onChange={handleChange} style={{ display: 'block', margin: '16px auto', width: '80%', height: '40px' }} />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', margin: '24px 0', padding: '0 32px' }}>
+          <input
+            type="search"
+            placeholder="Search for songs"
+            value={searchKey}
+            onChange={handleChange}
+            style={{ height: '32px', width: '100%' }}
+          />
+          <Link href="/music">
+            <button
+              style={{ height: '32px' }}
+              type="button"
+            >
+              Cancel
+            </button>
+          </Link>
+        </div>
 
         {tracks.length === 0
           ? <p style={{ textAlign: 'center' }}>Search for your favorite song</p>
           : (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-around', gap: '16px' }}>
-                <span
-                  onClick={() => setType('track')}
-                >
+                <span onClick={() => setType('track')}>
                   Songs
                 </span>
-                <span
-                  onClick={() => setType('artist')}
-                >
+                <span onClick={() => setType('artist')}>
                   Artists
                 </span>
               </div>
@@ -149,7 +161,7 @@ export default function Search() {
 
       </main>
 
-      <BottomNav />
+      {/* <BottomNav /> */}
 
     </div>
   );
