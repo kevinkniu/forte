@@ -19,6 +19,7 @@ export default function Search() {
   const [searchKey, setSearchKey] = useState('');
   const [token, setToken] = useState('');
   const [tracks, setTracks] = useState([]);
+  const [artists, setArtists] = useState([]);
 
   // const onSearch = (e) => {
   //   e.preventDefault();
@@ -45,7 +46,7 @@ export default function Search() {
   }
 
   async function searchKeyword(keyword) {
-    const { data } = await axios.get('https://api.spotify.com/v1/search', {
+    const tracksData = await axios.get('https://api.spotify.com/v1/search', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -54,8 +55,18 @@ export default function Search() {
         type: 'track',
       },
     });
-    console.log(data.tracks.items);
-    setTracks(data.tracks.items);
+    setTracks(tracksData.data.tracks.items);
+
+    const artistsData = await axios.get('https://api.spotify.com/v1/search', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        q: keyword,
+        type: 'track',
+      },
+    });
+    setArtists(artistsData.data.tracks.items);
   }
 
   useEffect(() => {
@@ -72,7 +83,6 @@ export default function Search() {
       });
 
       const data = await result.json();
-      console.log('token:', data.access_token);
       setToken(data.access_token);
       return data.access_token;
     };
@@ -111,9 +121,17 @@ export default function Search() {
 
         <input type="search" placeholder="Search for songs" value={searchKey} onChange={handleChange} />
 
-        {tracks.length === 0 ?
-          <p>Search for your favorite song</p>
-          : <SearchList tracks={tracks} />}
+        {tracks.length === 0
+          ? <p>Search for your favorite song</p>
+          : (
+            <>
+              <div sx={{ display: 'flex', gap: '16px'}}>
+                <span>Songs</span>
+                <span>Artists</span>
+              </div>
+              <SearchList tracks={tracks} />
+            </>
+          )}
 
       </main>
 
