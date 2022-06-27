@@ -3,7 +3,7 @@ import { AppBar, Box, Toolbar, Typography, Grid } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
-export default function ButtonAppBar() {
+export default function HomeHeader() {
   return (
     <Box>
       <AppBar position="static" sx={{ bgcolor: '#673ab7' }}>

@@ -1,15 +1,19 @@
 import Head from 'next/head';
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { Box } from '@mui/material';
+import { AppBar, Box, Toolbar, Typography, Grid } from '@mui/material';
+import ChatIcon from '@mui/icons-material/Chat';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
-import Header from './components/HomeHeader';
 import Posts from './components/Posts';
+import Events from './components/Events';
+import Explore from './components/Explore';
 
 export default function Home() {
   const { data: getSession, status } = useSession();
   const { setCurrentUser } = useContext(AppContext);
+  const [view, setView] = useState('Events');
   const sessionObj = getSession?.user;
 
   useEffect(() => {
@@ -57,11 +61,38 @@ export default function Home() {
         <title>forte</title>
       </Head>
 
-      <Header />
+      <Box>
+        <AppBar position="static" sx={{ bgcolor: '#673ab7' }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Explore' ? 1 : 0 }} onClick={() => { setView('Explore'); }}>
+              Explore
+            </Typography>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Posts' ? 1 : 0 }} onClick={() => { setView('Posts'); }}>
+              Forum
+            </Typography>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Events' ? 1 : 0 }} onClick={() => { setView('Events'); }}>
+              Events
+            </Typography>
+            <Grid container justifyContent="flex-end">
+              <ChatIcon color="inherit" sx={{ mx: 1 }} />
+              <NotificationsIcon color="inherit" sx={{ mx: 1 }} />
+            </Grid>
+          </Toolbar>
+        </AppBar>
+      </Box>
 
       <main>
         <Box sx={{ mb: 8 }}>
-          <Posts />
+          {view === 'Explore' && (
+            <Explore />
+          )}
+          {view === 'Posts' && (
+            <Posts />
+          )}
+          {view === 'Events' && (
+            <Events />
+          )}
+
         </Box>
       </main>
 

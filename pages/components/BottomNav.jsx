@@ -12,7 +12,7 @@ export default function BottomNav() {
   const { asPath } = Router.useRouter();
 
   return (
-    <Box sx={asPath === '/' ? 'hidden' : { position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: 1 }} elevation={3}>
+    <Box sx={asPath === '/' ? 'hidden' : { position: 'fixed', bottom: 0, left: 0, right: 0, borderTop: 1, zIndex: 1500 }} elevation={3}>
       <BottomNavigation
         showLabels
         value={value}

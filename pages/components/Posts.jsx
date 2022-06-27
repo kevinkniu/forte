@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Box, Avatar, Drawer, TextField, Grid, Typography, ImageList, ImageListItem } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import SendIcon from '@mui/icons-material/Send';
+import CircularProgress from '@mui/material/CircularProgress';
 import BottomNav from './BottomNav';
 import Post from './Post';
 
@@ -14,6 +15,7 @@ export default function Posts() {
   const [drawer, setDrawer] = useState(false);
   const [postLength, setPostLength] = useState(0);
   const [images, setImages] = useState([]);
+  const [loaded, setLoaded] = useState(false);
   const fileRef = useRef();
   const postRef = useRef();
 
@@ -26,6 +28,7 @@ export default function Posts() {
     });
     const result = await response.json();
     setPosts(result);
+    setLoaded(true);
   };
 
   const onPostChange = (e) => {
@@ -34,8 +37,8 @@ export default function Posts() {
   };
 
   const addImageToPost = (e) => {
-    if (images.length === 5) {
-      alert('Cannot upload more than 5 photos per post.');
+    if (images.length === 3) {
+      alert('Cannot upload more than 3 photos per post.');
       return;
     }
     const reader = new FileReader();
@@ -73,7 +76,7 @@ export default function Posts() {
     postRef.current.value = null;
     setImages([]);
     setPostLength(0);
-    setTimeout(initializePosts, 500);
+    setTimeout(initializePosts, 1000);
   };
 
   const removeImage = (toRemove) => {
@@ -98,6 +101,9 @@ export default function Posts() {
           >
             What&#39;s on your mind?
           </Box>
+        </Box>
+        <Box sx={{ display: loaded ? 'none' : '', color: '#673ab7' }}>
+          <CircularProgress color="inherit" />
         </Box>
         <Drawer
           anchor="top"
