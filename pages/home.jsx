@@ -13,7 +13,7 @@ import Explore from './components/Explore';
 export default function Home() {
   const { data: getSession, status } = useSession();
   const { setCurrentUser } = useContext(AppContext);
-  const [view, setView] = useState('Events');
+  const [view, setView] = useState('Explore');
   const sessionObj = getSession?.user;
 
   useEffect(() => {

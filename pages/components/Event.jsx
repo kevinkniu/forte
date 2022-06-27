@@ -8,7 +8,6 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import Carousel from 'react-material-ui-carousel';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
