@@ -1,10 +1,13 @@
 import firebase from 'firebase/compat/app';
+import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../../firebase';
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const { userID, userName, profPic, eventName,
-    date, location, details, photos, attendees } = req.body;
-  db.collection('events').add({
+    date, location, details, photos, attendees, currentUserID } = req.body;
+  const userRef = doc(db, 'users', currentUserID);
+  const timestamp = firebase.firestore.Timestamp.now();
+  const event = {
     userID,
     userName,
     profPic,
@@ -14,7 +17,13 @@ export default function handler(req, res) {
     details,
     photos,
     attendees,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-  });
+    timestamp,
+  };
+  db.collection('events').add(event)
+    .then((docRef) => {
+      updateDoc(userRef, {
+        events: arrayUnion(docRef.id),
+      });
+    });
   res.status(200).json('posted!');
 }
