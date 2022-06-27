@@ -26,12 +26,9 @@ const favSongs = [
   },
 ];
 
-<<<<<<< HEAD
 export default function userProfile({ result }) {
   const [userProf, setUserProf] = useState(result);
 
-=======
->>>>>>> main
   return (
     <div>
       <Head>
