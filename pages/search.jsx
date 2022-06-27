@@ -10,6 +10,7 @@ import BottomNav from './components/BottomNav';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from '../config';
 
 import SearchList from './components/SearchList';
+import ArtistList from './components/ArtistList';
 
 export default function Search() {
   const { getSession } = useSession();
@@ -20,6 +21,7 @@ export default function Search() {
   const [token, setToken] = useState('');
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [type, setType] = useState('track');
 
   // const onSearch = (e) => {
   //   e.preventDefault();
@@ -63,10 +65,10 @@ export default function Search() {
       },
       params: {
         q: keyword,
-        type: 'track',
+        type: 'artist',
       },
     });
-    setArtists(artistsData.data.tracks.items);
+    setArtists(artistsData.data.artists.items);
   }
 
   useEffect(() => {
@@ -126,10 +128,22 @@ export default function Search() {
           : (
             <>
               <div style={{ display: 'flex', justifyContent: 'space-around', gap: '16px' }}>
-                <span>Songs</span>
-                <span>Artists</span>
+                <span
+                  onClick={() => setType('track')}
+                >
+                  Songs
+                </span>
+                <span
+                  onClick={() => setType('artist')}
+                >
+                  Artists
+                </span>
               </div>
-              <SearchList tracks={tracks} />
+              {
+                type === 'track'
+                  ? <SearchList tracks={tracks} />
+                  : <ArtistList artists={artists} />
+              }
             </>
           )}
 
