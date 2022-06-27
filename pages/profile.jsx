@@ -30,7 +30,7 @@ const friendData = [
   {
     id: '31eo5ua2tpijr6lg56pqfnxdew5e',
     name: 'Spencer Han',
-    profPic: '/userholder.png',
+    profPic: '/favicon.ico',
   },
   {
     id: '11111',
