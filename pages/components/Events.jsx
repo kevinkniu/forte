@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { Box, Avatar, Drawer, TextField, Grid, Typography, ImageList, ImageListItem } from '@mui/material';
@@ -10,6 +10,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import BottomNav from './BottomNav';
 import Event from './Event';
+import { AppContext } from '../_app';
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -26,6 +27,7 @@ export default function Events() {
   const nameRef = useRef();
   const locRef = useRef();
   const detailRef = useRef();
+  const { currentUserID } = useContext(AppContext);
 
   const initializeEvents = async () => {
     const response = await fetch('/api/events/getEvents', {
@@ -69,6 +71,7 @@ export default function Events() {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({
+        currentUserID,
         userID: sessionObj.id,
         userName: sessionObj.name,
         profPic: sessionObj.image,

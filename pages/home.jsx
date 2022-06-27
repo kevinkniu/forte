@@ -12,7 +12,7 @@ import Explore from './components/Explore';
 
 export default function Home() {
   const { data: getSession, status } = useSession();
-  const { setCurrentUser } = useContext(AppContext);
+  const { setCurrentUser, setCurrentUserID } = useContext(AppContext);
   const [view, setView] = useState('Explore');
   const sessionObj = getSession?.user;
 
@@ -43,6 +43,7 @@ export default function Home() {
             genres: [],
             songs: [],
             posts: [],
+            events: [],
             recent: [],
             friends: [],
           }),
@@ -50,8 +51,11 @@ export default function Home() {
         initializeUser();
         return;
       }
+      console.log(result);
       const user = result[0]._delegate._document.data.value.mapValue.fields;
+      const id = result[0]._delegate._key.path.segments[6];
       setCurrentUser(user);
+      setCurrentUserID(id);
     };
     initializeUser();
   }, [status]);
