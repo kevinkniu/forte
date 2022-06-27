@@ -26,6 +26,7 @@
       "no-console": "off",
       "no-underscore-dangle": "off",
       "@next/next/no-img-element": "off",
-      "react/no-array-index-key": "off"
+      "react/no-array-index-key": "off",
+      "prefer-template": "off"
     }
 }
