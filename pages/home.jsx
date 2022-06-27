@@ -46,6 +46,7 @@ export default function Home() {
             events: [],
             recent: [],
             friends: [],
+            rooms: [],
           }),
         });
         initializeUser();
