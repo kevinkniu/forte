@@ -1,15 +1,16 @@
 import axios from 'axios';
 import Head from 'next/head';
-import Image from 'next/image';
+import Link from 'next/link';
+// import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
-import BottomNav from './components/BottomNav';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from '../config';
 
-import SearchList from './components/SearchList';
+import TrackList from './components/TrackList';
+import ArtistList from './components/ArtistList';
 
 export default function Search() {
   const { getSession } = useSession();
@@ -20,6 +21,7 @@ export default function Search() {
   const [token, setToken] = useState('');
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
+  const [type, setType] = useState('track');
 
   // const onSearch = (e) => {
   //   e.preventDefault();
@@ -63,10 +65,10 @@ export default function Search() {
       },
       params: {
         q: keyword,
-        type: 'track',
+        type: 'artist',
       },
     });
-    setArtists(artistsData.data.tracks.items);
+    setArtists(artistsData.data.artists.items);
   }
 
   useEffect(() => {
@@ -119,23 +121,47 @@ export default function Search() {
           <button hidden type="submit" onClick={searchTrack}>Submit</button>
         </Box>
 
-        <input type="search" placeholder="Search for songs" value={searchKey} onChange={handleChange} />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', margin: '24px 0', padding: '0 32px' }}>
+          <input
+            type="search"
+            placeholder="Search for songs"
+            value={searchKey}
+            onChange={handleChange}
+            style={{ height: '32px', width: '100%' }}
+          />
+          <Link href="/music">
+            <button
+              style={{ height: '32px' }}
+              type="button"
+            >
+              Cancel
+            </button>
+          </Link>
+        </div>
 
         {tracks.length === 0
-          ? <p>Search for your favorite song</p>
+          ? <p style={{ textAlign: 'center' }}>Search for your favorite song</p>
           : (
             <>
-              <div sx={{ display: 'flex', gap: '16px'}}>
-                <span>Songs</span>
-                <span>Artists</span>
+              <div style={{ display: 'flex', justifyContent: 'space-around', gap: '16px' }}>
+                <span onClick={() => setType('track')}>
+                  Songs
+                </span>
+                <span onClick={() => setType('artist')}>
+                  Artists
+                </span>
               </div>
-              <SearchList tracks={tracks} />
+              {
+                type === 'track'
+                  ? <TrackList tracks={tracks} />
+                  : <ArtistList artists={artists} />
+              }
             </>
           )}
 
       </main>
 
-      <BottomNav />
+      {/* <BottomNav /> */}
 
     </div>
   );
