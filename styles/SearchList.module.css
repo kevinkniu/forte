@@ -1,0 +1,33 @@
+.searchList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.searchListEntry {
+  display: flex;
+  gap: 16px;
+}
+
+.searchListEntry img {
+  width: 40px;
+  height: 40px;
+}
+
+.searchListEntryInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.searchListEntryInfo p {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+
+.searchListEntryInfo span {
+  color: #999;
+  font-size: 13px;
+}

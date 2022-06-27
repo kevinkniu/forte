@@ -1,10 +1,9 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Router from 'next/router';
-import BottomNav from './components/BottomNav';
+import BottomNav from '../components/BottomNav';
 
 const dummydata = [
   {
@@ -24,13 +23,13 @@ const dummydata = [
   },
 ];
 
-export default function Friends() {
+export default function Messages() {
   const { getSession } = useSession();
   const sessionObj = getSession?.user;
 
   const renderFriends = (friendsArray) => (
     friendsArray.map((friend) => (
-      <FriendsContainer key={friend.id}>
+      <FriendsContainer key={friend.id} onClick={() => Router.push(`/messages/${friend.name.toLowerCase().replace(/ /g, '-')}/${friend.id}`)}>
         <PhotoContainer>
           <ProfilePhoto src={friend.profPic} alt="" />
         </PhotoContainer>
@@ -45,10 +44,10 @@ export default function Friends() {
   return (
     <div>
       <h1 align="center">
-        This is a friends page.
+        Messages
       </h1>
-      <button type="button">Friends</button>
-      <button type="button" onClick={() => { Router.push('/messages'); }}>Messages</button>
+      <button type="button" onClick={() => { Router.push('/friends'); }}>Friends</button>
+      <button type="button">Messages</button>
       {renderFriends(dummydata)}
       <BottomNav />
     </div>
@@ -86,5 +85,3 @@ const Username = styled.p`
 const Message = styled.p`
   margin: 0;
 `;
-
-// User defaults to messages list
