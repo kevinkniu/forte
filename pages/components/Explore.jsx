@@ -56,13 +56,15 @@ export default function Explore() {
         </Box>
 
         {explore.map((user, number) => {
-          if (user._delegate._document.data.value.mapValue.fields.id.stringValue !== sessionObj.id) {
+          if (user._delegate._document.data.value.mapValue.fields.id.stringValue
+            !== sessionObj.id) {
             return (
               <div key={number}>
                 <ExploreCard myGenres={myGenres} user={user} />
               </div>
             );
           }
+          return null;
         })}
 
       </Box>
