@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import addRoomToUser from './addRoomToUser';
 
 export default async function getRoomId(mySpotify, friendSpotify) {
+  // const [roomId, setRoomId] = useState('');
   console.log('MY SPOTIFY OBJ', mySpotify);
   console.log('FRIEND SPOTIFY OBJ', friendSpotify);
   const response = await fetch(`/api/messages/checkMessages?mySpotifyId=${mySpotify.id}&userSpotifyId=${friendSpotify.id}`, {
@@ -11,7 +13,6 @@ export default async function getRoomId(mySpotify, friendSpotify) {
   });
 
   const result = await response.json();
-  console.log(result);
 
   if (!result.length) {
     const newRoom = await fetch('/api/messages/createRoom', {
@@ -25,19 +26,16 @@ export default async function getRoomId(mySpotify, friendSpotify) {
         messages: [],
       }),
     });
-    const roomData = await newRoom;
-    console.log(roomData, 'this is the roomdata');
+    const newRoomId = await newRoom.json();
+    // setRoomId(newRoomId);
+
+    addRoomToUser(mySpotify.id, friendSpotify.id, newRoomId);
+    addRoomToUser(friendSpotify.id, mySpotify.id, newRoomId);
+
+    getRoomId(mySpotify, friendSpotify);
   }
-  /*
-  inside room firebase collection
-  create a message field
-  save the roomId
 
-  .add roomid with document id of userSpotifyId into myUserProfile
-  .add roomid with document id of mySpotidyId into user'sUserProfile
-  recursive call getRoomId(mySpotifyId, userSpotifyId)
-  */
-
- // const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
-  return;
+  console.log(result, 'THESE ARE THE RESULTS');
+  const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
+  return roomid;
 }
