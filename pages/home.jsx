@@ -50,6 +50,17 @@ export default function Home() {
             friendRequests: [],
           }),
         });
+        const subColl = await fetch(`/api/users/createMessCollection/${sessionObj?.id}`, {
+          method: 'POST',
+          header: {
+            'Content-type': 'application/json',
+          },
+          body: {
+            id: sessionObj?.id,
+          },
+        });
+        const data = await subColl.json();
+        console.log(data);
         initializeUser();
         return;
       }

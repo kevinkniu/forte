@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import styled from 'styled-components';
 import SendIcon from '@mui/icons-material/Send';
 import { io } from 'socket.io-client';
-import BottomNav from '../../components/BottomNav';
+import BottomNav from '../components/BottomNav';
 
 const socket = io.connect('http://localhost:3001');
 export default function Chats() {
