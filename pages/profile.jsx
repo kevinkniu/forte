@@ -1,13 +1,15 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import getToken from './api/spotify/getToken';
 import getAllGenres from './api/spotify/getAllGenres';
 import updateUserGenre from './api/users/updateUserGenre';
+import deleteUserGenre from './api/users/deleteUserGenre';
+import queryUserEvents from './api/events/getUserEvents';
 
 const friendData = [
   {
@@ -64,28 +66,86 @@ const favSongs = [
 ];
 
 export default function mainProfile({ genreProp }) {
-  const { currentUser } = useContext(AppContext);
+  const { currentUser, setCurrentUser } = useContext(AppContext);
   const [open, setOpen] = useState(false);
-  const [genreList, setGenres] = useState(genreProp);
+  const [genres, setGenres] = useState(genreProp.genres);
+  const [filteredGenre, setFilteredGenres] = useState([]);
+  const [search, setSearch] = useState('');
+  const [events, setEvents] = useState([]);
+  const { data: getSession } = useSession();
+  const sessionObj = getSession?.user;
+
+  async function reRenderUser() {
+    const response = await fetch(`/api/users/${sessionObj.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    const user = result[0]._delegate._document.data.value.mapValue.fields;
+    setCurrentUser(user);
+  }
+
+  async function initialGenres() {
+    const arr = [];
+    currentUser.genres.arrayValue.values.map((item) => (
+      arr.push(item.stringValue)
+    ));
+    const res = genres.filter((item) => !arr.includes(item));
+    setFilteredGenres(res);
+    await setGenres(res);
+  }
+
+  async function handleDelete(genre) {
+    await deleteUserGenre(sessionObj.id, genre);
+    await reRenderUser();
+    await initialGenres();
+  }
+
+  async function addGenre(genre) {
+    await updateUserGenre(sessionObj.id, genre);
+    await reRenderUser();
+    await initialGenres();
+  }
+
+  async function getEvents() {
+    console.log(sessionObj.id);
+    const data = await queryUserEvents(sessionObj.id);
+    setEvents(data);
+  }
+
+  // async function filterGenreList(genre) {
+  //   const arr = [];
+  //   currentUser.genres.arrayValue.values.map((item) => (
+  //     arr.push(item.stringValue)
+  //   ));
+  //   const res = genres.filter((item) => !arr.includes(item));
+  //   addGenre(genre);
+  //   setGenres(res);
+  // }
 
   function handleOpen() {
+    initialGenres();
     setOpen(true);
   }
 
   function handleClose() {
+    initialGenres();
     setOpen(false);
   }
+
+  useEffect(() => {
+    initialGenres();
+    getEvents();
+  }, []);
 
   return (
     <div>
       <Head>
         <title>forte</title>
       </Head>
-
       <main>
-        {
-          console.log(genreList)
-        }
         <h1 align="center">
           This is the main profile page.
         </h1>
@@ -123,23 +183,23 @@ export default function mainProfile({ genreProp }) {
                     },
                   }}
                 >
-                  <TextField label="search genre" variant="filled" />
+                  <TextField label="search genre" variant="filled" onChange={(e) => setSearch(e.target.value)} />
                   {
-                      genreList.genres.map((genre, index) => (
-                        <Grid display="flex">
-                          <Grid display="flex" justifyContent="space-between">
-                            <Typography key={index}>{genre}</Typography>
-                            <Button size="small" onClick={() => updateUserGenre(currentUser, genre)}>+</Button>
-                          </Grid>
+                    genres.filter(((genre) => genre.includes(search))).map((filterGenre, index) => (
+                      <Grid display="flex" key={index}>
+                        <Grid display="flex" justifyContent="space-between">
+                          <Typography>{filterGenre}</Typography>
+                          <Button size="small" onClick={() => addGenre(filterGenre)}>+</Button>
                         </Grid>
-                      ))
+                      </Grid>
+                    ))
                   }
                 </Dialog>
               </Grid>
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
                 {
                   currentUser.genres.arrayValue.values.map((genre, index) => (
-                    <Chip key={index} label={genre.stringValue} color="info" />
+                    <Chip key={index} label={genre.stringValue} color="info" onDelete={() => handleDelete(genre)} />
                   ))
                 }
               </Stack>
@@ -199,6 +259,31 @@ export default function mainProfile({ genreProp }) {
               <Typography variant="subtitle1" sx={{ margin: '5px' }}>
                 Events
               </Typography>
+              {
+                events.map((event, index) => (
+                  <Grid>
+                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 100 }}
+                        image={event.photos[0] || '/userholder.png'}
+                        alt="album cover"
+                      />
+                      <CardContent>
+                        <Typography component="div" variant="h6">
+                          {event.eventName}
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" component="div">
+                          {event.details}
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" component="div">
+                          {event.location}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))
+              }
             </Grid>
           </Grid>
         </Box>
