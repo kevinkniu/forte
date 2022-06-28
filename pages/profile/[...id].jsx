@@ -2,9 +2,10 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Stack, Chip } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BottomNav from '../components/BottomNav';
 import queryUserData from '../api/users/getUserData';
+import queryUserEvents from '../api/events/getUserEvents';
 
 const favSongs = [
   {
@@ -29,13 +30,22 @@ const favSongs = [
 
 export default function userProfile({ result }) {
   const [userProf, setUserProf] = useState(result);
+  const [userEvents, setUserEvents] = useState([]);
+
+  async function getEvents() {
+    const events = await queryUserEvents(userProf.result[0].id);
+    setUserEvents(events);
+  }
+
+  useEffect(() => {
+    getEvents();
+  }, []);
 
   return (
     <div>
       <Head>
         <title>forte</title>
       </Head>
-
       <main>
         <h1 align="center">
           This is a users profile page.
@@ -43,17 +53,8 @@ export default function userProfile({ result }) {
         <div align="center">
           <button type="submit" onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>Sign Out</button>
         </div>
-        <Box
-          mb={2}
-          sx={{ border: '1px solid black',
-            display: 'flex',
-            flexDirection: 'column',
-            height: '700px',
-            overflow: 'hidden',
-            overflowY: 'scroll',
-          }}
-        >
-          <Grid item sx={{ border: '1px solid black' }} spacing={1}>
+        <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: 'auto', overflow: 'hidden', overflowY: 'scroll', alignItems: 'center', justifyContent: 'center' }}>
+          <Grid item sx={{ border: '1px solid black' }}>
             <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Avatar
                 src={`${userProf.result[0].profPic}`}
@@ -111,6 +112,31 @@ export default function userProfile({ result }) {
               <Typography variant="subtitle1" sx={{ margin: '5px' }}>
                 Events
               </Typography>
+              {
+                userEvents.map((event, index) => (
+                  <Grid>
+                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 100 }}
+                        image={event.photos[0] || '/userholder.png'}
+                        alt="album cover"
+                      />
+                      <CardContent>
+                        <Typography component="div" variant="h6">
+                          {event.eventName}
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" component="div">
+                          {event.details}
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" component="div">
+                          {event.location}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))
+              }
             </Grid>
           </Grid>
         </Box>
@@ -121,6 +147,6 @@ export default function userProfile({ result }) {
 }
 
 export async function getServerSideProps(context) {
-  const result = await queryUserData(context);
+  const result = await queryUserData(context.query.id[0]);
   return { props: { result: { result } } };
 }
