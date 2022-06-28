@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { styled } from '@mui/material/styles';
 import Image from 'next/image';
@@ -8,7 +8,6 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { AppContext } from '../_app';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -25,7 +24,6 @@ export default function Event({ event }) {
   const [expanded, setExpanded] = useState(false);
   const [hidden, setHidden] = useState(false);
   const { data: getSession } = useSession();
-  const { currentUserID } = useContext(AppContext);
   const sessionObj = getSession?.user;
   const eventData = event._document.data.value.mapValue.fields;
 
@@ -44,7 +42,7 @@ export default function Event({ event }) {
           'Content-type': 'application/json',
         },
         body: JSON.stringify({
-          currentUserID,
+          userID: sessionObj.id,
         }),
       });
     };
