@@ -94,7 +94,7 @@ export default function Home() {
             </Typography>
             <Grid container justifyContent="flex-end">
               <ChatIcon color="inherit" sx={{ mx: 1 }} />
-              <Badge badgeContent={currentUser?.friendRequests.arrayValue.values.length || 0} color="primary" sx={{ mx: 1 }}>
+              <Badge badgeContent={currentUser && currentUser.friendRequests.arrayValue.values.length + currentUser.eventRequests.arrayValue.values.length} color="primary" sx={{ mx: 1 }}>
                 <NotificationsIcon color="inherit" onClick={() => { Router.push('/notifications'); }} />
               </Badge>
             </Grid>

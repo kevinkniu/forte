@@ -11,11 +11,10 @@ export default function Explore() {
   const sessionObj = getSession?.user;
   const [myGenres, setMyGenres] = useState([]);
   const [myFriends, setMyFriends] = useState([]);
+  const [mySentFriendsReqs, setMySentFriendsReqs] = useState([]);
   const [explore, setExplore] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const { currentUser } = useContext(AppContext);
-
-  console.log('currentUser:', currentUser);
 
   const exploreUsers = async (genres) => {
     const response = await fetch('/api/users/exploreUsers', {
@@ -42,6 +41,11 @@ export default function Explore() {
       tempFriends.push(friend.stringValue)
     ));
     setMyFriends(tempFriends);
+    const tempSentFriendReqs = [];
+    currentUser.sentFriendRequests.arrayValue.values.map((req) => (
+      tempSentFriendReqs.push(req.stringValue)
+    ));
+    setMySentFriendsReqs(tempSentFriendReqs);
     exploreUsers(tempGenres);
     setLoaded(true);
   };
@@ -68,7 +72,9 @@ export default function Explore() {
             !== sessionObj.id
             && !myFriends.includes(
               user._delegate._document.data.value.mapValue.fields.id.stringValue,
-            )
+            ) && !mySentFriendsReqs.includes(
+            user._delegate._document.data.value.mapValue.fields.id.stringValue,
+          )
           ) {
             return (
               <div key={number}>
