@@ -6,9 +6,9 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { Grid, Typography, Card } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-// import Carousel from 'react-material-ui-carousel';
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
+import Carousel from 'react-material-ui-carousel';
+// import Carousel from 'react-multi-carousel';
+// import 'react-multi-carousel/lib/styles.css';
 import BottomNav from './components/BottomNav';
 import getToken from './api/spotify/getToken';
 import getGenres from './api/spotify/getGenres';
@@ -71,32 +71,7 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
               <div key={number}>
                 <Typography variant="body2" component="div" sx={{ display: 'inline-block', fontSize: '20px' }}>{genre?.name}</Typography>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
-                  <Carousel   responsive={{
-                    desktop: {
-                      breakpoint: {
-                        max: 3000,
-                        min: 1024
-                      },
-                      items: 3,
-                      partialVisibilityGutter: 40
-                    },
-                    mobile: {
-                      breakpoint: {
-                        max: 464,
-                        min: 0
-                      },
-                      items: 1,
-                      partialVisibilityGutter: 30
-                    },
-                    tablet: {
-                      breakpoint: {
-                        max: 1024,
-                        min: 464
-                      },
-                      items: 2,
-                      partialVisibilityGutter: 30
-                    }
-                  }}>
+                  <Carousel>
                     {playlists.length && playlists.map((item) => (
                       <Link href={`/album/${item.id}`}>
                         <Card onClick={() => updatePlaylist(item)} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', marginRight: '5px' }}>
