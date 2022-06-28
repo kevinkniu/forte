@@ -146,11 +146,6 @@ export default function mainProfile({ genreProp }) {
   }
 
   useEffect(() => {
-    initialGenres();
-    reRenderUser();
-  }, []);
-
-  useEffect(() => {
     getEvents();
   }, [currentUser]);
 
@@ -224,7 +219,7 @@ export default function mainProfile({ genreProp }) {
                   Friends
                 </Typography>
               </Grid>
-              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Grid item xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 {
                   friendData.map((friend, index) => (
                     <Link key={index} href={`/profile/${friend.id}`}>

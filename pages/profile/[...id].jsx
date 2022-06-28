@@ -77,8 +77,8 @@ export default function userProfile({ result }) {
               </Typography>
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
                 {
-                  userProf.result[0].genres.map((genre) => (
-                    <Chip label={genre} color="info" />
+                  userProf.result[0].genres.map((genre, index) => (
+                    <Chip key={index} label={genre} color="info" />
                   ))
                 }
               </Stack>
@@ -87,8 +87,8 @@ export default function userProfile({ result }) {
               <Typography variant="subtitle1" sx={{ margin: '5px' }}> Liked Songs </Typography>
               <Grid item sx={{ border: '1px solid black' }}>
                 {
-                  favSongs.map((song) => (
-                    <Card sx={{ display: 'flex', margin: '5px' }}>
+                  favSongs.map((song, index) => (
+                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
                       <CardMedia
                         component="img"
                         sx={{ width: 100 }}
