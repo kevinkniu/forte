@@ -2,6 +2,7 @@ import * as React from 'react';
 import { AppBar, Box, Toolbar, Typography, Grid } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
 
 export default function HomeHeader() {
   return (
@@ -19,7 +20,9 @@ export default function HomeHeader() {
           </Typography>
           <Grid container justifyContent="flex-end">
             <ChatIcon color="inherit" sx={{ mx: 1 }} />
-            <NotificationsIcon color="inherit" sx={{ mx: 1 }} />
+            <Badge badgeContent={3} color="primary" sx={{ mx: 1 }}>
+              <NotificationsIcon color="action" />
+            </Badge>
           </Grid>
         </Toolbar>
       </AppBar>
