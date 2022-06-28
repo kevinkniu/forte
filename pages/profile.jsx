@@ -132,9 +132,9 @@ export default function mainProfile({ genreProp }) {
   async function onDelete(id, event) {
     await deleteUserEvent(id, event);
     const eventIndex = events.findIndex((eventData) => {
-      const index = eventData.findIndex((singleEvent) => {
-        return singleEvent === event[0];
-      });
+      const index = eventData.findIndex((singleEvent) => (
+        singleEvent === event[0]
+      ));
       if (index >= 0) {
         return true;
       }
