@@ -1,14 +1,18 @@
+import Link from 'next/link';
 import Head from 'next/head';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useContext } from 'react';
 import { getSession, useSession } from 'next-auth/react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Typography, Card } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import Carousel from 'react-material-ui-carousel';
 import BottomNav from './components/BottomNav';
 import getToken from './api/spotify/getToken';
 import getGenres from './api/spotify/getGenres';
 import getPlaylists from './api/spotify/getPlaylists';
+// import getTracks from '../api/spotify/getPlaylists';
+import { AppContext } from './_app';
 
 export default function Music({ tokenProp, genresProp, playlistsProp }) {
   const { getSession } = useSession();
@@ -19,6 +23,12 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
   const [playlists, setPlaylists] = useState(playlistsProp);
   const [tracks, setTracks] = useState([]);
   const [track, setTrack] = useState([]);
+  const { currentPlaylist, setCurrentPlaylist } = useContext(AppContext);
+
+  const updatePlaylist = (item) => {
+    console.log(item);
+    setCurrentPlaylist(item);
+  };
 
   const onSearch = (e) => {
     e.preventDefault();
@@ -26,11 +36,11 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
 
   return (
     <div>
-      <div>
+      {/* <div>
         {
           console.log('token', tokenID, 'genres', genres, 'playlists', playlists)
         }
-      </div>
+      </div> */}
       <Head>
         <title>forte</title>
       </Head>
@@ -41,33 +51,41 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
         </h1>
         <Box
           component="form"
-          sx={{ display: 'flex', mx: 5 }}
+          sx={{ display: 'flex', flexDirection: 'column' }}
         >
-          <SearchIcon sx={{ alignSelf: 'flex-end', mr: 1 }} />
-          <TextField
-            fullWidth
-            type="search"
-            label="Songs"
-            variant="standard"
-            inputRef={searchRef}
-          />
-          <button hidden type="submit" onClick={(e) => { onSearch(e); }}>Submit</button>
+          <Link href="/search">
+            <Grid sx={{ display: 'flex' }}>
+              <SearchIcon sx={{ alignSelf: 'flex-end', mr: 1 }} />
+              <TextField
+                fullWidth
+                type="search"
+                label="Songs"
+                variant="standard"
+                inputRef={searchRef}
+              />
+              <button hidden type="submit" onClick={(e) => { onSearch(e); }}>Submit</button>
+            </Grid>
+          </Link>
+          <Grid sx={{ overflow: 'auto', maxHeight: '100%', width: '100%', marginTop: '20px', paddingBottom: '60px' }}>
+            {genres.map((genre) => (
+              <div key={genre.id}>
+                <Typography variant="body2" component="div" sx={{ display: 'inline-block', fontSize: '20px' }}>{genre?.name}</Typography>
+                <Grid sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                  <Carousel>
+                    {playlists.length && playlists.map((item) => (
+                      <Link href={`/album/${item.id}`}>
+                        <Card onClick={() => updatePlaylist(item)} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', marginRight: '5px' }}>
+                          <img src={item.images[0].url} alt="N/A" style={{ 'width': '100px' }} />
+                          <Typography variant="body2" component="div" sx={{ fontSize: '12px' }}>{item.name}</Typography>
+                        </Card>
+                      </Link>
+                    ))}
+                  </Carousel>
+                </Grid>
+              </div>
+            ))}
+          </Grid>
         </Box>
-        <Grid>
-          {genres.map((genre, number) => (
-            <div key={number}>
-              <Typography variant="body2" component="div" sx={{ borderBottom: '1px solid black', display: 'inline-block', fontSize: '10rem' }}>{genre?.name}</Typography>
-              <Grid sx={{ display: 'flex', flexDirection: 'row'}}>
-                {playlists.length && playlists.map((item) => (
-                  <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', marginRight: '2rem' }}>
-                    <img src={item.images[0].url} alt="N/A" style={{'width': '40rem'}}/>
-                    <Typography variant="body2" component="div" sx={{ fontSize: '5rem' }}>{item.name}</Typography>
-                  </Grid>
-                ))}
-              </Grid>
-            </div>
-          ))}
-        </Grid>
       </main>
 
       <BottomNav />
