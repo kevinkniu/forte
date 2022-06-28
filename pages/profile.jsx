@@ -2,12 +2,13 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import getToken from './api/spotify/getToken';
 import getAllGenres from './api/spotify/getAllGenres';
 import updateUserGenre from './api/users/updateUserGenre';
+import deleteUserGenre from './api/users/deleteUserGenre';
 
 const friendData = [
   {
@@ -64,7 +65,7 @@ const favSongs = [
 ];
 
 export default function mainProfile({ genreProp }) {
-  const { currentUser } = useContext(AppContext);
+  const { currentUser, currentUserID, setCurrentUser } = useContext(AppContext);
   const [open, setOpen] = useState(false);
   const [genreList, setGenres] = useState(genreProp);
 
@@ -76,16 +77,47 @@ export default function mainProfile({ genreProp }) {
     setOpen(false);
   }
 
+  async function handleDelete(genre) {
+    console.log('delete');
+    await deleteUserGenre(currentUserID, genre);
+    const response = await fetch(`/api/users/${currentUserID}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    console.log(result);
+    const user = result[0]._delegate._document.data.value.mapValue.fields;
+    console.log(user);
+    setCurrentUser(user);
+  }
+
+  async function rerenderUserGenres(genre) {
+    await updateUserGenre(currentUserID, genre);
+    const response = await fetch(`/api/users/${currentUserID}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    console.log(result);
+    const user = result[0]._delegate._document.data.value.mapValue.fields;
+    console.log(user);
+    setCurrentUser(user);
+  }
+
   return (
     <div>
       <Head>
         <title>forte</title>
       </Head>
+      {
+        console.log(currentUser.genres.arrayValue.values)
+      }
 
       <main>
-        {
-          console.log(genreList)
-        }
         <h1 align="center">
           This is the main profile page.
         </h1>
@@ -129,7 +161,7 @@ export default function mainProfile({ genreProp }) {
                         <Grid display="flex">
                           <Grid display="flex" justifyContent="space-between">
                             <Typography key={index}>{genre}</Typography>
-                            <Button size="small" onClick={() => updateUserGenre(currentUser, genre)}>+</Button>
+                            <Button size="small" onClick={() => rerenderUserGenres(genre)}>+</Button>
                           </Grid>
                         </Grid>
                       ))
@@ -139,7 +171,7 @@ export default function mainProfile({ genreProp }) {
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
                 {
                   currentUser.genres.arrayValue.values.map((genre, index) => (
-                    <Chip key={index} label={genre.stringValue} color="info" />
+                    <Chip key={index} label={genre.stringValue} color="info" onDelete={() => handleDelete(genre)} />
                   ))
                 }
               </Stack>
