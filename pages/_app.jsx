@@ -8,10 +8,12 @@ export const AppContext = createContext();
 function MyApp({ Component, pageProps }) {
   const [value, setValue] = useState(0);
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentPlaylist, setCurrentPlaylist] = useState([]);
 
   return (
     <SessionProvider session={pageProps.session}>
-      <AppContext.Provider value={{ value, setValue, currentUser, setCurrentUser }}>
+      <AppContext.Provider value={{
+        value, setValue, currentUser, setCurrentUser, currentPlaylist, setCurrentPlaylist }}>
         <Component {...pageProps} />
       </AppContext.Provider>
     </SessionProvider>
