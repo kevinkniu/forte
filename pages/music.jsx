@@ -67,8 +67,8 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
             <button hidden type="submit" onClick={(e) => { onSearch(e); }}>Submit</button>
           </Grid>
           <Grid sx={{ overflow: 'auto', maxHeight: '100%', width: '100%', marginTop: '20px', paddingBottom: '60px' }}>
-            {genres.map((genre, number) => (
-              <div key={number}>
+            {genres.map((genre) => (
+              <div key={genre.id}>
                 <Typography variant="body2" component="div" sx={{ display: 'inline-block', fontSize: '20px' }}>{genre?.name}</Typography>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
                   <Carousel>
