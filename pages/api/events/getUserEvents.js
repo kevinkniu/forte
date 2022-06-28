@@ -9,9 +9,7 @@ export default async function queryUserEvents(eventArray) {
     const docSnap = await getDoc(docRef);
     newEvent.push(eventArray[i]);
     newEvent.push(docSnap.data());
-    // newEvent[eventArray[i]] = docSnap.data();
     eventResults.push(newEvent);
   }
-  console.log(eventResults);
   return eventResults;
 }

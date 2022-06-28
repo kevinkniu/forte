@@ -76,16 +76,12 @@ export default function mainProfile({ genreProp }) {
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
 
-  console.log(sessionObj);
-
   async function getEvents() {
-    console.log('getting events');
     const tempEvents = [];
     currentUser.events.arrayValue.values.map((event) => (
       tempEvents.push(event.stringValue)
     ));
     const data = await queryUserEvents(tempEvents);
-    console.log(data);
     setEvents(data);
   }
 
@@ -99,7 +95,6 @@ export default function mainProfile({ genreProp }) {
     const result = await response.json();
     const user = result[0]._delegate._document.data.value.mapValue.fields;
     setCurrentUser(user);
-    await getEvents();
   }
 
   async function initialGenres() {
@@ -136,13 +131,28 @@ export default function mainProfile({ genreProp }) {
 
   async function onDelete(id, event) {
     await deleteUserEvent(id, event);
-    await getEvents();
+    const eventIndex = events.findIndex((eventData) => {
+      const index = eventData.findIndex((singleEvent) => {
+        return singleEvent === event[0];
+      });
+      if (index >= 0) {
+        return true;
+      }
+      return false;
+    });
+    events.splice(eventIndex, 1);
+    const newEventList = [...events];
+    setEvents(newEventList);
   }
 
   useEffect(() => {
     initialGenres();
     reRenderUser();
   }, []);
+
+  useEffect(() => {
+    getEvents();
+  }, [currentUser]);
 
   return (
     <div>
