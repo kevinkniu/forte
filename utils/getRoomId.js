@@ -1,14 +1,9 @@
 import { useState, useEffect } from 'react';
-// import { AppContext } from '../pages/_app';
 
-export default async function getRoomId(mySpotifyId, userSpotifyId) {
-  console.log('I am here in the getRoomId');
-  // const { currentUser } = useContext(AppContext);
-  // const [roomId, setRoomId] = useState('');
-  // const [userName, setUserName] = useState('');
-  // const [userProfPic, setUserProfPic] = useState('');
-
-  const response = await fetch(`/api/messages/checkMessages?mySpotifyId=${mySpotifyId}&userSpotifyId=${userSpotifyId}`, {
+export default async function getRoomId(mySpotify, friendSpotify) {
+  console.log('MY SPOTIFY OBJ', mySpotify);
+  console.log('FRIEND SPOTIFY OBJ', friendSpotify);
+  const response = await fetch(`/api/messages/checkMessages?mySpotifyId=${mySpotify.id}&userSpotifyId=${friendSpotify.id}`, {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
@@ -16,20 +11,33 @@ export default async function getRoomId(mySpotifyId, userSpotifyId) {
   });
 
   const result = await response.json();
-  const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
+  console.log(result);
 
-  if (!roomid.length) {
-    /*
-    inside room firebase collection
-    create a message field
-    save the roomId
-
-    .add roomid with document id of userSpotifyId into myUserProfile
-    .add roomid with document id of mySpotidyId into user'sUserProfile
-    recursive call getRoomId(mySpotifyId, userSpotifyId)
-    */
-
+  if (!result.length) {
+    const newRoom = await fetch('/api/messages/createRoom', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        mySpotify,
+        friendSpotify,
+        messages: [],
+      }),
+    });
+    const roomData = await newRoom;
+    console.log(roomData, 'this is the roomdata');
   }
+  /*
+  inside room firebase collection
+  create a message field
+  save the roomId
 
-  return roomid;
+  .add roomid with document id of userSpotifyId into myUserProfile
+  .add roomid with document id of mySpotidyId into user'sUserProfile
+  recursive call getRoomId(mySpotifyId, userSpotifyId)
+  */
+
+ // const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
+  return;
 }
