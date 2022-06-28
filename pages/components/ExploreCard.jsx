@@ -1,7 +1,27 @@
+import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { Card, CardActions, CardContent, CardMedia, Button, Chip, Box, Typography } from '@mui/material';
 
 export default function ExploreCard({ myGenres, user }) {
+  const { data: getSession } = useSession();
+  const sessionObj = getSession?.user;
+  const [added, setAdded] = useState(false);
   const userData = user._delegate._document.data.value.mapValue.fields;
+
+  const sendFriendReq = async () => {
+    await fetch('/api/users/sendFriendReq', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: added,
+        targetUserID: userData.id.stringValue,
+        myUserID: sessionObj.id,
+      }),
+    });
+    setAdded(!added);
+  };
 
   return (
     <Card sx={{ mx: 3, my: 1, width: 325, maxWidth: 700 }}>
@@ -17,7 +37,7 @@ export default function ExploreCard({ myGenres, user }) {
             {userData.name.stringValue}
           </Typography>
           <CardActions>
-            <Button size="small" sx={{ color: '#673ab7', typography: 'body1' }}>Add Friend</Button>
+            <Button onClick={() => { sendFriendReq(); }} size="small" sx={{ color: added ? 'text.secondary' : '#673ab7', typography: 'body1' }}>{added ? 'Sent Request' : 'Add Friend'}</Button>
           </CardActions>
         </Box>
         <Typography variant="body2" color="text.secondary" sx={{ pb: 1 }}>
@@ -34,6 +54,7 @@ export default function ExploreCard({ myGenres, user }) {
                 </div>
               );
             }
+            return null;
           })}
         </Box>
       </CardContent>
