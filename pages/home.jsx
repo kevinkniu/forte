@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useEffect, useContext, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { AppBar, Box, Toolbar, Typography, Grid } from '@mui/material';
+import { AppBar, Box, Toolbar, Typography, Grid, Badge } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import BottomNav from './components/BottomNav';
@@ -47,6 +47,7 @@ export default function Home() {
             recent: [],
             friends: [],
             rooms: [],
+            friendRequests: [],
           }),
         });
         initializeUser();
@@ -78,7 +79,9 @@ export default function Home() {
             </Typography>
             <Grid container justifyContent="flex-end">
               <ChatIcon color="inherit" sx={{ mx: 1 }} />
-              <NotificationsIcon color="inherit" sx={{ mx: 1 }} />
+              <Badge badgeContent={3} color="primary" sx={{ mx: 1 }}>
+                <NotificationsIcon color="inherit" />
+              </Badge>
             </Grid>
           </Toolbar>
         </AppBar>

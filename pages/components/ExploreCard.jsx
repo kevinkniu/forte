@@ -4,17 +4,22 @@ export default function ExploreCard({ myGenres, user }) {
   const userData = user._delegate._document.data.value.mapValue.fields;
 
   return (
-    <Card sx={{ mx: 3, my: 1, width: { xs: 325, sm: 500, md: 700 }, maxWidth: 700 }}>
+    <Card sx={{ mx: 3, my: 1, width: 325, maxWidth: 700 }}>
       <CardMedia
         component="img"
         height="300"
         image={userData.profPic.stringValue}
-        alt="green iguana"
+        alt="N/A"
       />
       <CardContent sx={{ pb: 0 }}>
-        <Typography gutterBottom variant="h5" component="div">
-          {userData.name.stringValue}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography gutterBottom variant="h6" component="div" sx={{ my: 0 }}>
+            {userData.name.stringValue}
+          </Typography>
+          <CardActions>
+            <Button size="small" sx={{ color: '#673ab7', typography: 'body1' }}>Add Friend</Button>
+          </CardActions>
+        </Box>
         <Typography variant="body2" color="text.secondary" sx={{ pb: 1 }}>
           also likes
         </Typography>
@@ -32,9 +37,6 @@ export default function ExploreCard({ myGenres, user }) {
           })}
         </Box>
       </CardContent>
-      <CardActions>
-        <Button size="small">Add Friend</Button>
-      </CardActions>
     </Card>
   );
 }

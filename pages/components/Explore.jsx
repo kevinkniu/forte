@@ -49,7 +49,7 @@ export default function Explore() {
     <div>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Box sx={{ display: 'flex', mx: 5, mb: 1, mt: 2, alignItems: 'center', justifyContent: 'center' }}>
-          <h4>People you might get along with</h4>
+          <h2>People you should meet</h2>
         </Box>
         <Box sx={{ display: loaded ? 'none' : '', color: '#673ab7' }}>
           <CircularProgress color="inherit" />
