@@ -98,7 +98,7 @@ export default function Search() {
         className={searchStyles.header}
       >
         <Paper
-          elevation={tracks.length !== 0 && 2}
+          elevation={tracks.length === 0 ? 0 : 2}
           className={searchStyles.headerContent}
         >
           <div className={searchStyles.search}>
@@ -111,7 +111,7 @@ export default function Search() {
               onChange={handleChange}
             />
             <Link href="/music">
-              <Button button>Cancel</Button>
+              <Button>Cancel</Button>
             </Link>
           </div>
 
@@ -124,14 +124,14 @@ export default function Search() {
                   onClick={() => setType('track')}
                   label="Tracks"
                   component="span"
-                  variant={type === 'artist' && 'outlined'}
+                  variant={type === 'artist' ? 'outlined' : ''}
                 />
                 <Chip
                   className={type === 'artist' ? searchStyles.chipSelected : searchStyles.chip}
                   onClick={() => setType('artist')}
                   label="Artists"
                   component="span"
-                  variant={type === 'track' && 'outlined'}
+                  variant={type === 'track' ? 'outlined' : ''}
                 />
               </Stack>
             )}
