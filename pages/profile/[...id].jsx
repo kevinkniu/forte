@@ -33,8 +33,8 @@ export default function userProfile({ result }) {
   const [userEvents, setUserEvents] = useState([]);
 
   async function getEvents() {
-    const events = await queryUserEvents(userProf.result[0].id);
-    setUserEvents(events);
+    const data = await queryUserEvents(userProf.result[0].events);
+    setUserEvents(data);
   }
 
   useEffect(() => {
