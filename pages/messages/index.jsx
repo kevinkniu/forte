@@ -1,8 +1,11 @@
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { Button, Avatar, List, ListItem } from '@mui/material';
 import styled from 'styled-components';
 import Router from 'next/router';
+import getRoomId from '../../utils/getRoomId';
+import { AppContext } from '../_app';
 import BottomNav from '../components/BottomNav';
 
 const dummydata = [
@@ -24,20 +27,26 @@ const dummydata = [
 ];
 
 export default function Messages() {
-  const { getSession } = useSession();
-  const sessionObj = getSession?.user;
+  const { currentUser, currentUserID } = useContext(AppContext);
+  console.log(currentUser, 'currentUser');
+  console.log(currentUserID, 'currentUserId');
+
+  const routeToFriendMessage = async (friendId) => {
+    const roomId = await getRoomId(currentUserID, friendId);
+    Router.push(`/messages/${roomId}`);
+  };
 
   const renderFriends = (friendsArray) => (
     friendsArray.map((friend) => (
-      <FriendsContainer key={friend.id} onClick={() => Router.push(`/messages/${friend.name.toLowerCase().replace(/ /g, '-')}/${friend.id}`)}>
+      <ListItem key={friend.id} onClick={() => routeToFriendMessage(friend.id)}>
         <PhotoContainer>
-          <ProfilePhoto src={friend.profPic} alt="" />
+          <Avatar src={friend.profPic} alt="" sx={{ width: 75, height: 75 }} />
         </PhotoContainer>
         <ProfileDetails>
           <Username>{friend.name}</Username>
           <Message>Message</Message>
         </ProfileDetails>
-      </FriendsContainer>
+      </ListItem>
     ))
   );
 
@@ -46,9 +55,11 @@ export default function Messages() {
       <h1 align="center">
         Messages
       </h1>
-      <button type="button" onClick={() => { Router.push('/friends'); }}>Friends</button>
-      <button type="button">Messages</button>
+      <Button variant="contained" onClick={() => { Router.push('/friends'); }}>Friends</Button>
+      <Button variant="contained">Messages</Button>
+      <List>
       {renderFriends(dummydata)}
+      </List>
       <BottomNav />
     </div>
   );
@@ -61,12 +72,6 @@ const FriendsContainer = styled.div`
 
 const PhotoContainer = styled.div`
 margin-right: 1rem;
-`;
-
-const ProfilePhoto = styled.img`
-height: 5rem;
-width: 5rem;
-border-radius: 50%;
 `;
 
 const ProfileDetails = styled.div`

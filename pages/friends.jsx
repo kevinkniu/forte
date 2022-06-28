@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import { Button, Avatar } from '@mui/material';
 import styled from 'styled-components';
 import Router from 'next/router';
 import BottomNav from './components/BottomNav';
@@ -32,7 +33,7 @@ export default function Friends() {
     friendsArray.map((friend) => (
       <FriendsContainer key={friend.id}>
         <PhotoContainer>
-          <ProfilePhoto src={friend.profPic} alt="" />
+          <Avatar src={friend.profPic} alt="" sx={{ width: 75, height: 75 }} />
         </PhotoContainer>
         <ProfileDetails>
           <Username>{friend.name}</Username>
@@ -47,8 +48,8 @@ export default function Friends() {
       <h1 align="center">
         This is a friends page.
       </h1>
-      <button type="button">Friends</button>
-      <button type="button" onClick={() => { Router.push('/messages'); }}>Messages</button>
+      <Button variant="contained">Friends</Button>
+      <Button variant="contained" onClick={() => { Router.push('/messages'); }}>Messages</Button>
       {renderFriends(dummydata)}
       <BottomNav />
     </div>
@@ -62,12 +63,6 @@ const FriendsContainer = styled.div`
 
 const PhotoContainer = styled.div`
 margin-right: 1rem;
-`;
-
-const ProfilePhoto = styled.img`
-height: 5rem;
-width: 5rem;
-border-radius: 50%;
 `;
 
 const ProfileDetails = styled.div`

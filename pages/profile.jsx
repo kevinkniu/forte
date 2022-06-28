@@ -1,11 +1,15 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
-import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack } from '@mui/material';
-import { useContext } from 'react';
-import Router from 'next/router';
+import { signOut, useSession } from 'next-auth/react';
+import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
+import getToken from './api/spotify/getToken';
+import getAllGenres from './api/spotify/getAllGenres';
+import updateUserGenre from './api/users/updateUserGenre';
+import deleteUserGenre from './api/users/deleteUserGenre';
+import queryUserEvents from './api/events/getUserEvents';
 
 const friendData = [
   {
@@ -34,9 +38,9 @@ const friendData = [
     profPic: '/favicon.ico',
   },
   {
-    id: '11111',
+    id: '226ssnz7grqphzhajvn2xfqxa',
     name: 'John Ong',
-    profPic: '/userholder.png',
+    profPic: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=667637673271813&height=300&width=300&ext=1658762672&hash=AeSUiPcuzqISiuQf6Sc',
   },
 ];
 
@@ -61,15 +65,86 @@ const favSongs = [
   },
 ];
 
-export default function mainProfile() {
-  const { currentUser } = useContext(AppContext);
+export default function mainProfile({ genreProp }) {
+  const { currentUser, setCurrentUser } = useContext(AppContext);
+  const [open, setOpen] = useState(false);
+  const [genres, setGenres] = useState(genreProp.genres);
+  const [filteredGenre, setFilteredGenres] = useState([]);
+  const [search, setSearch] = useState('');
+  const [events, setEvents] = useState([]);
+  const { data: getSession } = useSession();
+  const sessionObj = getSession?.user;
+
+  async function reRenderUser() {
+    const response = await fetch(`/api/users/${sessionObj.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    const user = result[0]._delegate._document.data.value.mapValue.fields;
+    setCurrentUser(user);
+  }
+
+  async function initialGenres() {
+    const arr = [];
+    currentUser.genres.arrayValue.values.map((item) => (
+      arr.push(item.stringValue)
+    ));
+    const res = genres.filter((item) => !arr.includes(item));
+    setFilteredGenres(res);
+    await setGenres(res);
+  }
+
+  async function handleDelete(genre) {
+    await deleteUserGenre(sessionObj.id, genre);
+    await reRenderUser();
+    await initialGenres();
+  }
+
+  async function addGenre(genre) {
+    await updateUserGenre(sessionObj.id, genre);
+    await reRenderUser();
+    await initialGenres();
+  }
+
+  async function getEvents() {
+    console.log(sessionObj.id);
+    const data = await queryUserEvents(sessionObj.id);
+    setEvents(data);
+  }
+
+  // async function filterGenreList(genre) {
+  //   const arr = [];
+  //   currentUser.genres.arrayValue.values.map((item) => (
+  //     arr.push(item.stringValue)
+  //   ));
+  //   const res = genres.filter((item) => !arr.includes(item));
+  //   addGenre(genre);
+  //   setGenres(res);
+  // }
+
+  function handleOpen() {
+    initialGenres();
+    setOpen(true);
+  }
+
+  function handleClose() {
+    initialGenres();
+    setOpen(false);
+  }
+
+  useEffect(() => {
+    initialGenres();
+    getEvents();
+  }, []);
 
   return (
     <div>
       <Head>
         <title>forte</title>
       </Head>
-
       <main>
         <h1 align="center">
           This is the main profile page.
@@ -78,8 +153,8 @@ export default function mainProfile() {
           <button type="submit" onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>Sign Out</button>
         </div>
 
-        <Box mb={2} sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: '700px', overflow: 'hidden', overflowY: 'scroll' }}>
-          <Grid item sx={{ border: '1px solid black' }} spacing={1}>
+        <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: 'auto', overflow: 'hidden', overflowY: 'scroll', alignItems: 'center', justifyContent: 'center' }}>
+          <Grid item sx={{ border: '1px solid black' }}>
             <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Avatar
                 src={`${currentUser?.profPic.stringValue}`}
@@ -93,13 +168,38 @@ export default function mainProfile() {
               </Typography>
             </Grid>
             <Grid item sx={{ border: '1px solid black' }}>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-                Genres
-              </Typography>
+              <Grid item sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography variant="subtitle1" sx={{ margin: '5px' }}>
+                  Genres
+                </Typography>
+                <Button onClick={() => handleOpen()}>+</Button>
+                <Dialog
+                  onClose={() => handleClose()}
+                  open={open}
+                  PaperProps={{
+                    style: {
+                      height: '500px',
+                      width: '300px',
+                    },
+                  }}
+                >
+                  <TextField label="search genre" variant="filled" onChange={(e) => setSearch(e.target.value)} />
+                  {
+                    genres.filter(((genre) => genre.includes(search))).map((filterGenre, index) => (
+                      <Grid display="flex" key={index}>
+                        <Grid display="flex" justifyContent="space-between">
+                          <Typography>{filterGenre}</Typography>
+                          <Button size="small" onClick={() => addGenre(filterGenre)}>+</Button>
+                        </Grid>
+                      </Grid>
+                    ))
+                  }
+                </Dialog>
+              </Grid>
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
                 {
-                  currentUser.genres.arrayValue.values.map((genre) => (
-                    <Chip label={genre.stringValue} color="info" />
+                  currentUser.genres.arrayValue.values.map((genre, index) => (
+                    <Chip key={index} label={genre.stringValue} color="info" onDelete={() => handleDelete(genre)} />
                   ))
                 }
               </Stack>
@@ -110,7 +210,7 @@ export default function mainProfile() {
                   Friends
                 </Typography>
               </Grid>
-              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }} spacing={1}>
+              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 {
                   friendData.map((friend) => (
                     <Link key={friend.id} href={`/profile/${friend.id}`}>
@@ -159,6 +259,31 @@ export default function mainProfile() {
               <Typography variant="subtitle1" sx={{ margin: '5px' }}>
                 Events
               </Typography>
+              {
+                events.map((event, index) => (
+                  <Grid>
+                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 100 }}
+                        image={event.photos[0] || '/userholder.png'}
+                        alt="album cover"
+                      />
+                      <CardContent>
+                        <Typography component="div" variant="h6">
+                          {event.eventName}
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" component="div">
+                          {event.details}
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" component="div">
+                          {event.location}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))
+              }
             </Grid>
           </Grid>
         </Box>
@@ -168,3 +293,8 @@ export default function mainProfile() {
   );
 }
 
+export async function getServerSideProps() {
+  const tokenProp = await getToken();
+  const genreProp = await getAllGenres(tokenProp);
+  return { props: { genreProp } };
+}

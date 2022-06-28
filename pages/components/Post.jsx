@@ -120,16 +120,16 @@ export default function Post({ post }) {
         <IconButton aria-label="add to favorites">
           <Checkbox icon={<ThumbUpOutlinedIcon />} checkedIcon={<ThumbUpIcon sx={{ color: '#673ab7' }} />} />
         </IconButton>
-        <ExpandMore
+        {/* <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
         >
           <ExpandMoreIcon />
-        </ExpandMore>
+        </ExpandMore> */}
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph variant="body2">
             Comment hardcode test.
@@ -145,7 +145,7 @@ export default function Post({ post }) {
             Additional comment hardcode test.
           </Typography>
         </CardContent>
-      </Collapse>
+      </Collapse> */}
     </Card>
   );
 }

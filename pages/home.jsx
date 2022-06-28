@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import { useEffect, useContext, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { AppBar, Box, Toolbar, Typography, Grid } from '@mui/material';
+import { AppBar, Box, Toolbar, Typography, Grid, Badge } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import Router from 'next/router';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import Posts from './components/Posts';
@@ -12,7 +13,7 @@ import Explore from './components/Explore';
 
 export default function Home() {
   const { data: getSession, status } = useSession();
-  const { setCurrentUser } = useContext(AppContext);
+  const { currentUser, setCurrentUser } = useContext(AppContext);
   const [view, setView] = useState('Explore');
   const sessionObj = getSession?.user;
 
@@ -43,10 +44,24 @@ export default function Home() {
             genres: [],
             songs: [],
             posts: [],
+            events: [],
             recent: [],
             friends: [],
+            rooms: [],
+            friendRequests: [],
           }),
         });
+        const subColl = await fetch(`/api/users/createMessCollection/${sessionObj?.id}`, {
+          method: 'POST',
+          header: {
+            'Content-type': 'application/json',
+          },
+          body: {
+            id: sessionObj?.id,
+          },
+        });
+        const data = await subColl.json();
+        console.log(data);
         initializeUser();
         return;
       }
@@ -76,7 +91,9 @@ export default function Home() {
             </Typography>
             <Grid container justifyContent="flex-end">
               <ChatIcon color="inherit" sx={{ mx: 1 }} />
-              <NotificationsIcon color="inherit" sx={{ mx: 1 }} />
+              <Badge badgeContent={currentUser?.friendRequests.arrayValue.values.length || 0} color="primary" sx={{ mx: 1 }}>
+                <NotificationsIcon color="inherit" onClick={() => { Router.push('/notifications'); }} />
+              </Badge>
             </Grid>
           </Toolbar>
         </AppBar>
