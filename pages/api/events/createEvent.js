@@ -4,8 +4,8 @@ import { db } from '../../../firebase';
 
 export default async function handler(req, res) {
   const { userID, userName, profPic, eventName,
-    date, location, details, photos, attendees, currentUserID } = req.body;
-  const userRef = doc(db, 'users', currentUserID);
+    date, location, details, photos, attendees } = req.body;
+  const userRef = doc(db, 'users', userID);
   const timestamp = firebase.firestore.Timestamp.now();
   const event = {
     userID,
