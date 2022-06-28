@@ -7,8 +7,6 @@ import Box from '@mui/material/Box';
 import { Grid, Typography, Card } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Carousel from 'react-material-ui-carousel';
-// import Carousel from 'react-multi-carousel';
-// import 'react-multi-carousel/lib/styles.css';
 import BottomNav from './components/BottomNav';
 import getToken from './api/spotify/getToken';
 import getGenres from './api/spotify/getGenres';
@@ -55,17 +53,19 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
           component="form"
           sx={{ display: 'flex', flexDirection: 'column' }}
         >
-          <Grid sx={{ display: 'flex' }}>
-            <SearchIcon sx={{ alignSelf: 'flex-end', mr: 1 }} />
-            <TextField
-              fullWidth
-              type="search"
-              label="Songs"
-              variant="standard"
-              inputRef={searchRef}
-            />
-            <button hidden type="submit" onClick={(e) => { onSearch(e); }}>Submit</button>
-          </Grid>
+          <Link href="/search">
+            <Grid sx={{ display: 'flex' }}>
+              <SearchIcon sx={{ alignSelf: 'flex-end', mr: 1 }} />
+              <TextField
+                fullWidth
+                type="search"
+                label="Songs"
+                variant="standard"
+                inputRef={searchRef}
+              />
+              <button hidden type="submit" onClick={(e) => { onSearch(e); }}>Submit</button>
+            </Grid>
+          </Link>
           <Grid sx={{ overflow: 'auto', maxHeight: '100%', width: '100%', marginTop: '20px', paddingBottom: '60px' }}>
             {genres.map((genre) => (
               <div key={genre.id}>
