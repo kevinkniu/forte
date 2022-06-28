@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import BottomNav from './components/BottomNav';
@@ -66,15 +66,17 @@ const favSongs = [
 ];
 
 export default function mainProfile({ genreProp }) {
-  const { currentUser, currentUserID, setCurrentUser } = useContext(AppContext);
+  const { currentUser, setCurrentUser } = useContext(AppContext);
   const [open, setOpen] = useState(false);
   const [genres, setGenres] = useState(genreProp.genres);
   const [filteredGenre, setFilteredGenres] = useState([]);
   const [search, setSearch] = useState('');
   const [events, setEvents] = useState([]);
+  const { data: getSession } = useSession();
+  const sessionObj = getSession?.user;
 
   async function reRenderUser() {
-    const response = await fetch(`/api/users/${currentUserID}`, {
+    const response = await fetch(`/api/users/${sessionObj.id}`, {
       method: 'GET',
       headers: {
         'Content-type': 'application/json',
@@ -96,20 +98,20 @@ export default function mainProfile({ genreProp }) {
   }
 
   async function handleDelete(genre) {
-    await deleteUserGenre(currentUserID, genre);
+    await deleteUserGenre(sessionObj.id, genre);
     await reRenderUser();
     await initialGenres();
   }
 
   async function addGenre(genre) {
-    await updateUserGenre(currentUserID, genre);
+    await updateUserGenre(sessionObj.id, genre);
     await reRenderUser();
     await initialGenres();
   }
 
   async function getEvents() {
-    console.log(currentUserID);
-    const data = await queryUserEvents(currentUserID);
+    console.log(sessionObj.id);
+    const data = await queryUserEvents(sessionObj.id);
     setEvents(data);
   }
 
