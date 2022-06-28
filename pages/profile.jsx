@@ -77,9 +77,7 @@ export default function mainProfile({ genreProp }) {
     setOpen(false);
   }
 
-  async function handleDelete(genre) {
-    console.log('delete');
-    await deleteUserGenre(currentUserID, genre);
+  async function reRenderUser() {
     const response = await fetch(`/api/users/${currentUserID}`, {
       method: 'GET',
       headers: {
@@ -87,25 +85,18 @@ export default function mainProfile({ genreProp }) {
       },
     });
     const result = await response.json();
-    console.log(result);
     const user = result[0]._delegate._document.data.value.mapValue.fields;
-    console.log(user);
     setCurrentUser(user);
+  }
+
+  async function handleDelete(genre) {
+    await deleteUserGenre(currentUserID, genre);
+    reRenderUser();
   }
 
   async function rerenderUserGenres(genre) {
     await updateUserGenre(currentUserID, genre);
-    const response = await fetch(`/api/users/${currentUserID}`, {
-      method: 'GET',
-      headers: {
-        'Content-type': 'application/json',
-      },
-    });
-    const result = await response.json();
-    console.log(result);
-    const user = result[0]._delegate._document.data.value.mapValue.fields;
-    console.log(user);
-    setCurrentUser(user);
+    reRenderUser();
   }
 
   return (
@@ -113,10 +104,6 @@ export default function mainProfile({ genreProp }) {
       <Head>
         <title>forte</title>
       </Head>
-      {
-        console.log(currentUser.genres.arrayValue.values)
-      }
-
       <main>
         <h1 align="center">
           This is the main profile page.
