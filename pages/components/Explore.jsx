@@ -10,9 +10,12 @@ export default function Explore() {
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
   const [myGenres, setMyGenres] = useState([]);
+  const [myFriends, setMyFriends] = useState([]);
   const [explore, setExplore] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const { currentUser } = useContext(AppContext);
+
+  console.log('currentUser:', currentUser);
 
   const exploreUsers = async (genres) => {
     const response = await fetch('/api/users/exploreUsers', {
@@ -34,6 +37,11 @@ export default function Explore() {
       tempGenres.push(genre.stringValue)
     ));
     setMyGenres(tempGenres);
+    const tempFriends = [];
+    currentUser.friends.arrayValue.values.map((friend) => (
+      tempFriends.push(friend.stringValue)
+    ));
+    setMyFriends(tempFriends);
     exploreUsers(tempGenres);
     setLoaded(true);
   };
@@ -57,7 +65,11 @@ export default function Explore() {
 
         {explore.map((user, number) => {
           if (user._delegate._document.data.value.mapValue.fields.id.stringValue
-            !== sessionObj.id) {
+            !== sessionObj.id
+            && !myFriends.includes(
+              user._delegate._document.data.value.mapValue.fields.id.stringValue,
+            )
+          ) {
             return (
               <div key={number}>
                 <ExploreCard myGenres={myGenres} user={user} />

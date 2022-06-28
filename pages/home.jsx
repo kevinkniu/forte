@@ -49,6 +49,9 @@ export default function Home() {
             friends: [],
             rooms: [],
             friendRequests: [],
+            sentFriendRequests: [],
+            eventRequests: [],
+            sentEventRequests: [],
           }),
         });
         const subColl = await fetch(`/api/users/createMessCollection/${sessionObj?.id}`, {

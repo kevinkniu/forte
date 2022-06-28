@@ -13,7 +13,6 @@ export default function Notifications() {
   const sessionObj = getSession?.user;
 
   const initializeUser = async () => {
-    console.log(sessionObj);
     const response = await fetch(`/api/users/${sessionObj?.id}`, {
       method: 'GET',
       headers: {
@@ -38,7 +37,7 @@ export default function Notifications() {
   return (
     <div>
       <h1 align="center">
-        This is a Notifications page.
+        Notifications
       </h1>
 
       <BottomNav />
