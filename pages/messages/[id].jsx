@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Router, { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { Button, TextField, InputAdornment, Avatar, List, ListItem } from '@mui/material';
@@ -14,8 +15,9 @@ export default function Chats() {
   const sessionObj = getSession?.user;
   const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
-  const [allMessages, setAllMessages] = useState('');
+  const [allMessages, setAllMessages] = useState([]);
   const [messageRecieved, setMessageReceived] = useState('');
+  const [load, setLoad] = useState(false);
 
   const router = useRouter();
 
@@ -23,8 +25,10 @@ export default function Chats() {
     console.log('Successfully connected!');
   });
 
-  const handlePost = () => {
-    socket.emit('send_message', { message, room, sessionObj });
+  const handlePost = async () => {
+    await socket.emit('send_message', { message, room, sessionObj });
+    setLoad(!load);
+    setMessage('');
   };
 
   useEffect(() => {
@@ -32,21 +36,32 @@ export default function Chats() {
     socket.emit('join_room', room);
     socket.on('receive_message', (data) => {
       setMessageReceived(data.message);
+      // console.log(data.message, 'this is the message from socketIO');
     });
-  }, [socket, room]);
+    axios.get(`/api/messages/getAllMessages?roomId=${router.query.id}`)
+      .then((results) => {
+        // console.log(results.data, 'these should be all the messages in an array');
+        setAllMessages(results.data[0]._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
+      })
+      .catch((err) => console.log(err));
+  }, [load, messageRecieved, socket, room]);
 
-  useEffect(() => {
-    const getAllMessagesFromChat = async () => {
-      const response = await fetch(`/api/messages/getAllMessages/${room}`, {
-        method: 'GET',
-        headers: {
-          'Content-type': 'application/json',
-        },
-      });
-      const result = await response.json();
-      setAllMessages(result);
-    };
-  }, [allMessages]);
+  // console.log('These are our messages', allMessages);
+
+  const renderMessages = (messagesArray) => (
+    messagesArray.map((item) => {
+      const { userName, userProfilePic, userSpotifyId, timestamp } = item.mapValue.fields;
+      const userMessage = item.mapValue.fields.message;
+      // console.log('MESSAGE OBJ', { userName, userProfilePic, userSpotifyId, userMessage, timestamp });
+
+      return (
+        <div>
+          <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 75, height: 75 }} />
+          <p>{userMessage.stringValue}</p>
+        </div>
+      );
+    })
+  );
 
   return (
     <ChatContainer>
@@ -83,10 +98,8 @@ export default function Chats() {
           Send
         </Button>
       </MessagesContainer>
-      {allMessages ? allMessages.map((item) => (
-        <p>{item.message}</p>
-      )) : null}
-      <p>{messageRecieved}</p>
+      {/* {!allMessages.length ? renderMessages(allMessages) : <b>loading messages</b>} */}
+      {renderMessages(allMessages)}
       <BottomNav />
     </ChatContainer>
   );
@@ -94,6 +107,7 @@ export default function Chats() {
 
 const ChatContainer = styled.div`
   border: 1px solid blue;
+  overflow: scroll;
 `;
 
 const MessagesContainer = styled.div`
