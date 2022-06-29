@@ -1,9 +1,17 @@
 import React from 'react';
+import SpotifyPlayer from 'react-spotify-web-playback';
 import getToken from '../api/spotify/getToken';
 import getTrack from '../api/spotify/getTrack';
 
-export default function Track() {
-  return <h1>Hello Track Page</h1>;
+export default function Track({ tokenProp, trackProp }) {
+  return (
+    <div>
+      <SpotifyPlayer
+        token={tokenProp}
+        uris={[trackProp.uri]}
+      />
+    </div>
+  );
 }
 
 export async function getServerSideProps({ query }) {
@@ -11,6 +19,6 @@ export async function getServerSideProps({ query }) {
   const trackProp = await getTrack(tokenProp, query.id);
 
   return {
-    props: { trackProp },
+    props: { tokenProp, trackProp },
   };
 }
