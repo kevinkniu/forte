@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Head from 'next/head';
-import { useRef, useEffect, useState, useContext } from 'react';
-import { getSession, useSession } from 'next-auth/react';
+import { useRef, useState, useContext, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { Grid, Typography, Card } from '@mui/material';
@@ -17,7 +17,7 @@ import getPlaylists from './api/spotify/getPlaylists';
 import { AppContext } from './_app';
 
 export default function Music({ tokenProp, genresProp, playlistsProp }) {
-  const { getSession } = useSession();
+  const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
   const searchRef = useRef();
   const [tokenID, setTokenID] = useState(tokenProp);
@@ -40,9 +40,41 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          initialSlide: 3,
+        },
+      },
+      {
+        breakpoint: 350,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        },
+      },
+    ],
   };
+
+  // useEffect(() => {
+  //   setGenres(genresProp);
+  //   setPlaylists(playlistsProp);
+  // }, []);
 
   return (
     <div>
@@ -59,29 +91,26 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
         <h1 align="center">
           This is a music page.
         </h1>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', mb: 8 }}>
           <Link href="/search">
-            <Grid sx={{ display: 'flex' }}>
-              <SearchIcon sx={{ alignSelf: 'flex-end', mr: 1 }} />
-              <TextField
-                type="search"
-                label="Songs"
-                variant="standard"
-                inputRef={searchRef}
-              />
-              <button hidden type="submit" onClick={(e) => { onSearch(e); }}>Submit</button>
-            </Grid>
+            <Box sx={{ ml: 1, p: 1.5, bgcolor: '#f5f5f5', borderRadius: 5 }}>
+              Search for songs
+            </Box>
           </Link>
-          <Box sx={{ alignContent: 'center', justifyContent: 'center', width: 350, px: 1 }}>
+          <Box sx={{ alignContent: 'center', justifyContent: 'center', width: { xs: 350, sm: 500, md: 700 }, px: 1 }}>
             {genres.map((genre) => (
-              <Box key={genre.id}>
-                <Typography variant="body2" sx={{ display: 'inline-block', fontSize: '20px' }}>{genre?.name}</Typography>
+              <Box key={genre.id} sx={{ alignContent: 'center', justifyContent: 'center' }}>
+                <Typography variant="body2" sx={{ display: 'inline-block', fontSize: '20px' }}>{genre.name}</Typography>
                 <Slider {...settings}>
                   {playlists.length && playlists.map((item) => (
-                    <Box sx={{ alignItems: 'center', justify: 'center' }}>
-                      <img src={item.images[0].url} alt="N/A" style={{ width: '100px' }} />
-                      <Typography variant="body2" component="div" sx={{ fontSize: '12px' }}>{item.name}</Typography>
-                    </Box>
+                    <Grid container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
+                      <Card elevation={0} onClick={() => updatePlaylist(item)}>
+                        <Link href={`/album/${item.id}`}>
+                          <img src={item.images[0].url} alt="N/A" style={{ width: '100px', margin: 'auto' }} />
+                        </Link>
+                        <Typography variant="body2" component="div" sx={{ fontSize: 12 }}>{item.name}</Typography>
+                      </Card>
+                    </Grid>
                   ))}
                 </Slider>
               </Box>
@@ -98,7 +127,13 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
 
 export async function getServerSideProps() {
   const tokenProp = await getToken();
-  const genresProp = await getGenres(tokenProp);
-  const playlistsProp = await getPlaylists(tokenProp, genresProp.id);
+  const allGenres = await getGenres(tokenProp);
+  const genresProp = allGenres.slice(0, 5);
+  // const playlistsProp = [];
+  // genresProp.forEach((genre) => {
+  //   const tempPlaylist = getPlaylists(tokenProp, genre.id);
+  //   playlistsProp.push(tempPlaylist);
+  // });
+  const playlistsProp = await getPlaylists(tokenProp, genresProp[0].id);
   return { props: { tokenProp, genresProp, playlistsProp } };
 }
