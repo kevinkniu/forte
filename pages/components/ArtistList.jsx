@@ -7,7 +7,7 @@ export default function ArtistList({ artists }) {
   return (
     <List className={artistListStyles.artistList}>
       {artists.map((artist) => (
-        <ArtistListEntry key={artist.id} artist={artist} />
+          <ArtistListEntry key={artist.id} artist={artist} />
       ))}
     </List>
   );
