@@ -57,7 +57,6 @@ export default function Posts() {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({
-        userDocID: '',
         userID: sessionObj.id,
         name: sessionObj.name,
         email: sessionObj.email,

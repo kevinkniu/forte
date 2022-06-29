@@ -10,6 +10,9 @@ import getAllGenres from './api/spotify/getAllGenres';
 import updateUserGenre from './api/users/updateUserGenre';
 import deleteUserGenre from './api/users/deleteUserGenre';
 import queryUserEvents from './api/events/getUserEvents';
+import deleteUserEvent from './api/users/deleteUserEvent';
+import deleteUserSong from './api/users/deleteUserSongs';
+import queryUserSongs from './api/users/getUserSongs';
 
 const friendData = [
   {
@@ -69,11 +72,21 @@ export default function mainProfile({ genreProp }) {
   const { currentUser, setCurrentUser } = useContext(AppContext);
   const [open, setOpen] = useState(false);
   const [genres, setGenres] = useState(genreProp.genres);
-  const [filteredGenre, setFilteredGenres] = useState([]);
   const [search, setSearch] = useState('');
   const [events, setEvents] = useState([]);
+  const [songList, setSongList] = useState([]);
+
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
+
+  async function getEvents() {
+    const tempEvents = [];
+    currentUser.events.arrayValue.values.map((event) => (
+      tempEvents.push(event.stringValue)
+    ));
+    const data = await queryUserEvents(tempEvents);
+    setEvents(data);
+  }
 
   async function reRenderUser() {
     const response = await fetch(`/api/users/${sessionObj.id}`, {
@@ -93,7 +106,6 @@ export default function mainProfile({ genreProp }) {
       arr.push(item.stringValue)
     ));
     const res = genres.filter((item) => !arr.includes(item));
-    setFilteredGenres(res);
     await setGenres(res);
   }
 
@@ -105,25 +117,10 @@ export default function mainProfile({ genreProp }) {
 
   async function addGenre(genre) {
     await updateUserGenre(sessionObj.id, genre);
+    setOpen(false);
     await reRenderUser();
     await initialGenres();
   }
-
-  async function getEvents() {
-    console.log(sessionObj.id);
-    const data = await queryUserEvents(sessionObj.id);
-    setEvents(data);
-  }
-
-  // async function filterGenreList(genre) {
-  //   const arr = [];
-  //   currentUser.genres.arrayValue.values.map((item) => (
-  //     arr.push(item.stringValue)
-  //   ));
-  //   const res = genres.filter((item) => !arr.includes(item));
-  //   addGenre(genre);
-  //   setGenres(res);
-  // }
 
   function handleOpen() {
     initialGenres();
@@ -135,16 +132,52 @@ export default function mainProfile({ genreProp }) {
     setOpen(false);
   }
 
+  async function onDelete(id, event) {
+    await deleteUserEvent(id, event);
+    const eventIndex = events.findIndex((eventData) => {
+      const index = eventData.findIndex((singleEvent) => (
+        singleEvent === event[0]
+      ));
+      if (index >= 0) {
+        return true;
+      }
+      return false;
+    });
+    events.splice(eventIndex, 1);
+    const newEventList = [...events];
+    setEvents(newEventList);
+  }
+
+  async function deleteSong(song) {
+    await deleteUserSong(sessionObj.id, song);
+    const songIndex = songList.findIndex((songData) => songData.id === song.id);
+    songList.splice(songIndex, 1);
+    const newList = [...songList];
+    setSongList(newList);
+  }
+
+  async function getSongs() {
+    const userSongs = await queryUserSongs(sessionObj.id);
+    console.log(userSongs);
+    setSongList(userSongs[0]);
+  }
+
   useEffect(() => {
-    initialGenres();
-    getEvents();
+    getSongs();
   }, []);
+
+  useEffect(() => {
+    getEvents();
+  }, [currentUser]);
 
   return (
     <div>
       <Head>
         <title>forte</title>
       </Head>
+      {
+        console.log('song list: ', songList)
+      }
       <main>
         <h1 align="center">
           This is the main profile page.
@@ -153,18 +186,18 @@ export default function mainProfile({ genreProp }) {
           <button type="submit" onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>Sign Out</button>
         </div>
 
-        <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: 'auto', overflow: 'hidden', overflowY: 'scroll', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <Grid item sx={{ border: '1px solid black' }}>
             <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Avatar
-                src={`${currentUser?.profPic.stringValue}`}
+                src={`${sessionObj.image}`}
                 alt="Profile picture"
                 sx={{ width: 150, height: 150 }}
               />
             </Grid>
             <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Typography variant="h6" sx={{ margin: '5px' }}>
-                {currentUser?.name.stringValue}
+                {sessionObj.name}
               </Typography>
             </Grid>
             <Grid item sx={{ border: '1px solid black' }}>
@@ -210,10 +243,10 @@ export default function mainProfile({ genreProp }) {
                   Friends
                 </Typography>
               </Grid>
-              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Grid item xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 {
-                  friendData.map((friend) => (
-                    <Link key={friend.id} href={`/profile/${friend.id}`}>
+                  friendData.map((friend, index) => (
+                    <Link key={index} href={`/profile/${friend.id}`}>
                       <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
                         <Grid item sx={{ paddingLeft: '20px' }}>
                           <CardMedia
@@ -234,12 +267,13 @@ export default function mainProfile({ genreProp }) {
               <Typography variant="subtitle1" sx={{ margin: '5px' }}> Liked Songs </Typography>
               <Grid item sx={{ border: '1px solid black' }}>
                 {
-                  favSongs.map((song) => (
-                    <Card key={song.id} sx={{ display: 'flex', margin: '5px' }}>
+                  songList.map((song, index) => (
+                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
+                      <Button onClick={() => deleteSong(song)}> X </Button>
                       <CardMedia
                         component="img"
                         sx={{ width: 100 }}
-                        image={song.cover}
+                        image={song.album.images[0].url}
                         alt="album cover"
                       />
                       <CardContent>
@@ -247,7 +281,7 @@ export default function mainProfile({ genreProp }) {
                           {song.name}
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {song.artist}
+                          {song.artists[0].name}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -263,21 +297,22 @@ export default function mainProfile({ genreProp }) {
                 events.map((event, index) => (
                   <Grid>
                     <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
+                      <Button onClick={() => onDelete(sessionObj.id, event)}> Remove </Button>
                       <CardMedia
                         component="img"
                         sx={{ width: 100 }}
-                        image={event.photos[0] || '/userholder.png'}
+                        image={event[1].photos[0] || '/userholder.png'}
                         alt="album cover"
                       />
                       <CardContent>
                         <Typography component="div" variant="h6">
-                          {event.eventName}
+                          {event[1].eventName}
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {event.details}
+                          {event[1].details}
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {event.location}
+                          {event[1].location}
                         </Typography>
                       </CardContent>
                     </Card>

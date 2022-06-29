@@ -7,34 +7,13 @@ import BottomNav from '../components/BottomNav';
 import queryUserData from '../api/users/getUserData';
 import queryUserEvents from '../api/events/getUserEvents';
 
-const favSongs = [
-  {
-    id: 1,
-    name: 'Blinding Lights',
-    artist: 'The Weeknd',
-    cover: '/weekndCover.png',
-  },
-  {
-    id: 2,
-    name: 'HUMBLE',
-    artist: 'Kendrick Lamar',
-    cover: '/cover.png',
-  },
-  {
-    id: 3,
-    name: 'Feel Something',
-    artist: 'Illenium, Excision',
-    cover: '/illeniumCover.png',
-  },
-];
-
 export default function userProfile({ result }) {
   const [userProf, setUserProf] = useState(result);
   const [userEvents, setUserEvents] = useState([]);
 
   async function getEvents() {
-    const events = await queryUserEvents(userProf.result[0].id);
-    setUserEvents(events);
+    const data = await queryUserEvents(userProf.result[0].events);
+    setUserEvents(data);
   }
 
   useEffect(() => {
@@ -47,12 +26,9 @@ export default function userProfile({ result }) {
         <title>forte</title>
       </Head>
       <main>
-        <h1 align="center">
-          This is a users profile page.
-        </h1>
-        <div align="center">
-          <button type="submit" onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>Sign Out</button>
-        </div>
+        {
+          console.log(userProf)
+        }
         <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: 'auto', overflow: 'hidden', overflowY: 'scroll', alignItems: 'center', justifyContent: 'center' }}>
           <Grid item sx={{ border: '1px solid black' }}>
             <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -77,8 +53,8 @@ export default function userProfile({ result }) {
               </Typography>
               <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
                 {
-                  userProf.result[0].genres.map((genre) => (
-                    <Chip label={genre} color="info" />
+                  userProf.result[0].genres.map((genre, index) => (
+                    <Chip key={index} label={genre} color="info" />
                   ))
                 }
               </Stack>
@@ -87,8 +63,8 @@ export default function userProfile({ result }) {
               <Typography variant="subtitle1" sx={{ margin: '5px' }}> Liked Songs </Typography>
               <Grid item sx={{ border: '1px solid black' }}>
                 {
-                  favSongs.map((song) => (
-                    <Card sx={{ display: 'flex', margin: '5px' }}>
+                  userProf.result[0].songs.map((song, index) => (
+                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
                       <CardMedia
                         component="img"
                         sx={{ width: 100 }}
@@ -114,8 +90,8 @@ export default function userProfile({ result }) {
               </Typography>
               {
                 userEvents.map((event, index) => (
-                  <Grid>
-                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
+                  <Grid key={index}>
+                    <Card sx={{ display: 'flex', margin: '5px' }}>
                       <CardMedia
                         component="img"
                         sx={{ width: 100 }}
