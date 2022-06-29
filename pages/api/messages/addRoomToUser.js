@@ -6,9 +6,10 @@ export default function addRoomToUser(req, res) {
 
   db.collection('users').doc(mySpotifyId).collection('messages').doc(id)
     .set({
-      roomId,
+      id,
       name,
       image,
+      roomId,
     });
 
   res.status(200).json('added room');

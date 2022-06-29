@@ -78,11 +78,6 @@ export default function Event({ event }) {
         avatar={(
           <Avatar src={eventData.profPic.stringValue} />
         )}
-        action={(
-          <IconButton aria-label="settings" onClick={() => { onDelete(); }}>
-            <HighlightOffIcon sx={{ display: eventData.userID.stringValue === sessionObj.id ? '' : 'none' }} />
-          </IconButton>
-        )}
         title={eventData.userName.stringValue}
         subheader={`At ${eventData.location.stringValue}`}
       />
