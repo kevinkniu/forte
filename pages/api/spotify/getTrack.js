@@ -4,7 +4,7 @@ export default async function getTrack(token, trackId) {
     headers: { Authorization: 'Bearer ' + token },
   });
 
-  console.log(result);
+  console.log('result', result);
   const data = await result.json();
   return data;
 }
