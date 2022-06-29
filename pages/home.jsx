@@ -13,7 +13,7 @@ import Explore from './components/Explore';
 
 export default function Home() {
   const { data: getSession, status } = useSession();
-  const { currentUser, setCurrentUser } = useContext(AppContext);
+  const { setValue, currentUser, setCurrentUser } = useContext(AppContext);
   const [view, setView] = useState('Explore');
   const sessionObj = getSession?.user;
 
@@ -49,6 +49,9 @@ export default function Home() {
             friends: [],
             rooms: [],
             friendRequests: [],
+            sentFriendRequests: [],
+            eventRequests: [],
+            sentEventRequests: [],
           }),
         });
         const subColl = await fetch(`/api/users/createMessCollection/${sessionObj?.id}`, {
@@ -90,8 +93,8 @@ export default function Home() {
               Events
             </Typography>
             <Grid container justifyContent="flex-end">
-              <ChatIcon color="inherit" sx={{ mx: 1 }} />
-              <Badge badgeContent={currentUser?.friendRequests.arrayValue.values.length || 0} color="primary" sx={{ mx: 1 }}>
+              <ChatIcon color="inherit" sx={{ mx: 1 }} onClick={() => { Router.push('/messages'); setValue(1); }} />
+              <Badge badgeContent={currentUser && currentUser.friendRequests.arrayValue.values.length + currentUser.eventRequests.arrayValue.values.length} color="primary" sx={{ mx: 1 }}>
                 <NotificationsIcon color="inherit" onClick={() => { Router.push('/notifications'); }} />
               </Badge>
             </Grid>
