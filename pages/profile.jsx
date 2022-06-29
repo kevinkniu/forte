@@ -11,6 +11,8 @@ import updateUserGenre from './api/users/updateUserGenre';
 import deleteUserGenre from './api/users/deleteUserGenre';
 import queryUserEvents from './api/events/getUserEvents';
 import deleteUserEvent from './api/users/deleteUserEvent';
+import deleteUserSong from './api/users/deleteUserSongs';
+import queryUserSongs from './api/users/getUserSongs';
 
 const friendData = [
   {
@@ -72,6 +74,7 @@ export default function mainProfile({ genreProp }) {
   const [genres, setGenres] = useState(genreProp.genres);
   const [search, setSearch] = useState('');
   const [events, setEvents] = useState([]);
+  const [songList, setSongList] = useState([]);
 
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
@@ -145,9 +148,22 @@ export default function mainProfile({ genreProp }) {
     setEvents(newEventList);
   }
 
+  async function deleteSong(song) {
+    await deleteUserSong(sessionObj.id, song);
+    const songIndex = songList.findIndex((songData) => songData.id === song.id);
+    songList.splice(songIndex, 1);
+    const newList = [...songList];
+    setSongList(newList);
+  }
+
+  async function getSongs() {
+    const userSongs = await queryUserSongs(sessionObj.id);
+    console.log(userSongs);
+    setSongList(userSongs[0]);
+  }
+
   useEffect(() => {
-    initialGenres();
-    reRenderUser();
+    getSongs();
   }, []);
 
   useEffect(() => {
@@ -159,6 +175,9 @@ export default function mainProfile({ genreProp }) {
       <Head>
         <title>forte</title>
       </Head>
+      {
+        console.log('song list: ', songList)
+      }
       <main>
         <h1 align="center">
           This is the main profile page.
@@ -224,7 +243,7 @@ export default function mainProfile({ genreProp }) {
                   Friends
                 </Typography>
               </Grid>
-              <Grid container xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Grid item xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 {
                   friendData.map((friend, index) => (
                     <Link key={index} href={`/profile/${friend.id}`}>
@@ -248,12 +267,13 @@ export default function mainProfile({ genreProp }) {
               <Typography variant="subtitle1" sx={{ margin: '5px' }}> Liked Songs </Typography>
               <Grid item sx={{ border: '1px solid black' }}>
                 {
-                  favSongs.map((song, index) => (
+                  songList.map((song, index) => (
                     <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
+                      <Button onClick={() => deleteSong(song)}> X </Button>
                       <CardMedia
                         component="img"
                         sx={{ width: 100 }}
-                        image={song.cover}
+                        image={song.album.images[0].url}
                         alt="album cover"
                       />
                       <CardContent>
@@ -261,7 +281,7 @@ export default function mainProfile({ genreProp }) {
                           {song.name}
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {song.artist}
+                          {song.artists[0].name}
                         </Typography>
                       </CardContent>
                     </Card>
