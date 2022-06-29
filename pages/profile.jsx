@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
-import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField } from '@mui/material';
+import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField, Container, ListItem, List, ListItemText, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
@@ -44,27 +45,6 @@ const friendData = [
     id: '226ssnz7grqphzhajvn2xfqxa',
     name: 'John Ong',
     profPic: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=667637673271813&height=300&width=300&ext=1658762672&hash=AeSUiPcuzqISiuQf6Sc',
-  },
-];
-
-const favSongs = [
-  {
-    id: 1,
-    name: 'Blinding Lights',
-    artist: 'The Weeknd',
-    cover: '/weekndCover.png',
-  },
-  {
-    id: 2,
-    name: 'HUMBLE',
-    artist: 'Kendrick Lamar',
-    cover: '/cover.png',
-  },
-  {
-    id: 3,
-    name: 'Feel Something',
-    artist: 'Illenium, Excision',
-    cover: '/illeniumCover.png',
   },
 ];
 
@@ -158,7 +138,6 @@ export default function mainProfile({ genreProp }) {
 
   async function getSongs() {
     const userSongs = await queryUserSongs(sessionObj.id);
-    console.log(userSongs);
     setSongList(userSongs[0]);
   }
 
@@ -175,107 +154,70 @@ export default function mainProfile({ genreProp }) {
       <Head>
         <title>forte</title>
       </Head>
-      {
-        console.log('song list: ', songList)
-      }
-      <main>
-        <h1 align="center">
-          This is the main profile page.
-        </h1>
-        <div align="center">
-          <button type="submit" onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>Sign Out</button>
-        </div>
+      <Container sx={{ marginBottom: '58px' }}>
+        <Grid container>
+          <Grid item xs={12} display="flex" justifyContent="center" alignItems="center">
+            <Avatar
+              src={`${sessionObj.image}`}
+              alt="Profile picture"
+              sx={{ width: 100, height: 100 }}
+            />
+          </Grid>
+        </Grid>
+        <Grid item xs={12} sx={{ textAlign: 'center' }}>
+          <Typography variant="h5" sx={{ margin: '5px' }}>
+            {sessionObj.name}
+          </Typography>
+        </Grid>
 
-        <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <Grid item sx={{ border: '1px solid black' }}>
-            <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Avatar
-                src={`${sessionObj.image}`}
-                alt="Profile picture"
-                sx={{ width: 150, height: 150 }}
-              />
-            </Grid>
-            <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Typography variant="h6" sx={{ margin: '5px' }}>
-                {sessionObj.name}
+        <Grid container>
+          <Grid item xs={12}>
+            <Grid item xs={12}>
+              <Typography variant="h5" sx={{ margin: '5px', float: 'left' }}>
+                Genres
               </Typography>
+              <Button onClick={() => handleOpen()} sx={{ float: 'right' }}>+</Button>
+              <Grid sx={{ clear: 'both' }} />
             </Grid>
-            <Grid item sx={{ border: '1px solid black' }}>
-              <Grid item sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-                  Genres
-                </Typography>
-                <Button onClick={() => handleOpen()}>+</Button>
-                <Dialog
-                  onClose={() => handleClose()}
-                  open={open}
-                  PaperProps={{
-                    style: {
-                      height: '500px',
-                      width: '300px',
-                    },
-                  }}
-                >
-                  <TextField label="search genre" variant="filled" onChange={(e) => setSearch(e.target.value)} />
-                  {
-                    genres.filter(((genre) => genre.includes(search))).map((filterGenre, index) => (
-                      <Grid display="flex" key={index}>
-                        <Grid display="flex" justifyContent="space-between">
-                          <Typography>{filterGenre}</Typography>
-                          <Button size="small" onClick={() => addGenre(filterGenre)}>+</Button>
-                        </Grid>
-                      </Grid>
-                    ))
-                  }
-                </Dialog>
-              </Grid>
-              <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
-                {
-                  currentUser.genres.arrayValue.values.map((genre, index) => (
-                    <Chip key={index} label={genre.stringValue} color="info" onDelete={() => handleDelete(genre)} />
-                  ))
-                }
-              </Stack>
+
+            <Grid item xs={12} display="flex" justifyContent="flex-start" flexWrap="wrap" flexDirection="row">
+              {
+                currentUser.genres.arrayValue.values.map((genre, index) => (
+                  <Chip key={index} label={genre.stringValue} color="info" onDelete={() => handleDelete(genre)} sx={{ marginBottom: '10px', marginRight: '10px' }} />
+                ))
+              }
             </Grid>
-            <Grid item sx={{ border: '1px solid black' }}>
-              <Grid item sx={{ display: 'flex' }}>
-                <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-                  Friends
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                {
-                  friendData.map((friend, index) => (
-                    <Link key={index} href={`/profile/${friend.id}`}>
-                      <Grid item xs={4} sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
-                        <Grid item sx={{ paddingLeft: '20px' }}>
-                          <CardMedia
-                            component="img"
-                            sx={{ width: 80 }}
-                            image={friend.profPic}
-                            alt="friend profile picture"
-                          />
-                          <Typography variant="body2">{friend.name}</Typography>
-                        </Grid>
-                      </Grid>
-                    </Link>
-                  ))
-                }
-              </Grid>
-            </Grid>
-            <Grid item sx={{ border: '1px solid black' }}>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}> Liked Songs </Typography>
-              <Grid item sx={{ border: '1px solid black' }}>
-                {
+          </Grid>
+          <Grid item xs={12} md={6} lg={6} xl={6}>
+            <Typography variant="h5" sx={{ margin: '5px' }}>
+              Liked Songs
+            </Typography>
+            {
+              songList.length === 0
+                ? (
+                  <Link href="/music">
+                    <Card>
+                      <CardContent>
+                        <Typography component="div" variant="h6">
+                          ADD SONGS
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )
+                : (
                   songList.map((song, index) => (
-                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
-                      <Button onClick={() => deleteSong(song)}> X </Button>
-                      <CardMedia
-                        component="img"
-                        sx={{ width: 100 }}
-                        image={song.album.images[0].url}
-                        alt="album cover"
-                      />
+                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px' }}>
+                      <Grid position="relative">
+                        <Button onClick={() => deleteSong(song)} sx={{ position: 'absolute', top: '0', left: '-20px', padding: '0', margin: '0' }}>&times;</Button>
+                        <CardMedia
+                          component="img"
+                          sx={{ width: 100 }}
+                          image={song.album.images[0].url}
+                          alt="album cover"
+                        />
+                      </Grid>
+
                       <CardContent>
                         <Typography component="div" variant="h6">
                           {song.name}
@@ -286,25 +228,40 @@ export default function mainProfile({ genreProp }) {
                       </CardContent>
                     </Card>
                   ))
-                }
-              </Grid>
-            </Grid>
-            <Grid>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-                Events
-              </Typography>
-              {
-                events.map((event, index) => (
-                  <Grid>
-                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
-                      <Button onClick={() => onDelete(sessionObj.id, event)}> Remove </Button>
-                      <CardMedia
-                        component="img"
-                        sx={{ width: 100 }}
-                        image={event[1].photos[0] || '/userholder.png'}
-                        alt="album cover"
-                      />
-                      <CardContent>
+                )
+            }
+          </Grid>
+          <Grid item xs={12} md={6} lg={6} xl={6}>
+            <Typography variant="h5" sx={{ margin: '5px' }}>
+              Events
+            </Typography>
+            {
+              events.length === 0
+                ? (
+
+                  <Card>
+                    <CardContent>
+                      <Typography component="div" variant="h6">
+                        NO EVENTS
+                      </Typography>
+                    </CardContent>
+                  </Card>
+
+                )
+                : (
+                  events.map((event, index) => (
+                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px' }}>
+                      <Grid position="relative">
+                        <Button onClick={() => onDelete(sessionObj.id, event)} sx={{ position: 'absolute', top: '0', left: '-20px', padding: '0', margin: '0' }}>&times;</Button>
+                        <CardMedia
+                          component="img"
+                          sx={{ width: 100, height: 100 }}
+                          image={event[1].photos[0] || '/userholder.png'}
+                          alt="album cover"
+                        />
+                      </Grid>
+
+                      <CardContent sx={{ padding: '0 0 0 16px' }}>
                         <Typography component="div" variant="h6">
                           {event[1].eventName}
                         </Typography>
@@ -316,13 +273,42 @@ export default function mainProfile({ genreProp }) {
                         </Typography>
                       </CardContent>
                     </Card>
-                  </Grid>
-                ))
-              }
-            </Grid>
+                  ))
+                )
+            }
           </Grid>
-        </Box>
-      </main>
+
+        </Grid>
+        <Dialog
+          onClose={() => handleClose()}
+          open={open}
+          PaperProps={{
+            style: {
+              height: '500px',
+              width: '300px',
+            },
+          }}
+        >
+          <TextField label="search genre" variant="filled" onChange={(e) => setSearch(e.target.value)} />
+          <List>
+            {
+              genres.filter(((genre) => genre.includes(search))).map((filterGenre, index) => (
+                <ListItem
+                  key={index}
+                  secondaryAction={(
+                    <IconButton edge="end" aria-label="add" onClick={() => addGenre(filterGenre)}>
+                      <AddIcon />
+                    </IconButton>
+                  )}>
+                  <ListItemText>
+                    <Typography>{filterGenre}</Typography>
+                  </ListItemText>
+                </ListItem>
+              ))
+            }
+          </List>
+        </Dialog>
+      </Container>
       <BottomNav />
     </div>
   );
