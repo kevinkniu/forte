@@ -1,39 +1,32 @@
 import Link from 'next/link';
 import Head from 'next/head';
-import { useRef, useState, useContext, useEffect } from 'react';
+import { useRef, useState, useContext } from 'react';
 import { useSession } from 'next-auth/react';
-import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { Grid, Typography, Card } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import BottomNav from './components/BottomNav';
 import getToken from './api/spotify/getToken';
-import getGenres from './api/spotify/getGenres';
 import getPlaylists from './api/spotify/getPlaylists';
-// import getTracks from '../api/spotify/getPlaylists';
+import getNewReleases from './api/spotify/getNewReleases';
 import { AppContext } from './_app';
 
-export default function Music({ tokenProp, genresProp, playlistsProp }) {
-  const { data: getSession } = useSession();
-  const sessionObj = getSession?.user;
-  const searchRef = useRef();
-  const [tokenID, setTokenID] = useState(tokenProp);
-  const [genres, setGenres] = useState(genresProp);
-  const [playlists, setPlaylists] = useState(playlistsProp);
-  const [tracks, setTracks] = useState([]);
-  const [track, setTrack] = useState([]);
-  const { currentPlaylist, setCurrentPlaylist } = useContext(AppContext);
+export default function Music({ releasesProp, playlistsProp }) {
+  const { setCurrentPlaylist, setCurrentRelease } = useContext(AppContext);
+
+  console.log('releases:', releasesProp);
+  console.log('playlists:', playlistsProp);
 
   const updatePlaylist = (item) => {
     console.log(item);
     setCurrentPlaylist(item);
   };
 
-  const onSearch = (e) => {
-    e.preventDefault();
+  const updateRelease = (item) => {
+    console.log(item);
+    setCurrentRelease(item);
   };
 
   const settings = {
@@ -47,8 +40,8 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
       {
         breakpoint: 1000,
         settings: {
-          slidesToShow: 4,
-          slidesToScroll: 4,
+          slidesToShow: 3,
+          slidesToScroll: 3,
           infinite: true,
           dots: true,
         },
@@ -56,40 +49,30 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
       {
         breakpoint: 700,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          initialSlide: 3,
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 0,
         },
       },
       {
         breakpoint: 350,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToShow: 1,
+          slidesToScroll: 1,
         },
       },
     ],
   };
 
-  // useEffect(() => {
-  //   setGenres(genresProp);
-  //   setPlaylists(playlistsProp);
-  // }, []);
-
   return (
     <div>
-      <div>
-        {
-          console.log('token', tokenID, 'genres', genres, 'playlists', playlists)
-        }
-      </div>
       <Head>
         <title>forte</title>
       </Head>
 
       <main>
         <h1 align="center">
-          This is a music page.
+          Find your jam.
         </h1>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', mb: 8 }}>
           <Link href="/search">
@@ -97,13 +80,29 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
               Search for songs
             </Box>
           </Link>
+          <h1>New Releases</h1>
           <Box sx={{ alignContent: 'center', justifyContent: 'center', width: { xs: 350, sm: 500, md: 700 }, px: 1 }}>
             <Slider {...settings}>
-              {playlists.length && playlists.map((item) => (
+              {releasesProp.length && releasesProp.map((item) => (
+                <Grid container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
+                  <Card elevation={0} onClick={() => updateRelease(item)}>
+                    <Link href={`/release/${item.id}`}>
+                      <img src={item.images[0].url} alt="N/A" style={{ width: '150px', margin: 'auto' }} />
+                    </Link>
+                    <Typography variant="body2" component="div" sx={{ fontSize: 12 }}>{item.name}</Typography>
+                  </Card>
+                </Grid>
+              ))}
+            </Slider>
+          </Box>
+          <h1>Top Playlists</h1>
+          <Box sx={{ alignContent: 'center', justifyContent: 'center', width: { xs: 350, sm: 500, md: 700 }, px: 1 }}>
+            <Slider {...settings}>
+              {playlistsProp.length && playlistsProp.map((item) => (
                 <Grid container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
                   <Card elevation={0} onClick={() => updatePlaylist(item)}>
                     <Link href={`/album/${item.id}`}>
-                      <img src={item.images[0].url} alt="N/A" style={{ width: '100px', margin: 'auto' }} />
+                      <img src={item.images[0].url} alt="N/A" style={{ width: '150px', margin: 'auto' }} />
                     </Link>
                     <Typography variant="body2" component="div" sx={{ fontSize: 12 }}>{item.name}</Typography>
                   </Card>
@@ -122,8 +121,7 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
 
 export async function getServerSideProps() {
   const tokenProp = await getToken();
-  const allGenres = await getGenres(tokenProp);
-  const genresProp = allGenres.slice(0, 5);
+  const releasesProp = await getNewReleases(tokenProp);
   const playlistsProp = await getPlaylists(tokenProp);
-  return { props: { tokenProp, genresProp, playlistsProp } };
+  return { props: { tokenProp, releasesProp, playlistsProp } };
 }
