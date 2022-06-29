@@ -5,7 +5,7 @@ export default async function getTracks(token, tracksEndPoint) {
     method: 'GET',
     headers: { 'Authorization' : 'Bearer ' + token}
   });
-  console.log('tracks', tracksEndPoint);
+  // console.log('tracks', tracksEndPoint);
   const data = await result.json();
   return data.items;
 }
