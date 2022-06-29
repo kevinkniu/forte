@@ -3,7 +3,7 @@ import { db } from '../../../firebase';
 
 export default async function updateUserSong(userID, song) {
   const docRef = doc(db, 'users', userID);
-  // await updateDoc(docRef, {
-  //   songs: arrayUnion(song),
-  // });
+  await updateDoc(docRef, {
+    songs: arrayUnion(song),
+  });
 }
