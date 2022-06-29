@@ -36,11 +36,11 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
 
   return (
     <div>
-      {/* <div>
+      <div>
         {
           console.log('token', tokenID, 'genres', genres, 'playlists', playlists)
         }
-      </div> */}
+      </div>
       <Head>
         <title>forte</title>
       </Head>
