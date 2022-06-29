@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
-import { Box, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Stack, Button, Dialog, TextField, Container, ListItem, List, ListItemText, IconButton } from '@mui/material';
+import { Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Button, Dialog, TextField, Container, ListItem, List, ListItemText, IconButton, CardActionArea, ImageList, ImageListItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
+import Image from 'next/image';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import getToken from './api/spotify/getToken';
@@ -51,10 +52,12 @@ const friendData = [
 export default function mainProfile({ genreProp }) {
   const { currentUser, setCurrentUser } = useContext(AppContext);
   const [open, setOpen] = useState(false);
+  const [eventOpen, setEventOpen] = useState(false);
   const [genres, setGenres] = useState(genreProp.genres);
   const [search, setSearch] = useState('');
   const [events, setEvents] = useState([]);
   const [songList, setSongList] = useState([]);
+  const [eventModal, setEventModal] = useState([]);
 
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
@@ -110,6 +113,15 @@ export default function mainProfile({ genreProp }) {
   function handleClose() {
     initialGenres();
     setOpen(false);
+  }
+
+  function handleEventOpen(event) {
+    setEventModal(event);
+    setEventOpen(true);
+  }
+
+  function handleEventClose() {
+    setEventOpen(false);
   }
 
   async function onDelete(id, event) {
@@ -250,7 +262,7 @@ export default function mainProfile({ genreProp }) {
                 )
                 : (
                   events.map((event, index) => (
-                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px' }}>
+                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px', pointer: 'cursor' }}>
                       <Grid position="relative">
                         <Button onClick={() => onDelete(sessionObj.id, event)} sx={{ position: 'absolute', top: '0', left: '-20px', padding: '0', margin: '0' }}>&times;</Button>
                         <CardMedia
@@ -260,18 +272,19 @@ export default function mainProfile({ genreProp }) {
                           alt="album cover"
                         />
                       </Grid>
-
-                      <CardContent sx={{ padding: '0 0 0 16px' }}>
-                        <Typography component="div" variant="h6">
-                          {event[1].eventName}
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {event[1].details}
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {event[1].location}
-                        </Typography>
-                      </CardContent>
+                      <CardActionArea onClick={() => handleEventOpen(event[1])}>
+                        <CardContent sx={{ padding: '0 0 0 16px' }}>
+                          <Typography component="div" variant="h6">
+                            {event[1].eventName}
+                          </Typography>
+                          <Typography variant="subtitle2" color="text.secondary" component="div">
+                            {event[1].details}
+                          </Typography>
+                          <Typography variant="subtitle2" color="text.secondary" component="div">
+                            {event[1].location}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
                     </Card>
                   ))
                 )
@@ -279,6 +292,33 @@ export default function mainProfile({ genreProp }) {
           </Grid>
 
         </Grid>
+
+        <Dialog
+          onClose={() => handleEventClose()}
+          open={eventOpen}
+          PaperProps={{
+            style: {
+              height: '500px',
+              width: '300px',
+            },
+          }}
+        >
+          {
+            console.log(eventModal)
+          }
+          {
+            console.log(eventModal.photos)
+          }
+          <Avatar
+            src={`${eventModal.profPic}`}
+            alt="Profile picture"
+            sx={{ width: 100, height: 100 }}
+          />
+          <Typography>{eventModal.eventName}</Typography>
+          <Typography>{eventModal.location}</Typography>
+          <Typography>{eventModal.details}</Typography>
+        </Dialog>
+
         <Dialog
           onClose={() => handleClose()}
           open={open}
@@ -299,7 +339,8 @@ export default function mainProfile({ genreProp }) {
                     <IconButton edge="end" aria-label="add" onClick={() => addGenre(filterGenre)}>
                       <AddIcon />
                     </IconButton>
-                  )}>
+                  )}
+                >
                   <ListItemText>
                     <Typography>{filterGenre}</Typography>
                   </ListItemText>
