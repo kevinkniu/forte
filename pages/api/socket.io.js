@@ -4,6 +4,7 @@ const app = express();
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const axios = require('axios');
 
 app.use(cors());
 
@@ -25,7 +26,14 @@ io.on('connection', (socket) => {
   });
 
   socket.on('send_message', (data) => {
-    console.log(data);
+    axios.post('http://127.0.0.1:3000/api/messages/addMessage', { data }, {
+      headers: {
+        'Content-type': 'application/json',
+      },
+    })
+      .then(() => console.log('Posted'))
+      .catch((err) => console.log(err));
+
     socket.to(data.room).emit('receive_message', data);
   });
 });

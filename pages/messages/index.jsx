@@ -1,11 +1,10 @@
-import Head from 'next/head';
 import { useSession } from 'next-auth/react';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Avatar, List, ListItem } from '@mui/material';
 import styled from 'styled-components';
 import Router from 'next/router';
+import axios from 'axios';
 import getRoomId from '../../utils/getRoomId';
-import { AppContext } from '../_app';
 import BottomNav from '../components/BottomNav';
 
 const dummydata = [
@@ -27,8 +26,10 @@ const dummydata = [
 ];
 
 export default function Messages() {
-  const { data: getSession } = useSession();
+  const { data: getSession, status } = useSession();
   const sessionObj = getSession?.user;
+  const [allChats, setAllChats] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
   const routeToFriendMessage = async (friend) => {
     const roomId = await getRoomId(sessionObj, friend);
@@ -49,7 +50,15 @@ export default function Messages() {
     ))
   );
 
+  useEffect(() => {
+    if (status !== 'authenticated') {
+      return;
+    }
+    setLoaded(true);
+  }, [status]);
+
   return (
+    loaded && (
     <div>
       <h1 align="center">
         Messages
@@ -57,10 +66,12 @@ export default function Messages() {
       <Button variant="contained" onClick={() => { Router.push('/friends'); }}>Friends</Button>
       <Button variant="contained">Messages</Button>
       <List>
-      {renderFriends(dummydata)}
+        {/* {!allChats.length ? renderFriends(dummydata) : null} */}
+        {renderFriends(dummydata)}
       </List>
       <BottomNav />
     </div>
+    )
   );
 }
 
