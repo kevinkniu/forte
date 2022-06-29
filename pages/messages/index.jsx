@@ -28,27 +28,10 @@ const dummydata = [
 export default function Messages() {
   const { data: getSession, status } = useSession();
   const sessionObj = getSession?.user;
-  const [allChats, setAllChats] = useState([]);
+  const [chatRooms, setChatRooms] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
-  const routeToFriendMessage = async (friend) => {
-    const roomId = await getRoomId(sessionObj, friend);
-    Router.push(`/messages/${roomId}`);
-  };
-
-  const renderFriends = (friendsArray) => (
-    friendsArray.map((friend) => (
-      <ListItem key={friend.id} onClick={() => routeToFriendMessage(friend)}>
-        <PhotoContainer>
-          <Avatar src={friend.image} alt="" sx={{ width: 75, height: 75 }} />
-        </PhotoContainer>
-        <ProfileDetails>
-          <Username>{friend.name}</Username>
-          <Message>Message</Message>
-        </ProfileDetails>
-      </ListItem>
-    ))
-  );
+  console.log(sessionObj);
 
   useEffect(() => {
     if (status !== 'authenticated') {
@@ -56,6 +39,56 @@ export default function Messages() {
     }
     setLoaded(true);
   }, [status]);
+
+  useEffect(() => {
+    axios.get(`/api/messages/getAllChatRooms?spotifyId=${sessionObj.id}`)
+      .then((rooms) => {
+        console.log('THESE ARE THE ROOMSS FROM USEEFFECT', rooms.data);
+        setChatRooms(rooms.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+
+  }, [chatRooms]);
+
+  const routeToFriendMessage = async (friend) => {
+    const roomId = await getRoomId(sessionObj, friend);
+    Router.push(`/messages/${roomId}`);
+  };
+
+  const renderFriends = (friendsArray) => (
+    friendsArray.map((friend) => {
+      const { id, name, image, roomId } = friend._delegate._document.data.value.mapValue.fields;
+      const friendObj = {
+        id: id.stringValue,
+        name: name.stringValue,
+        image: image.stringValue,
+      };
+      console.log('THIS IS OUR FRIEND', friendObj);
+      return (
+        <ListItem key={friend.id} onClick={() => routeToFriendMessage(friendObj)}>
+          <PhotoContainer>
+            <Avatar src={image.stringValue} alt="" sx={{ width: 75, height: 75 }} />
+          </PhotoContainer>
+          <ProfileDetails>
+            <Username>{name.stringValue}</Username>
+            <Message>Message</Message>
+          </ProfileDetails>
+        </ListItem>
+      //   <ListItem key={friend.id} onClick={() => routeToFriendMessage(friend)}>
+      //   <PhotoContainer>
+      //     <Avatar src={friend.image} alt="" sx={{ width: 75, height: 75 }} />
+      //   </PhotoContainer>
+      //   <ProfileDetails>
+      //     <Username>{friend.name}</Username>
+      //     <Message>Message</Message>
+      //   </ProfileDetails>
+      // </ListItem>
+      );
+    })
+  );
 
   return (
     loaded && (
@@ -66,8 +99,8 @@ export default function Messages() {
       <Button variant="contained" onClick={() => { Router.push('/friends'); }}>Friends</Button>
       <Button variant="contained">Messages</Button>
       <List>
-        {/* {!allChats.length ? renderFriends(dummydata) : null} */}
-        {renderFriends(dummydata)}
+        {!chatRooms.length ? renderFriends(chatRooms) : null}
+        {/* {renderFriends(dummydata)} */}
       </List>
       <BottomNav />
     </div>
