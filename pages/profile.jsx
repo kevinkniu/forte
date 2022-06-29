@@ -303,12 +303,6 @@ export default function mainProfile({ genreProp }) {
             },
           }}
         >
-          {
-            console.log(eventModal)
-          }
-          {
-            console.log(eventModal.photos)
-          }
           <Avatar
             src={`${eventModal.profPic}`}
             alt="Profile picture"
