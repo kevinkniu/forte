@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 
@@ -6,7 +7,6 @@ import { useSession } from 'next-auth/react';
 
 import trackListStyles from '../../styles/TrackList.module.css';
 import updateUserSong from '../api/users/addUserSongs';
-
 
 export default function TrackListEntry({ track }) {
   // ANDY
@@ -18,15 +18,17 @@ export default function TrackListEntry({ track }) {
   }
 
   return (
-    <ListItem button className={trackListStyles.trackListEntry} onClick={() => addSong(track)}>
-      <img
-        src={track.album.images[0].url}
-        alt="album-cover"
-      />
-      <div className={trackListStyles.trackListEntryInfo}>
-        <Typography noWrap>{track.name}</Typography>
-        <Typography component="span">{track.artists[0].name}</Typography>
-      </div>
-    </ListItem>
+    <Link href={`/track/${track.id}`}>
+      <ListItem button className={trackListStyles.trackListEntry} onClick={() => addSong(track)}>
+        <img
+          src={track.album.images[0].url}
+          alt="album-cover"
+        />
+        <div className={trackListStyles.trackListEntryInfo}>
+          <Typography noWrap>{track.name}</Typography>
+          <Typography component="span">{track.artists[0].name}</Typography>
+        </div>
+      </ListItem>
+    </Link>
   );
 }
