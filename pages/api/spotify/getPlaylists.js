@@ -1,4 +1,4 @@
-export default async function getTokenTest(token) {
+export default async function getPlaylists(token, genreId) {
   const playlistsResult = await fetch('https://api.spotify.com/v1/browse/categories/toplists/playlists?limit=10', {
     method: 'GET',
     headers: {
