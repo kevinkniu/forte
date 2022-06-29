@@ -1,10 +1,9 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
-import { Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Button, Dialog, TextField, Container, ListItem, List, ListItemText, IconButton, CardActionArea, ImageList, ImageListItem } from '@mui/material';
+import { Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Button, Dialog, TextField, Container, ListItem, List, ListItemText, IconButton, CardActionArea, Box, CardActions, Popover } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
-import Image from 'next/image';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import getToken from './api/spotify/getToken';
@@ -15,39 +14,7 @@ import queryUserEvents from './api/events/getUserEvents';
 import deleteUserEvent from './api/users/deleteUserEvent';
 import deleteUserSong from './api/users/deleteUserSongs';
 import queryUserSongs from './api/users/getUserSongs';
-
-const friendData = [
-  {
-    id: '22paoydtvhtdv6w2xfoziovby',
-    name: 'Esmy Xu',
-    profPic: 'https://i.scdn.co/image/ab6775700000ee85a892735df8a1324f906d7a34',
-  },
-  {
-    id: 'o001k7jmdq3wdg3hklndxjotq',
-    name: 'Andy Luu',
-    profPic: 'https://scontent-iad3-1.xx.fbcdn.net/v/t1.6435-1/42317090_2330550456971517_4823046255326265344_n.jpg?stp=dst-jpg_p320x320&_nc_cat=108&ccb=1-7&_nc_sid=0c64ff&_nc_ohc=MzkhNOjHUVQAX8vbFA8&_nc_ht=scontent-iad3-1.xx&edm=AP4hL3IEAAAA&oh=00_AT80ipfo_KZcpuRhnSFtIp41iYU5z16alzCAH3hFXDjKwg&oe=62DC19A7',
-  },
-  {
-    id: 'resowner92',
-    name: 'Neil Johnson',
-    profPic: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1485456691670202&height=300&width=300&ext=1658766891&hash=AeSq3Duc6nWchK4KAUg',
-  },
-  {
-    id: '1214925054',
-    name: 'Kevin Niu',
-    profPic: 'https://scontent-iad3-1.xx.fbcdn.net/v/t1.18169-1/29357003_2001555779858728_3528641109814991101_n.jpg?stp=dst-jpg_p320x320&_nc_cat=106&ccb=1-7&_nc_sid=0c64ff&_nc_ohc=Jp_hv-I_99IAX9Sc9ww&_nc_ht=scontent-iad3-1.xx&edm=AP4hL3IEAAAA&oh=00_AT-Y41NB8YToUz-F39q4ozlEYsAzKablTHK8ZFn1haRBZw&oe=62DE1D20',
-  },
-  {
-    id: '31eo5ua2tpijr6lg56pqfnxdew5e',
-    name: 'Spencer Han',
-    profPic: '/favicon.ico',
-  },
-  {
-    id: '226ssnz7grqphzhajvn2xfqxa',
-    name: 'John Ong',
-    profPic: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=667637673271813&height=300&width=300&ext=1658762672&hash=AeSUiPcuzqISiuQf6Sc',
-  },
-];
+import MapIcon from '@mui/icons-material/Map';
 
 export default function mainProfile({ genreProp }) {
   const { currentUser, setCurrentUser } = useContext(AppContext);
@@ -58,6 +25,9 @@ export default function mainProfile({ genreProp }) {
   const [events, setEvents] = useState([]);
   const [songList, setSongList] = useState([]);
   const [eventModal, setEventModal] = useState([]);
+  const [eventPhoto, setEventPhoto] = useState('');
+  const [popOverAnchor, setPopOverAnchor] = useState(null);
+  const openPop = Boolean(popOverAnchor);
 
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
@@ -116,12 +86,21 @@ export default function mainProfile({ genreProp }) {
   }
 
   function handleEventOpen(event) {
+    setEventPhoto(event.photos[0]);
     setEventModal(event);
     setEventOpen(true);
   }
 
   function handleEventClose() {
     setEventOpen(false);
+  }
+
+  function handlePopClose() {
+    setPopOverAnchor(null);
+  }
+
+  function handlePopClick(event) {
+    setPopOverAnchor(event.currentTarget);
   }
 
   async function onDelete(id, event) {
@@ -152,6 +131,10 @@ export default function mainProfile({ genreProp }) {
     const userSongs = await queryUserSongs(sessionObj.id);
     setSongList(userSongs[0]);
   }
+
+  useEffect(() => {
+    reRenderUser();
+  }, []);
 
   useEffect(() => {
     getSongs();
@@ -277,7 +260,7 @@ export default function mainProfile({ genreProp }) {
                           <Typography component="div" variant="h6">
                             {event[1].eventName}
                           </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" component="div">
+                          <Typography variant="subtitle2" color="text.secondary" component="div" sx={{ overflowWrap: 'anywhere' }}>
                             {event[1].details}
                           </Typography>
                           <Typography variant="subtitle2" color="text.secondary" component="div">
@@ -298,20 +281,80 @@ export default function mainProfile({ genreProp }) {
           open={eventOpen}
           PaperProps={{
             style: {
-              height: '500px',
-              width: '300px',
+              width: '350px',
+              alignItems: 'center',
             },
           }}
         >
-          <Avatar
-            src={`${eventModal.profPic}`}
-            alt="Profile picture"
-            sx={{ width: 100, height: 100 }}
-          />
-          <Typography>{eventModal.eventName}</Typography>
-          <Typography>{eventModal.location}</Typography>
-          <Typography>{eventModal.details}</Typography>
+
+          <Card sx={{ mx: 3, my: 1, width: 350, margin: '0' }}>
+            <CardMedia
+              component="img"
+              height="200"
+              image={eventPhoto || '/userholder.png'}
+              alt="N/A"
+            />
+            <CardContent sx={{ pb: 0 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Avatar
+                  src={`${eventModal.profPic}`}
+                  alt="Profile picture"
+                  sx={{ width: 50, height: 50 }}
+                />
+                <Typography gutterBottom variant="h6" component="div" sx={{ my: 0 }}>
+                  {eventModal.userName}
+                </Typography>
+                <CardActions>
+                  <Button onClick={(e) => handlePopClick(e)}> Test</Button>
+                </CardActions>
+              </Box>
+              <Typography variant="h4">{eventModal.eventName}</Typography>
+              <Grid container>
+                <Grid item xs={1}>
+                  <Typography variant="span" color="text.secondary"><MapIcon /></Typography>
+                </Grid>
+                <Grid item xs={11}>
+                  <Typography variant="subtitles2" color="text.secondary">
+                    {eventModal.location}
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              <Typography sx={{ overflowWrap: 'anywhere' }}>{eventModal.details}</Typography>
+            </CardContent>
+          </Card>
         </Dialog>
+
+        <Popover
+          id="friendPopover"
+          open={openPop}
+          anchorEl={popOverAnchor}
+          onClose={() => handlePopClose()}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          <Grid container sx={{ width: '300px' }}>
+            <Grid item>
+              <TextField sx={{ width: '300px' }}>Search</TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <List>
+                <ListItem>
+                  <Grid container>
+                    <Grid xs={4} paddingTop="7px">
+                      <Typography>Andy Luu</Typography>
+                    </Grid>
+                    <Grid xs={8} textAlign="right">
+                      <Button>Share</Button>
+                    </Grid>
+                  </Grid>
+                </ListItem>
+              </List>
+            </Grid>
+          </Grid>
+        </Popover>
 
         <Dialog
           onClose={() => handleClose()}
