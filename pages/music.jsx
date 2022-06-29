@@ -98,23 +98,18 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
             </Box>
           </Link>
           <Box sx={{ alignContent: 'center', justifyContent: 'center', width: { xs: 350, sm: 500, md: 700 }, px: 1 }}>
-            {genres.map((genre) => (
-              <Box key={genre.id} sx={{ alignContent: 'center', justifyContent: 'center' }}>
-                <Typography variant="body2" sx={{ display: 'inline-block', fontSize: '20px' }}>{genre.name}</Typography>
-                <Slider {...settings}>
-                  {playlists.length && playlists.map((item) => (
-                    <Grid container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
-                      <Card elevation={0} onClick={() => updatePlaylist(item)}>
-                        <Link href={`/album/${item.id}`}>
-                          <img src={item.images[0].url} alt="N/A" style={{ width: '100px', margin: 'auto' }} />
-                        </Link>
-                        <Typography variant="body2" component="div" sx={{ fontSize: 12 }}>{item.name}</Typography>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Slider>
-              </Box>
-            ))}
+            <Slider {...settings}>
+              {playlists.length && playlists.map((item) => (
+                <Grid container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
+                  <Card elevation={0} onClick={() => updatePlaylist(item)}>
+                    <Link href={`/album/${item.id}`}>
+                      <img src={item.images[0].url} alt="N/A" style={{ width: '100px', margin: 'auto' }} />
+                    </Link>
+                    <Typography variant="body2" component="div" sx={{ fontSize: 12 }}>{item.name}</Typography>
+                  </Card>
+                </Grid>
+              ))}
+            </Slider>
           </Box>
         </Box>
       </main>
@@ -129,11 +124,6 @@ export async function getServerSideProps() {
   const tokenProp = await getToken();
   const allGenres = await getGenres(tokenProp);
   const genresProp = allGenres.slice(0, 5);
-  // const playlistsProp = [];
-  // genresProp.forEach((genre) => {
-  //   const tempPlaylist = getPlaylists(tokenProp, genre.id);
-  //   playlistsProp.push(tempPlaylist);
-  // });
-  const playlistsProp = await getPlaylists(tokenProp, genresProp[0].id);
+  const playlistsProp = await getPlaylists(tokenProp);
   return { props: { tokenProp, genresProp, playlistsProp } };
 }
