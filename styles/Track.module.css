@@ -1,0 +1,117 @@
+.icon {
+  color: #673ab7;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 16px 0;
+  margin-bottom: 24px;
+  color: #44566C;
+}
+
+.albumCover {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  border-radius: 4px;
+  box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+}
+
+.artist {
+  margin-bottom: 24px;
+  text-align: center;
+  color: #44566C;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px;
+  margin: 0 48px 32px;
+  color: #44566C;
+}
+
+.info div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.info span:first-child {
+  color: #8996A6;
+  font-size: 13px;
+}
+
+.info span:last-child {
+  color: #673ab7;
+  font-weight: 500;
+}
+
+.comments {
+  padding: 16px 24px 0;
+  background-color: #e5e5e5;
+  overflow: hidden;
+}
+
+.commentsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.commentsHeader span {
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.commentList ul {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.commentList ul li {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.commentList p {
+  margin: 0;
+  padding: 0;
+}
+
+
+.commentList img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.commentContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.commentTitle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.commentInfo p:first-child {
+  font-size: 14px;
+}
+
+.commentInfo p:last-child {
+  font-size: 12px;
+}

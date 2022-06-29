@@ -6,4 +6,5 @@ export default async function updateUserSong(userID, song) {
   await updateDoc(docRef, {
     songs: arrayUnion(song),
   });
+  return 'done!';
 }
