@@ -12,8 +12,8 @@ import getToken from '../api/spotify/getToken';
 //   const minutes = Math.floor(millis / 60000);
 //   const seconds = ((millis % 60000) / 1000).toFixed(0);
 
-  return `${minutes}:${(seconds < 10 ? '0' : '')}${seconds}`;
-};
+//   return `${minutes}:${(seconds < 10 ? '0' : '')}${seconds}`;
+// };
 
 function albumTracks() {
   const { currentPlaylist } = useContext(AppContext);
@@ -23,7 +23,7 @@ function albumTracks() {
   async function getTracksProps() {
     const tokenProp = await getToken();
     const results = await getTracks(tokenProp, currentPlaylist.tracks.href);
-    const track = await getTrack(tokenProp, currentPlaylist.tracks.href);
+    // const track = await getTrack(tokenProp, currentPlaylist.tracks.href);
     setAllTracks(results);
     // console.log('track', track);
     // setTrackOne(track);
