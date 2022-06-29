@@ -1,10 +1,7 @@
-import { useState, useEffect } from 'react';
+import axios from 'axios';
 import addRoomToUser from './addRoomToUser';
 
 export default async function getRoomId(mySpotify, friendSpotify) {
-  // const [roomId, setRoomId] = useState('');
-  console.log('MY SPOTIFY OBJ', mySpotify);
-  console.log('FRIEND SPOTIFY OBJ', friendSpotify);
   const response = await fetch(`/api/messages/checkMessages?mySpotifyId=${mySpotify.id}&userSpotifyId=${friendSpotify.id}`, {
     method: 'GET',
     headers: {
@@ -13,29 +10,24 @@ export default async function getRoomId(mySpotify, friendSpotify) {
   });
 
   const result = await response.json();
-
+  console.log(result, 'this is the result from the fetch for the room ID');
   if (!result.length) {
-    const newRoom = await fetch('/api/messages/createRoom', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        mySpotify,
-        friendSpotify,
-        messages: [],
-      }),
-    });
-    const newRoomId = await newRoom.json();
-    // setRoomId(newRoomId);
-
-    addRoomToUser(mySpotify.id, friendSpotify.id, newRoomId);
-    addRoomToUser(friendSpotify.id, mySpotify.id, newRoomId);
-
-    getRoomId(mySpotify, friendSpotify);
+    axios.post('/api/messages/createRoom', {
+      mySpotify,
+      friendSpotify,
+      messages: [],
+    }, {
+      headers: { 'Content-type': 'application/json' },
+    })
+      .then((id) => {
+        console.log(id, 'this id was just made');
+        addRoomToUser(mySpotify.id, friendSpotify, id.data);
+        addRoomToUser(friendSpotify.id, mySpotify, id.data);
+      })
+      .then(() => getRoomId(mySpotify, friendSpotify))
+      .catch((err) => console.log(err));
   }
 
-  console.log(result, 'THESE ARE THE RESULTS');
   const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
   return roomid;
 }
