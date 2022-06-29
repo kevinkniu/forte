@@ -4,6 +4,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Button, Dialog, TextField, Container, ListItem, List, ListItemText, IconButton, CardActionArea, Box, CardActions, Popover } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
+import MapIcon from '@mui/icons-material/Map';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import getToken from './api/spotify/getToken';
@@ -14,7 +15,6 @@ import queryUserEvents from './api/events/getUserEvents';
 import deleteUserEvent from './api/users/deleteUserEvent';
 import deleteUserSong from './api/users/deleteUserSongs';
 import queryUserSongs from './api/users/getUserSongs';
-import MapIcon from '@mui/icons-material/Map';
 
 export default function mainProfile({ genreProp }) {
   const { currentUser, setCurrentUser } = useContext(AppContext);
