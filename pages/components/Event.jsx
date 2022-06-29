@@ -7,7 +7,6 @@ import { Card, CardHeader, CardContent, CardActions,
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { AppContext } from '../_app';
 
 const ExpandMore = styled((props) => {
@@ -28,7 +27,7 @@ export default function Event({ event }) {
   const eventID = event._key.path.segments[6];
   const { currentUser } = useContext(AppContext);
   const [expanded, setExpanded] = useState(false);
-  const [hidden, setHidden] = useState(false);
+  // const [hidden, setHidden] = useState(false);
   const [attend, setAttend] = useState(currentUser.events.arrayValue.values.some(
     (item) => item.stringValue === eventID,
   ));
@@ -53,27 +52,27 @@ export default function Event({ event }) {
     });
   };
 
-  const onDelete = () => {
-    if (eventData.userID.stringValue !== sessionObj.id) {
-      return;
-    }
-    const deleteEvent = async () => {
-      await fetch(`/api/events/${event._key.path.segments[6]}`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          userID: sessionObj.id,
-        }),
-      });
-    };
-    deleteEvent();
-    setHidden(true);
-  };
+  // const onDelete = () => {
+  //   if (eventData.userID.stringValue !== sessionObj.id) {
+  //     return;
+  //   }
+  //   const deleteEvent = async () => {
+  //     await fetch(`/api/events/${event._key.path.segments[6]}`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         userID: sessionObj.id,
+  //       }),
+  //     });
+  //   };
+  //   deleteEvent();
+  //   setHidden(true);
+  // };
 
   return (
-    <Card sx={{ mx: 3, my: 1, width: { xs: 325, sm: 500, md: 700 }, maxWidth: 700, display: hidden === true ? 'none' : '' }}>
+    <Card sx={{ mx: 3, my: 1, width: { xs: 325, sm: 500, md: 700 }, maxWidth: 700 }}>
       <CardHeader
         avatar={(
           <Avatar src={eventData.profPic.stringValue} />

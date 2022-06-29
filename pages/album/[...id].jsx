@@ -8,29 +8,26 @@ import getTracks from '../api/spotify/getTracks';
 // import getTrack from '../api/spotify/getTrack';
 import getToken from '../api/spotify/getToken';
 
-// const millisToMinutesAndSeconds = (millis) => {
-//   const minutes = Math.floor(millis / 60000);
-//   const seconds = ((millis % 60000) / 1000).toFixed(0);
+const millisToMinutesAndSeconds = (millis) => {
+  const minutes = Math.floor(millis / 60000);
+  const seconds = ((millis % 60000) / 1000).toFixed(0);
 
-//   return `${minutes}:${(seconds < 10 ? '0' : '')}${seconds}`;
-// };
+  return `${minutes}:${(seconds < 10 ? '0' : '')}${seconds}`;
+};
 
-function albumTracks() {
+export default function albumTracks() {
   const { currentPlaylist } = useContext(AppContext);
   const [allTracks, setAllTracks] = useState(currentPlaylist);
-  const [trackOne, setTrackOne] = useState();
 
   async function getTracksProps() {
     const tokenProp = await getToken();
-    const results = await getTracks(tokenProp, currentPlaylist.tracks.href);
-    // const track = await getTrack(tokenProp, currentPlaylist.tracks.href);
-    setAllTracks(results);
-    // console.log('track', track);
-    // setTrackOne(track);
+    const tracks = await getTracks(tokenProp, currentPlaylist.tracks.href);
+    setAllTracks(tracks);
   }
 
   useEffect(() => {
     getTracksProps();
+    console.log('tracks:', allTracks);
   }, []);
 
   return (
@@ -40,18 +37,18 @@ function albumTracks() {
           {allTracks.length && allTracks.map((track, index) => (
             <Link href={`/track/${track.track.id}`}>
               <Grid key={`track${index}`}>
-                <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto' }}>
+                <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', overflow: 'auto' }}>
                   <img src={track.track.album.images[0].url} alt="N/A" style={{ width: '55px', height: '55px', borderRadius: '4px' }} />
                   <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', marginLeft: '10px' }}>
                     <Typography sx={{ fontSize: '1rem' }}>
                       {track.track.name.length > 33 ? `${track.track.name.slice(0, 30)}...` : track.track.name}
                     </Typography>
-                    <Typography sx={{ fontSize: '13px', color: '#8996A6' }}>
+                    <Typography sx={{ fontSize: '13px', color: '#757575' }}>
                       {track.track.artists[0].name}
                     </Typography>
-                    {/* <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
-                      {millisToMinutesAndSeconds(trackOne.items[index].track.duration_ms)}
-                    </Typography> */}
+                    <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
+                      {millisToMinutesAndSeconds(track.track.duration_ms)}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -64,21 +61,3 @@ function albumTracks() {
     </div>
   );
 }
-
-export default albumTracks;
-
-// To display track clicked in case we need it.
-// {/* {allTracks.length ?
-//   <Grid sx={{ display: 'flex', flexDirection: 'row' }}>
-//     <img src={allTracks[getId].track.album.images[0].url} alt="N/A" style={{ 'width': '50px' }}/>
-//     <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
-//       <Grid sx={{ fontSize: '20px' }}>
-//         {allTracks[getId].track.name}
-//       </Grid>
-//       <Grid sx={{ fontSize: '12px' }}>
-//         {allTracks[getId].track.artists[0].name}
-//       </Grid>
-//     </Grid>
-//   </Grid> :
-//   <Grid></Grid>
-// } */}

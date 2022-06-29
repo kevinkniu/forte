@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Head from 'next/head';
-import { useRef, useState, useContext } from 'react';
-import { useSession } from 'next-auth/react';
+import { useContext } from 'react';
 import Box from '@mui/material/Box';
 import { Grid, Typography, Card } from '@mui/material';
 import Slider from 'react-slick';
