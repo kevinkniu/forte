@@ -11,6 +11,7 @@ export default async function getRoomId(mySpotify, friendSpotify) {
 
   const result = await response.json();
   console.log(result, 'this is the result from the fetch for the room ID');
+
   if (!result.length) {
     axios.post('/api/messages/createRoom', {
       mySpotify,
