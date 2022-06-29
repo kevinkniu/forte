@@ -37,7 +37,7 @@ function albumTracks() {
       <main>
         <Box sx={{ paddingTop: '10px', paddingLeft:'20px', paddingRight: '20px', marginBottom: '70px'}}>
           {allTracks.length && allTracks.map((track, index) => (
-            <div key={`track${index}`} onClick={() => getIdFunction(index)}>
+            <Grid key={`track${index}`}>
               <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto' }}>
                 <img src={track.track.album.images[0].url} alt="N/A" style={{ width: '55px', height: '55px', borderRadius: '4px' }}/>
                 <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', marginLeft: '10px' }}>
@@ -48,11 +48,11 @@ function albumTracks() {
                     {track.track.artists[0].name}
                   </Typography>
                   <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
-                      {millisToMinutesAndSeconds(trackOne.items[index].track.duration_ms)}
+                    {millisToMinutesAndSeconds(trackOne.items[index].track.duration_ms)}
                   </Typography>
                 </Grid>
               </Grid>
-            </div>
+            </Grid>
           ))}
         </Box>
       </main>
@@ -64,18 +64,18 @@ function albumTracks() {
 
 export default albumTracks;
 
-  // To display track clicked in case we need it.
-  {/* {allTracks.length ?
-    <Grid sx={{ display: 'flex', flexDirection: 'row' }}>
-      <img src={allTracks[getId].track.album.images[0].url} alt="N/A" style={{ 'width': '50px' }}/>
-      <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
-        <Grid sx={{ fontSize: '20px' }}>
-          {allTracks[getId].track.name}
-        </Grid>
-        <Grid sx={{ fontSize: '12px' }}>
-          {allTracks[getId].track.artists[0].name}
-        </Grid>
-      </Grid>
-    </Grid> :
-    <Grid></Grid>
-  } */}
+// To display track clicked in case we need it.
+// {/* {allTracks.length ?
+//   <Grid sx={{ display: 'flex', flexDirection: 'row' }}>
+//     <img src={allTracks[getId].track.album.images[0].url} alt="N/A" style={{ 'width': '50px' }}/>
+//     <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
+//       <Grid sx={{ fontSize: '20px' }}>
+//         {allTracks[getId].track.name}
+//       </Grid>
+//       <Grid sx={{ fontSize: '12px' }}>
+//         {allTracks[getId].track.artists[0].name}
+//       </Grid>
+//     </Grid>
+//   </Grid> :
+//   <Grid></Grid>
+// } */}
