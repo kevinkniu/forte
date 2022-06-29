@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 import TrackList from '../components/TrackList';
 import getToken from '../api/spotify/getToken';
@@ -12,6 +14,7 @@ import getTopTracks from '../api/spotify/getTopTracks';
 import artistStyles from '../../styles/Artist.module.css';
 
 export default function Artist({ artistProp, topTracksProp }) {
+  const router = useRouter();
   const colors = ['#5F3DC4', '#66A80F', '#D6336C', '#37b24d', '#FCC419', '#E8590C', '#3B5BDB', '#f03e3e', '#9c36b5', '#0ca678'];
 
   return (
@@ -22,6 +25,10 @@ export default function Artist({ artistProp, topTracksProp }) {
       </Head>
 
       <header className={artistStyles.header}>
+        <ArrowBackIosNewIcon
+          onClick={() => router.back()}
+          className={artistStyles.backIcon}
+        />
         <figure className={artistStyles.artistImgContainer}>
           <img
             src={artistProp.images[0].url}

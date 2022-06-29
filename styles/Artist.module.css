@@ -1,3 +1,10 @@
+.backIcon {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  color: #fff;
+}
+
 .header figure {
   margin: 0;
   width: 390px;
