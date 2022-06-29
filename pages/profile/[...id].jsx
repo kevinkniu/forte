@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Stack, Chip } from '@mui/material';
+import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Stack, Chip, Container } from '@mui/material';
 import { useState, useEffect } from 'react';
 import BottomNav from '../components/BottomNav';
 import queryUserData from '../api/users/getUserData';
@@ -25,98 +25,123 @@ export default function userProfile({ result }) {
       <Head>
         <title>forte</title>
       </Head>
-      <main>
-        {
-          console.log(userProf)
-        }
-        <Box sx={{ border: '1px solid black', display: 'flex', flexDirection: 'column', height: 'auto', overflow: 'hidden', overflowY: 'scroll', alignItems: 'center', justifyContent: 'center' }}>
-          <Grid item sx={{ border: '1px solid black' }}>
-            <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Avatar
-                src={`${userProf.result[0].profPic}`}
-                alt="Profile picture"
-                sx={{ width: 150, height: 150 }}
-              />
-            </Grid>
-            <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Typography variant="h6" sx={{ margin: '5px' }}>
-                {userProf.result[0].name}
-              </Typography>
-            </Grid>
-            <Grid item sx={{ border: '1px solid black', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Button variant="contained" sx={{ marginRight: '15px' }}> Add Friend </Button>
-              <Button variant="contained" sx={{ marginLeft: '15px' }}> Message </Button>
-            </Grid>
-            <Grid item sx={{ border: '1px solid black' }}>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}>
+      <Container sx={{ marginBottom: '58px' }}>
+        <Grid container>
+          <Grid item xs={12} display="flex" justifyContent="center" alignItems="center">
+            <Avatar
+              src={`${userProf.result[0].profPic}`}
+              alt="Profile picture"
+              sx={{ width: 100, height: 100 }}
+            />
+          </Grid>
+        </Grid>
+        <Grid item xs={12} sx={{ textAlign: 'center' }}>
+          <Typography variant="h5" sx={{ margin: '5px' }}>
+            {userProf.result[0].name}
+          </Typography>
+        </Grid>
+
+        <Grid container>
+          <Grid item xs={12}>
+            <Grid item xs={12}>
+              <Typography variant="h5" sx={{ margin: '5px', float: 'left' }}>
                 Genres
               </Typography>
-              <Stack direction="row" spacing={1} sx={{ margin: '5px' }}>
-                {
-                  userProf.result[0].genres.map((genre, index) => (
-                    <Chip key={index} label={genre} color="info" />
-                  ))
-                }
-              </Stack>
+              <Grid sx={{ clear: 'both' }} />
             </Grid>
-            <Grid item sx={{ border: '1px solid black' }}>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}> Liked Songs </Typography>
-              <Grid item sx={{ border: '1px solid black' }}>
-                {
+            <Grid item xs={12} display="flex" justifyContent="flex-start" flexWrap="wrap" flexDirection="row">
+              {
+                userProf.result[0].genres.map((genre, index) => (
+                  <Chip key={index} label={genre} color="info" sx={{ marginBottom: '10px', marginRight: '10px' }} />
+                ))
+              }
+            </Grid>
+          </Grid>
+          <Grid item xs={12} md={6} lg={6} xl={6}>
+            <Typography variant="h5" sx={{ margin: '5px' }}>
+              Liked Songs
+            </Typography>
+            {
+              userProf.result[0].songs.length === 0
+                ? (
+                  <Card>
+                    <CardContent>
+                      <Typography component="div" variant="h6">
+                        NO SONGS
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                )
+                : (
                   userProf.result[0].songs.map((song, index) => (
-                    <Card key={index} sx={{ display: 'flex', margin: '5px' }}>
-                      <CardMedia
-                        component="img"
-                        sx={{ width: 100 }}
-                        image={song.cover}
-                        alt="album cover"
-                      />
+                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px' }}>
+                      <Grid position="relative">
+                        <CardMedia
+                          component="img"
+                          sx={{ width: 100 }}
+                          image={song.album.images[0].url}
+                          alt="album cover"
+                        />
+                      </Grid>
+
                       <CardContent>
                         <Typography component="div" variant="h6">
                           {song.name}
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {song.artist}
+                          {song.artists[0].name}
                         </Typography>
                       </CardContent>
                     </Card>
                   ))
-                }
-              </Grid>
-            </Grid>
-            <Grid>
-              <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-                Events
-              </Typography>
-              {
-                userEvents.map((event, index) => (
-                  <Grid key={index}>
-                    <Card sx={{ display: 'flex', margin: '5px' }}>
-                      <CardMedia
-                        component="img"
-                        sx={{ width: 100 }}
-                        image={event.photos[0] || '/userholder.png'}
-                        alt="album cover"
-                      />
-                      <CardContent>
+                )
+            }
+          </Grid>
+          <Grid item xs={12} md={6} lg={6} xl={6}>
+            <Typography variant="h5" sx={{ margin: '5px' }}>
+              Events
+            </Typography>
+            {
+              userEvents.length === 0
+                ? (
+                  <Card>
+                    <CardContent>
+                      <Typography component="div" variant="h6">
+                        NO EVENTS
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                )
+                : (
+                  userEvents.map((event, index) => (
+                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px' }}>
+                      <Grid position="relative">
+                        <CardMedia
+                          component="img"
+                          sx={{ width: 100, height: 100 }}
+                          image={event[1].photos[0] || '/userholder.png'}
+                          alt="album cover"
+                        />
+                      </Grid>
+
+                      <CardContent sx={{ padding: '0 0 0 16px' }}>
                         <Typography component="div" variant="h6">
-                          {event.eventName}
+                          {event[1].eventName}
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {event.details}
+                          {event[1].details}
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {event.location}
+                          {event[1].location}
                         </Typography>
                       </CardContent>
                     </Card>
-                  </Grid>
-                ))
-              }
-            </Grid>
+                  ))
+                )
+            }
           </Grid>
-        </Box>
-      </main>
+        </Grid>
+      </Container>
       <BottomNav />
     </div>
   );
