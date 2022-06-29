@@ -17,12 +17,7 @@ const millisToMinutesAndSeconds = (millis) => {
 function albumTracks() {
   const { currentPlaylist } = useContext(AppContext);
   const [allTracks, setAllTracks] = useState(currentPlaylist);
-  const [getId, setGetId] = useState('0');
   const [trackOne, setTrackOne] = useState();
-
-  function getIdFunction(id) {
-    setGetId(id);
-  }
 
   async function getTracksProps() {
     const tokenProp = await getToken();
