@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { Card, CardActions, CardContent, CardMedia, Button, Box, Typography } from '@mui/material';
+import { AppContext } from '../_app';
 
 export default function FriendRequest({ request }) {
+  const { currentUser } = useContext(AppContext);
   const [user, setUser] = useState(null);
-
-  console.log(request);
+  const [hidden, setHidden] = useState(false);
 
   const initializeRequest = async () => {
     const response = await fetch(`/api/users/${request.stringValue}`, {
@@ -13,8 +15,22 @@ export default function FriendRequest({ request }) {
       },
     });
     const result = await response.json();
-    console.log(result);
     setUser(result[0]._delegate._document.data.value.mapValue.fields);
+  };
+
+  const handleRequest = async (type) => {
+    await fetch('/api/users/handleRequest', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        type,
+        myUserID: currentUser.id.stringValue,
+        targetUserID: user.id.stringValue,
+      }),
+    });
+    setHidden(true);
   };
 
   useEffect(() => {
@@ -23,7 +39,39 @@ export default function FriendRequest({ request }) {
 
   return (
     <div>
-      {user && `This is a friend request from ${user.name.stringValue}`}
+      {user && (
+        <Card sx={{ mx: 3, my: 1, width: 325, maxWidth: 700, display: hidden === true ? 'none' : '' }}>
+          <CardMedia
+            component="img"
+            height="300"
+            image={user.profPic.stringValue}
+            alt="N/A"
+          />
+          <CardContent sx={{ pb: 0 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography gutterBottom variant="h6" component="div" sx={{ my: 0 }}>
+                {user.name.stringValue}
+              </Typography>
+              <CardActions>
+                <Button
+                  onClick={() => { handleRequest('accept'); }}
+                  size="small"
+                  sx={{ color: '#673ab7', typography: 'body1' }}
+                >
+                  Accept
+                </Button>
+                <Button
+                  onClick={() => { handleRequest('delete'); }}
+                  size="small"
+                  sx={{ color: '#673ab7', typography: 'body1' }}
+                >
+                  Delete
+                </Button>
+              </CardActions>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
