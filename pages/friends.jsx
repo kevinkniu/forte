@@ -81,5 +81,3 @@ const Username = styled.p`
 const Message = styled.p`
   margin: 0;
 `;
-
-// User defaults to messages list

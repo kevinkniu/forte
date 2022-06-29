@@ -1,8 +1,9 @@
 import { db } from '../../../firebase';
 
 export default function handler(req, res) {
-  const { id, name, email, profPic, genres, songs, posts, recent,
-    friends, events, rooms } = req.body;
+  const { id, name, email, profPic, genres, songs, posts, events, recent,
+    friends, rooms, friendRequests, sentFriendRequests,
+    eventRequests, sentEventRequests } = req.body;
   db.collection('users').doc(id).set({
     id,
     name,
@@ -11,10 +12,14 @@ export default function handler(req, res) {
     genres,
     songs,
     posts,
+    events,
     recent,
     friends,
-    events,
     rooms,
+    friendRequests,
+    sentFriendRequests,
+    eventRequests,
+    sentEventRequests,
   });
   res.status(200).json('added user!');
 }

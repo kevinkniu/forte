@@ -13,7 +13,8 @@ function MyApp({ Component, pageProps }) {
   return (
     <SessionProvider session={pageProps.session}>
       <AppContext.Provider value={{
-        value, setValue, currentUser, setCurrentUser, currentPlaylist, setCurrentPlaylist }}>
+        value, setValue, currentUser, setCurrentUser, currentPlaylist, setCurrentPlaylist }}
+      >
         <Component {...pageProps} />
       </AppContext.Provider>
     </SessionProvider>

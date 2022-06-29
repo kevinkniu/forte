@@ -1,4 +1,11 @@
-export default async function addRoomToUser(mySpotifyId, userSpotifyId, roomId) {
+export default async function addRoomToUser(
+  mySpotifyId,
+  userSpotify,
+  roomId,
+) {
+  console.log(mySpotifyId, 'this is the spotifyID of current User');
+  console.log(userSpotify, 'this is the userSpotify');
+  console.log(roomId, 'this is the roomid that was made and should be stored ');
   await fetch('/api/messages/addRoomToUser', {
     method: 'POST',
     headers: {
@@ -6,8 +13,10 @@ export default async function addRoomToUser(mySpotifyId, userSpotifyId, roomId) 
     },
     body: JSON.stringify({
       mySpotifyId,
-      userSpotifyId,
       roomId,
+      id: userSpotify.id,
+      name: userSpotify.name,
+      image: userSpotify.image,
     }),
   });
 }
