@@ -101,7 +101,7 @@ export default function Event({ event }) {
         </Grid>
       )}
       <CardContent>
-        <Typography sx={{ textDecoration: 'underline' }} variant="body1">
+        <Typography sx={{ textDecoration: 'underline' }} variant="body2">
           {`happening on ${new Date(eventData.date.timestampValue.seconds * 1000
             + eventData.timestamp.timestampValue.nanos / 1000000).toLocaleTimeString([], {
             year: 'numeric',
@@ -109,7 +109,7 @@ export default function Event({ event }) {
             day: '2-digit',
           }).slice(0, 10)}`}
         </Typography>
-        <Typography variant="body2">
+        <Typography variant="body1">
           {eventData.eventName.stringValue}
         </Typography>
       </CardContent>

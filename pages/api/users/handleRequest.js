@@ -5,20 +5,26 @@ export default async function handler(req, res) {
   const { type, targetUserID, myUserID } = req.body;
   const myRef = doc(db, 'users', myUserID);
   const userRef = doc(db, 'users', targetUserID);
-  if (!type) {
+  if (type === 'accept') {
     await updateDoc(userRef, {
-      friendRequests: arrayUnion(myUserID),
+      friends: arrayUnion(myUserID),
+    });
+    await updateDoc(userRef, {
+      sentFriendRequests: arrayRemove(myUserID),
     });
     await updateDoc(myRef, {
-      sentFriendRequests: arrayUnion(targetUserID),
+      friends: arrayUnion(targetUserID),
+    });
+    await updateDoc(myRef, {
+      friendRequests: arrayRemove(targetUserID),
     });
   }
-  if (type) {
-    await updateDoc(userRef, {
-      friendRequests: arrayRemove(myUserID),
-    });
+  if (type === 'delete') {
     await updateDoc(myRef, {
-      sentFriendRequests: arrayRemove(targetUserID),
+      friendRequests: arrayRemove(targetUserID),
+    });
+    await updateDoc(userRef, {
+      sentFriendRequests: arrayRemove(myUserID),
     });
   }
   res.status(200).json('done!');
