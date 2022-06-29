@@ -36,11 +36,11 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
 
   return (
     <div>
-      {/* <div>
+      <div>
         {
           console.log('token', tokenID, 'genres', genres, 'playlists', playlists)
         }
-      </div> */}
+      </div>
       <Head>
         <title>forte</title>
       </Head>
@@ -97,7 +97,7 @@ export default function Music({ tokenProp, genresProp, playlistsProp }) {
 export async function getServerSideProps() {
   const tokenProp = await getToken();
   const genresProp = await getGenres(tokenProp);
-  const playlistsProp = await getPlaylists(tokenProp);
+  const playlistsProp = await getPlaylists(tokenProp, genresProp.id);
   return { props: { tokenProp, genresProp, playlistsProp } };
 }
 
