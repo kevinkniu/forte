@@ -44,7 +44,7 @@ export default function releaseTracks() {
             <img src={releaseImage} alt="N/A" style={{ width: '150px', height: '150px', borderRadius: '4px' }} />
             <Box sx={{ ml: 1 }}>
               <Typography sx={{ fontSize: '20px' }}>
-                {currentRelease.name}
+                {currentRelease.name || '/userholder.png'}
               </Typography>
               <Typography sx={{ fontSize: '12px', color: '#8996A6' }}>
                 {currentRelease.artists[0].name}

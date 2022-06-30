@@ -17,17 +17,17 @@ const millisToMinutesAndSeconds = (millis) => {
 
 export default function albumTracks() {
   const { currentPlaylist } = useContext(AppContext);
-  const [allTracks, setAllTracks] = useState(currentPlaylist);
+  const [allTracks, setAllTracks] = useState([]);
 
   async function getTracksProps() {
     const tokenProp = await getToken();
     const tracks = await getTracks(tokenProp, currentPlaylist.tracks.href);
+    console.log('tracks:', tracks);
     setAllTracks(tracks);
   }
 
   useEffect(() => {
     getTracksProps();
-    console.log('tracks:', allTracks);
   }, []);
 
   return (
@@ -35,10 +35,10 @@ export default function albumTracks() {
       <main>
         <Box sx={{ paddingTop: '10px', paddingLeft: '20px', paddingRight: '20px', marginBottom: '70px' }}>
           {allTracks.length && allTracks.map((track, index) => (
-            <Link href={`/track/${track.track.id}`}>
-              <Grid key={`track${index}`}>
+            <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#8996A6' }}>
+              <Link href={`/track/${track.track.id}`}>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', overflow: 'auto' }}>
-                  <img src={track.track.album.images[0].url} alt="N/A" style={{ width: '55px', height: '55px', borderRadius: '4px' }} />
+                  <img src={track.track.album?.images[0]?.url || '/userholder.png'} alt="N/A" style={{ width: '55px', height: '55px', borderRadius: '4px' }} />
                   <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', marginLeft: '10px' }}>
                     <Typography sx={{ fontSize: '1rem' }}>
                       {track.track.name.length > 33 ? `${track.track.name.slice(0, 30)}...` : track.track.name}
@@ -51,8 +51,8 @@ export default function albumTracks() {
                     </Typography>
                   </Grid>
                 </Grid>
-              </Grid>
-            </Link>
+              </Link>
+            </Box>
           ))}
         </Box>
       </main>
