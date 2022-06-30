@@ -27,7 +27,7 @@ export default function mainProfile({ genreProp }) {
   const [search, setSearch] = useState('');
   const [events, setEvents] = useState([]);
   const [songList, setSongList] = useState([]);
-  const [eventModal, setEventModal] = useState([]);
+  const [eventModal, setEventModal] = useState({ eventDetail: {}, eventID: '' });
   const [eventPhoto, setEventPhoto] = useState('');
   const [popOverAnchor, setPopOverAnchor] = useState(null);
   const openPop = Boolean(popOverAnchor);
@@ -35,12 +35,39 @@ export default function mainProfile({ genreProp }) {
   const openRemovePop = Boolean(removePopAnchor);
   const [itemToRemove, setItemToRemove] = useState({ item: null, type: '' });
   const [friendArray, setFriendArray] = useState([]);
-  // const friendArray = [];
+  const [searchName, setSearchName] = useState('');
 
   const colors = ['#5F3DC4', '#66A80F', '#D6336C', '#37b24d', '#FCC419', '#E8590C', '#3B5BDB', '#f03e3e', '#9c36b5', '#0ca678'];
 
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
+
+  const sendEventReq = async (friend, eventIdToSend) => {
+    await fetch('/api/users/sendEventReq', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: true,
+        targetUserID: friend,
+        eventID: eventIdToSend,
+      }),
+    });
+    // setAdded(!added);
+    const friendToFind = friendArray.find((targetFriend) => targetFriend.id === friend.id);
+    friendToFind.added = true;
+    const friendIndex = friendArray.findIndex((targetFriend) => targetFriend.id === friend.id);
+
+    console.log(friendToFind);
+    console.log(friendIndex);
+
+    if (friendIndex >= 0) {
+      friendArray[friendIndex] = friendToFind;
+      const newFriendList = [...friendArray];
+      setFriendArray([...newFriendList]);
+    }
+  };
 
   async function getEvents() {
     const tempEvents = [];
@@ -95,9 +122,9 @@ export default function mainProfile({ genreProp }) {
     setOpen(false);
   }
 
-  function handleEventOpen(event) {
-    setEventPhoto(event.photos[0]);
-    setEventModal(event);
+  function handleEventOpen(eventObj) {
+    setEventPhoto(eventObj.eventDetail.photos[0]);
+    setEventModal(eventObj);
     setEventOpen(true);
   }
 
@@ -166,16 +193,23 @@ export default function mainProfile({ genreProp }) {
     await Promise.all(friendPromises)
       .then((result) => {
         result.forEach((friendData) => {
-          friendresults.push({ id: friendData[0].id, name: friendData[0].name });
+          friendresults.push({
+            id: friendData[0].id,
+            name: friendData[0].name,
+            events: friendData[0].events,
+            eventReq: friendData[0].eventRequests,
+          });
         });
       });
-    console.log(friendresults);
     setFriendArray([...friendresults]);
   }
 
-  useEffect(async () => {
-    await reRenderUser();
-    await getFriendNames();
+  useEffect(() => {
+    async function getRenderFriendNames() {
+      await reRenderUser();
+      await getFriendNames();
+    }
+    getRenderFriendNames();
   }, []);
 
   useEffect(() => {
@@ -192,7 +226,7 @@ export default function mainProfile({ genreProp }) {
         <title>forte</title>
       </Head>
       {
-        console.log(friendArray)
+        console.log(eventModal)
       }
       <Grid container sx={{ backgroundColor: '#673ab7' }}>
         <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
@@ -256,9 +290,7 @@ export default function mainProfile({ genreProp }) {
                         />
                       </Grid>
                       <CardActionArea position="relative">
-                        <IconButton onClick={(e) => handleRemoveClick(e, song, 'song')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }}>
-                          <MoreVertIcon />
-                        </IconButton>
+                        <MoreVertIcon onClick={(e) => handleRemoveClick(e, song, 'song')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }} />
                         <CardContent>
                           <Typography component="div" variant="h6">
                             {song.name}
@@ -302,10 +334,8 @@ export default function mainProfile({ genreProp }) {
                           alt="album cover"
                         />
                       </Grid>
-                      <CardActionArea onClick={() => handleEventOpen(event[1])} position="relative">
-                        <IconButton onClick={(e) => handleRemoveClick(e, event, 'event')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }}>
-                          <MoreVertIcon />
-                        </IconButton>
+                      <CardActionArea onClick={() => handleEventOpen({ eventDetail: event[1], eventID: event[0] })} position="relative">
+                        <MoreVertIcon onClick={(e) => handleRemoveClick(e, event, 'event')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }} />
                         <CardContent sx={{ padding: '0 0 0 16px' }}>
                           <Typography component="div" variant="h6" sx={{ width: '90%' }}>
                             {event[1].eventName}
@@ -347,30 +377,30 @@ export default function mainProfile({ genreProp }) {
             <CardContent sx={{ pb: 0 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Avatar
-                  src={`${eventModal.profPic}`}
+                  src={`${eventModal.eventDetail.profPic}`}
                   alt="Profile picture"
                   sx={{ width: 50, height: 50 }}
                 />
                 <Typography gutterBottom variant="h6" component="div" sx={{ my: 0 }}>
-                  {eventModal.userName}
+                  {eventModal.eventDetail.userName}
                 </Typography>
                 <CardActions>
                   <Button onClick={(e) => handlePopClick(e)}>Invite</Button>
                 </CardActions>
               </Box>
-              <Typography variant="h4">{eventModal.eventName}</Typography>
+              <Typography variant="h4">{eventModal.eventDetail.eventName}</Typography>
               <Grid container>
                 <Grid item xs={1}>
                   <Typography variant="span" color="text.secondary"><MapIcon /></Typography>
                 </Grid>
                 <Grid item xs={11}>
                   <Typography variant="subtitles2" color="text.secondary">
-                    {eventModal.location}
+                    {eventModal.eventDetail.location}
                   </Typography>
                 </Grid>
               </Grid>
 
-              <Typography sx={{ overflowWrap: 'anywhere' }}>{eventModal.details}</Typography>
+              <Typography sx={{ overflowWrap: 'anywhere' }}>{eventModal.eventDetail.details}</Typography>
             </CardContent>
           </Card>
         </Dialog>
@@ -416,23 +446,27 @@ export default function mainProfile({ genreProp }) {
         >
           <Grid container sx={{ width: '300px', height: '260px', overflow: 'scroll' }}>
             <Grid item>
-              <TextField sx={{ width: '300px' }}>Search</TextField>
+              <TextField sx={{ width: '300px' }} onChange={(e) => setSearchName(e.target.value.toLowerCase())}>Search</TextField>
             </Grid>
             <Grid item xs={12}>
               <List>
                 {
-                  friendArray.map((singleFriend) => (
-                    <ListItem key={singleFriend.id}>
-                      <Grid container>
-                        <Grid item xs={4} paddingTop="7px">
-                          <Typography>{singleFriend.name}</Typography>
-                        </Grid>
-                        <Grid item xs={8} textAlign="right">
-                          <Button>Share</Button>
-                        </Grid>
-                      </Grid>
-                    </ListItem>
+                  friendArray.filter(((friend) => friend.name.toLowerCase().includes(searchName)
+                  && (friend.events.findIndex((eventId) => eventId === eventModal.EventId) === -1 && friend.eventReq.findIndex((eventId) => eventId === eventModal.EventId) === -1)
                   ))
+                    .map((singleFriend) => (
+                      <ListItem key={singleFriend.id}>
+                        <Grid container>
+                          <Grid item xs={4} paddingTop="7px">
+                            <Typography>{singleFriend.name}</Typography>
+                            <Typography>{singleFriend.id}</Typography>
+                          </Grid>
+                          <Grid item xs={8} textAlign="right">
+                            <Button onClick={() => { sendEventReq(singleFriend, eventModal.eventID); }} size="small" sx={{ color: (singleFriend.added) ? 'text.secondary' : '#673ab7', typography: 'body1' }}>{singleFriend.added ? 'Invited' : 'Invite'}</Button>
+                          </Grid>
+                        </Grid>
+                      </ListItem>
+                    ))
                 }
               </List>
             </Grid>
