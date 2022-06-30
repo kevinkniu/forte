@@ -179,7 +179,6 @@ export default function mainProfile({ genreProp }) {
 
   async function getSongs() {
     const userSongs = await queryUserSongs(sessionObj.id);
-    console.log(userSongs[0]);
     const tempArray = userSongs[0].reverse();
     setSongList(tempArray.slice(0, 5));
   }
@@ -230,8 +229,7 @@ export default function mainProfile({ genreProp }) {
       </Head>
 
       <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', overflow: 'auto', padding: '0' }}>
-        <Grid container>
-          <Grid sx={{ backgroundColor: '#673ab7', width: '100%' }} />
+        <Grid container sx={{ backgroundColor: '#673ab7', width: '100%' }}>
           <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
             <Avatar
               src={sessionObj?.image || '/userholder.png'}
