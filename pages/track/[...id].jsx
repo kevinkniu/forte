@@ -9,6 +9,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useSession } from 'next-auth/react';
 import getToken from '../api/spotify/getToken';
 import getTrack from '../api/spotify/getTrack';
+
+import updateUserSong from '../api/users/addUserSongs';
 import trackStyles from '../../styles/Track.module.css';
 
 
@@ -37,9 +39,13 @@ const data = [
 ];
 
 export default function Track({ tokenProp, trackProp }) {
-  const { data: getSession } = useSession();
   const router = useRouter();
+  const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
+
+  async function addSong(song) {
+    await updateUserSong(sessionObj.id, song);
+  }
 
   return (
     <div>
@@ -47,7 +53,6 @@ export default function Track({ tokenProp, trackProp }) {
         <ArrowBackIosNewIcon
           className={trackStyles.icon}
           onClick={() => router.back()}
-          className={trackStyles.icon}
         />
         <Typography
           variant="h6"
@@ -56,6 +61,7 @@ export default function Track({ tokenProp, trackProp }) {
           {trackProp.name}
         </Typography>
         <FavoriteBorderIcon
+          onClick={() => addSong(trackProp)}
           className={trackStyles.icon}
         />
       </header>
@@ -90,10 +96,10 @@ export default function Track({ tokenProp, trackProp }) {
           </div>
         </Paper>
 
-        <SpotifyPlayer
+        {/* <SpotifyPlayer
           token={sessionObj?.tokenID}
           uris={[trackProp.uri]}
-        />
+        /> */}
 
       <div className={trackStyles.comments}>
         <div className={trackStyles.commentsHeader}>
