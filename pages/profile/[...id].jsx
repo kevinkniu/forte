@@ -1,5 +1,6 @@
 import Head from 'next/head';
-import { Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Container, List, ListItem } from '@mui/material';
+import { useSession } from 'next-auth/react';
+import { Button, Grid, Typography, Card, CardContent, Avatar, Chip, Container, List, ListItem } from '@mui/material';
 import { useState, useEffect } from 'react';
 import BottomNav from '../components/BottomNav';
 import queryUserData from '../api/users/getUserData';
@@ -9,6 +10,25 @@ import trackListStyles from '../../styles/TrackList.module.css';
 export default function userProfile({ result }) {
   const [userProf, setUserProf] = useState(result);
   const [userEvents, setUserEvents] = useState([]);
+
+  const { data: getSession } = useSession();
+  const sessionObj = getSession?.user;
+  const [added, setAdded] = useState(false);
+
+  const sendFriendReq = async () => {
+    await fetch('/api/users/sendFriendReq', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: added,
+        targetUserID: userProf.result[0].id,
+        myUserID: sessionObj.id,
+      }),
+    });
+    setAdded(!added);
+  };
 
   const colors = ['#5F3DC4', '#66A80F', '#D6336C', '#37b24d', '#FCC419', '#E8590C', '#3B5BDB', '#f03e3e', '#9c36b5', '#0ca678'];
 
@@ -27,23 +47,6 @@ export default function userProfile({ result }) {
         <title>forte</title>
       </Head>
 
-      {/* <Grid container sx={{ backgroundColor: '#673ab7' }}>
-        <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
-          <Avatar
-            src={`${userProf.result[0].profPic}`}
-            alt="Profile picture"
-            sx={{ width: 100, height: 100 }}
-          />
-        </Grid>
-      </Grid>
-      <Grid item xs={12} sx={{ textAlign: 'center' }}>
-        <Typography variant="h5" sx={{ margin: '5px' }}>
-          {userProf.result[0].name}
-        </Typography>
-      </Grid>
-      <Container sx={{ marginBottom: '58px' }}>
- */}
-
       <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', overflow: 'auto', padding: '0' }}>
         <Grid container sx={{ backgroundColor: '#673ab7' }}>
           <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
@@ -54,30 +57,25 @@ export default function userProfile({ result }) {
             />
           </Grid>
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: 'center', padding: '8px 0 0 0', margin: '0' }}>
+        <Grid item xs={12} sx={{ textAlign: 'center', padding: '10px 0 0 0', margin: '0' }}>
           <Typography variant="h4">
             {userProf.result[0].name}
           </Typography>
         </Grid>
 
-
-
-
-
-
         <Grid container>
           <Grid item xs={12}>
-            <Grid item xs={12} textAlign="center">
-              <Button> Add Friend </Button>
-              <Button> Message </Button>
+            <Grid item xs={12} display="flex" alignContent="center" justifyContent="space-around" margin="10px">
+              <Button onClick={() => { sendFriendReq(); }} size="small" sx={{ color: added ? 'text.secondary' : '#673ab7', typography: 'body1' }}>{added ? 'Sent Request' : 'Add Friend'}</Button>
+              <Button size="small" sx={{ color: '#673ab7', typography: 'body1' }}>Message</Button>
             </Grid>
-            <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px 10px' }}>
+            <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', margin: '0px 15px 10px 10px' }}>
               <Typography variant="subtitle1" sx={{ display: 'flex', justifyContent: 'flex-start' }}>
                 Genres
               </Typography>
               <Grid sx={{ clear: 'both' }} />
             </Grid>
-            <Grid item xs={12} display="flex" justifyContent="space-around" flexWrap="wrap" flexDirection="row" padding="0 5px 5px 10px">
+            <Grid item xs={12} display="flex" justifyContent="space-around" flexWrap="wrap" flexDirection="row" padding="5px 5px 5px 10px">
               {
                 userProf.result[0].genres.map((genre, index) => (
                   <Chip key={index} label={genre} color="info" sx={{ marginBottom: '10px', marginRight: '10px', backgroundColor: colors[index], color: 'white' }} />
@@ -86,8 +84,8 @@ export default function userProfile({ result }) {
             </Grid>
           </Grid>
           <Grid item xs={12} md={6} lg={6} xl={6}>
-            <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-              Liked Songs
+            <Typography variant="subtitle1" sx={{ margin: '15px 15px 10px 10px' }}>
+              Recently Liked Songs
             </Typography>
             {
               userProf.result[0].songs.length === 0
@@ -122,7 +120,7 @@ export default function userProfile({ result }) {
             }
           </Grid>
           <Grid item xs={12} md={6} lg={6} xl={6}>
-            <Typography variant="subtitle1" sx={{ margin: '5px' }}>
+            <Typography variant="subtitle1" sx={{ margin: '5px 15px 10px 10px' }}>
               Events
             </Typography>
             {
