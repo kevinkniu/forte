@@ -10,7 +10,7 @@ export default async function getRoomId(mySpotify, friendSpotify) {
   });
 
   const result = await response.json();
-  console.log(result, 'this is the result from the fetch for the room ID');
+  // console.log(result, 'this is the result from the fetch for the room ID');
 
   if (!result.length) {
     axios.post('/api/messages/createRoom', {
@@ -21,14 +21,14 @@ export default async function getRoomId(mySpotify, friendSpotify) {
       headers: { 'Content-type': 'application/json' },
     })
       .then((id) => {
-        console.log(id, 'this id was just made');
+        // console.log(id, 'this id was just made');
         addRoomToUser(mySpotify.id, friendSpotify, id.data);
         addRoomToUser(friendSpotify.id, mySpotify, id.data);
       })
       .then(() => getRoomId(mySpotify, friendSpotify))
       .catch((err) => console.log(err));
+  } else {
+    const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
+    return roomid;
   }
-
-  const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
-  return roomid;
 }
