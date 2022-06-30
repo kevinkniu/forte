@@ -2,6 +2,16 @@
 import '../styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
 import { useState, createContext } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  typography: {
+    fontFamily: [
+      'Montserrat',
+      'sans-serif',
+    ].join(','),
+  },
+});
 
 export const AppContext = createContext();
 
@@ -13,18 +23,20 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
   return (
     <SessionProvider session={session}>
-      <AppContext.Provider value={{
-        value,
-        setValue,
-        currentUser,
-        setCurrentUser,
-        currentPlaylist,
-        setCurrentPlaylist,
-        currentRelease,
-        setCurrentRelease }}
-      >
-        <Component {...pageProps} />
-      </AppContext.Provider>
+      <ThemeProvider theme={theme}>
+        <AppContext.Provider value={{
+          value,
+          setValue,
+          currentUser,
+          setCurrentUser,
+          currentPlaylist,
+          setCurrentPlaylist,
+          currentRelease,
+          setCurrentRelease }}
+        >
+          <Component {...pageProps} />
+        </AppContext.Provider>
+      </ThemeProvider>
     </SessionProvider>
   );
 }

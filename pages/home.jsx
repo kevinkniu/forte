@@ -17,8 +17,6 @@ export default function Home() {
   const [view, setView] = useState('Explore');
   const sessionObj = getSession?.user;
 
-  console.log(getSession);
-
   useEffect(() => {
     if (status !== 'authenticated') {
       return;
@@ -66,7 +64,6 @@ export default function Home() {
           },
         });
         const data = await subColl.json();
-        console.log(data);
         initializeUser();
         return;
       }
