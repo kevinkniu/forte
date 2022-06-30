@@ -60,7 +60,7 @@ export default function Posts() {
         userID: sessionObj.id,
         name: sessionObj.name,
         email: sessionObj.email,
-        profPic: sessionObj.image,
+        profPic: sessionObj.image || '/userholder.png',
         message: postRef.current.value,
         photos: images,
       }),
