@@ -5,14 +5,14 @@ import { useState, createContext } from 'react';
 
 export const AppContext = createContext();
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const [value, setValue] = useState(0);
   const [currentUser, setCurrentUser] = useState(null);
   const [currentPlaylist, setCurrentPlaylist] = useState([]);
   const [currentRelease, setCurrentRelease] = useState([]);
 
   return (
-    <SessionProvider session={pageProps.session}>
+    <SessionProvider session={session}>
       <AppContext.Provider value={{
         value,
         setValue,

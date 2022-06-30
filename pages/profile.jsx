@@ -5,6 +5,8 @@ import { Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Button, D
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
 import MapIcon from '@mui/icons-material/Map';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import LogoutIcon from '@mui/icons-material/Logout';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import getToken from './api/spotify/getToken';
@@ -15,6 +17,7 @@ import queryUserEvents from './api/events/getUserEvents';
 import deleteUserEvent from './api/users/deleteUserEvent';
 import deleteUserSong from './api/users/deleteUserSongs';
 import queryUserSongs from './api/users/getUserSongs';
+import queryUserData from './api/users/getUserData';
 
 export default function mainProfile({ genreProp }) {
   const { currentUser, setCurrentUser } = useContext(AppContext);
@@ -28,6 +31,13 @@ export default function mainProfile({ genreProp }) {
   const [eventPhoto, setEventPhoto] = useState('');
   const [popOverAnchor, setPopOverAnchor] = useState(null);
   const openPop = Boolean(popOverAnchor);
+  const [removePopAnchor, setRemovePopAnchor] = useState(null);
+  const openRemovePop = Boolean(removePopAnchor);
+  const [itemToRemove, setItemToRemove] = useState({ item: null, type: '' });
+  const [friendArray, setFriendArray] = useState([]);
+  // const friendArray = [];
+
+  const colors = ['#5F3DC4', '#66A80F', '#D6336C', '#37b24d', '#FCC419', '#E8590C', '#3B5BDB', '#f03e3e', '#9c36b5', '#0ca678'];
 
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
@@ -103,6 +113,16 @@ export default function mainProfile({ genreProp }) {
     setPopOverAnchor(event.currentTarget);
   }
 
+  function handleRemoveClose() {
+    setRemovePopAnchor(null);
+  }
+
+  function handleRemoveClick(event, item, type) {
+    event.stopPropagation();
+    setItemToRemove({ item, type });
+    setRemovePopAnchor(event.currentTarget);
+  }
+
   async function onDelete(id, event) {
     await deleteUserEvent(id, event);
     const eventIndex = events.findIndex((eventData) => {
@@ -117,6 +137,8 @@ export default function mainProfile({ genreProp }) {
     events.splice(eventIndex, 1);
     const newEventList = [...events];
     setEvents(newEventList);
+    setItemToRemove({ item: null, type: '' });
+    setRemovePopAnchor(null);
   }
 
   async function deleteSong(song) {
@@ -125,6 +147,8 @@ export default function mainProfile({ genreProp }) {
     songList.splice(songIndex, 1);
     const newList = [...songList];
     setSongList(newList);
+    setItemToRemove({ item: null, type: '' });
+    setRemovePopAnchor(null);
   }
 
   async function getSongs() {
@@ -132,8 +156,26 @@ export default function mainProfile({ genreProp }) {
     setSongList(userSongs[0]);
   }
 
+  async function getFriendNames() {
+    const friendPromises = [];
+    const friendresults = [];
+    console.log(currentUser);
+    currentUser.friends.arrayValue.values.forEach((user) => {
+      friendPromises.push(queryUserData(user.stringValue));
+    });
+    await Promise.all(friendPromises)
+      .then((result) => {
+        result.forEach((friendData) => {
+          friendresults.push({ id: friendData[0].id, name: friendData[0].name });
+        });
+      });
+    console.log(friendresults);
+    setFriendArray([...friendresults]);
+  }
+
   useEffect(() => {
     reRenderUser();
+    getFriendNames();
   }, []);
 
   useEffect(() => {
@@ -149,22 +191,24 @@ export default function mainProfile({ genreProp }) {
       <Head>
         <title>forte</title>
       </Head>
+      {
+        console.log(friendArray)
+      }
+      <Grid container sx={{ backgroundColor: '#673ab7' }}>
+        <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
+          <Avatar
+            src={`${sessionObj.image}`}
+            alt="Profile picture"
+            sx={{ width: 100, height: 100 }}
+          />
+        </Grid>
+      </Grid>
+      <Grid item xs={12} sx={{ textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ margin: '5px' }}>
+          {sessionObj.name}
+        </Typography>
+      </Grid>
       <Container sx={{ marginBottom: '58px' }}>
-        <Grid container>
-          <Grid item xs={12} display="flex" justifyContent="center" alignItems="center">
-            <Avatar
-              src={`${sessionObj.image}`}
-              alt="Profile picture"
-              sx={{ width: 100, height: 100 }}
-            />
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sx={{ textAlign: 'center' }}>
-          <Typography variant="h5" sx={{ margin: '5px' }}>
-            {sessionObj.name}
-          </Typography>
-        </Grid>
-
         <Grid container>
           <Grid item xs={12}>
             <Grid item xs={12}>
@@ -178,7 +222,7 @@ export default function mainProfile({ genreProp }) {
             <Grid item xs={12} display="flex" justifyContent="flex-start" flexWrap="wrap" flexDirection="row">
               {
                 currentUser.genres.arrayValue.values.map((genre, index) => (
-                  <Chip key={index} label={genre.stringValue} color="info" onDelete={() => handleDelete(genre)} sx={{ marginBottom: '10px', marginRight: '10px' }} />
+                  <Chip key={index} label={genre.stringValue} onDelete={() => handleDelete(genre)} sx={{ marginBottom: '10px', marginRight: '10px', backgroundColor: colors[index], color: 'white' }} />
                 ))
               }
             </Grid>
@@ -204,7 +248,6 @@ export default function mainProfile({ genreProp }) {
                   songList.map((song, index) => (
                     <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px' }}>
                       <Grid position="relative">
-                        <Button onClick={() => deleteSong(song)} sx={{ position: 'absolute', top: '0', left: '-20px', padding: '0', margin: '0' }}>&times;</Button>
                         <CardMedia
                           component="img"
                           sx={{ width: 100 }}
@@ -212,15 +255,20 @@ export default function mainProfile({ genreProp }) {
                           alt="album cover"
                         />
                       </Grid>
+                      <CardActionArea position="relative">
+                        <IconButton onClick={(e) => handleRemoveClick(e, song, 'song')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }}>
+                          <MoreVertIcon />
+                        </IconButton>
+                        <CardContent>
+                          <Typography component="div" variant="h6">
+                            {song.name}
+                          </Typography>
+                          <Typography variant="subtitle2" color="text.secondary" component="div">
+                            {song.artists[0].name}
+                          </Typography>
+                        </CardContent>
 
-                      <CardContent>
-                        <Typography component="div" variant="h6">
-                          {song.name}
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" component="div">
-                          {song.artists[0].name}
-                        </Typography>
-                      </CardContent>
+                      </CardActionArea>
                     </Card>
                   ))
                 )
@@ -247,7 +295,6 @@ export default function mainProfile({ genreProp }) {
                   events.map((event, index) => (
                     <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px', pointer: 'cursor' }}>
                       <Grid position="relative">
-                        <Button onClick={() => onDelete(sessionObj.id, event)} sx={{ position: 'absolute', top: '0', left: '-20px', padding: '0', margin: '0' }}>&times;</Button>
                         <CardMedia
                           component="img"
                           sx={{ width: 100, height: 100 }}
@@ -255,12 +302,15 @@ export default function mainProfile({ genreProp }) {
                           alt="album cover"
                         />
                       </Grid>
-                      <CardActionArea onClick={() => handleEventOpen(event[1])}>
+                      <CardActionArea onClick={() => handleEventOpen(event[1])} position="relative">
+                        <IconButton onClick={(e) => handleRemoveClick(e, event, 'event')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }}>
+                          <MoreVertIcon />
+                        </IconButton>
                         <CardContent sx={{ padding: '0 0 0 16px' }}>
-                          <Typography component="div" variant="h6">
+                          <Typography component="div" variant="h6" sx={{ width: '90%' }}>
                             {event[1].eventName}
                           </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" component="div" sx={{ overflowWrap: 'anywhere' }}>
+                          <Typography variant="subtitle2" color="text.secondary" component="div" sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '230px' }}>
                             {event[1].details}
                           </Typography>
                           <Typography variant="subtitle2" color="text.secondary" component="div">
@@ -305,7 +355,7 @@ export default function mainProfile({ genreProp }) {
                   {eventModal.userName}
                 </Typography>
                 <CardActions>
-                  <Button onClick={(e) => handlePopClick(e)}> Test</Button>
+                  <Button onClick={(e) => handlePopClick(e)}>Invite</Button>
                 </CardActions>
               </Box>
               <Typography variant="h4">{eventModal.eventName}</Typography>
@@ -326,6 +376,35 @@ export default function mainProfile({ genreProp }) {
         </Dialog>
 
         <Popover
+          id="removePopover"
+          open={openRemovePop}
+          anchorEl={removePopAnchor}
+          onClose={() => handleRemoveClose()}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          <List>
+            <ListItem>
+              {
+                itemToRemove.type === 'song'
+                  ? (
+                    <ListItemText>
+                      <Button color="secondary" onClick={() => deleteSong(itemToRemove.item)}>remove</Button>
+                    </ListItemText>
+                  )
+                  : (
+                    <ListItemText>
+                      <Button color="secondary" onClick={() => onDelete(sessionObj.id, itemToRemove.item)}>remove</Button>
+                    </ListItemText>
+                  )
+              }
+            </ListItem>
+          </List>
+        </Popover>
+
+        <Popover
           id="friendPopover"
           open={openPop}
           anchorEl={popOverAnchor}
@@ -335,22 +414,26 @@ export default function mainProfile({ genreProp }) {
             horizontal: 'left',
           }}
         >
-          <Grid container sx={{ width: '300px' }}>
+          <Grid container sx={{ width: '300px', height: '260px', overflow: 'scroll' }}>
             <Grid item>
               <TextField sx={{ width: '300px' }}>Search</TextField>
             </Grid>
             <Grid item xs={12}>
               <List>
-                <ListItem>
-                  <Grid container>
-                    <Grid xs={4} paddingTop="7px">
-                      <Typography>Andy Luu</Typography>
-                    </Grid>
-                    <Grid xs={8} textAlign="right">
-                      <Button>Share</Button>
-                    </Grid>
-                  </Grid>
-                </ListItem>
+                {
+                  friendArray.map((singleFriend) => (
+                    <ListItem key={singleFriend.id}>
+                      <Grid container>
+                        <Grid item xs={4} paddingTop="7px">
+                          <Typography>{singleFriend.name}</Typography>
+                        </Grid>
+                        <Grid item xs={8} textAlign="right">
+                          <Button>Share</Button>
+                        </Grid>
+                      </Grid>
+                    </ListItem>
+                  ))
+                }
               </List>
             </Grid>
           </Grid>
@@ -386,6 +469,15 @@ export default function mainProfile({ genreProp }) {
             }
           </List>
         </Dialog>
+
+        <Grid container justifyContent="center" alignItems="center" flexDirection="column">
+          <Grid item xs={12}>
+            <IconButton onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>
+              <LogoutIcon fontSize="large" sx={{ color: 'red' }} />
+            </IconButton>
+          </Grid>
+        </Grid>
+
       </Container>
       <BottomNav />
     </div>
