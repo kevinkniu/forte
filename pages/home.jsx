@@ -17,6 +17,8 @@ export default function Home() {
   const [view, setView] = useState('Explore');
   const sessionObj = getSession?.user;
 
+  console.log(getSession);
+
   useEffect(() => {
     if (status !== 'authenticated') {
       return;

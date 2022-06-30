@@ -173,9 +173,9 @@ export default function mainProfile({ genreProp }) {
     setFriendArray([...friendresults]);
   }
 
-  useEffect(async () => {
-    await reRenderUser();
-    await getFriendNames();
+  useEffect(() => {
+    reRenderUser();
+    getFriendNames();
   }, []);
 
   useEffect(() => {

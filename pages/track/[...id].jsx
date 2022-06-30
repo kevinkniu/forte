@@ -6,9 +6,11 @@ import Typography from '@mui/material/Typography';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useSession } from 'next-auth/react';
 import getToken from '../api/spotify/getToken';
 import getTrack from '../api/spotify/getTrack';
 import trackStyles from '../../styles/Track.module.css';
+
 
 const data = [
   {
@@ -35,7 +37,9 @@ const data = [
 ];
 
 export default function Track({ tokenProp, trackProp }) {
+  const { data: getSession } = useSession();
   const router = useRouter();
+  const sessionObj = getSession?.user;
 
   return (
     <div>
@@ -86,10 +90,10 @@ export default function Track({ tokenProp, trackProp }) {
           </div>
         </Paper>
 
-        {/* <SpotifyPlayer
-        token={tokenProp}
-        uris={[trackProp.uri]}
-      /> */}
+        <SpotifyPlayer
+          token={sessionObj?.tokenID}
+          uris={[trackProp.uri]}
+        />
 
       <div className={trackStyles.comments}>
         <div className={trackStyles.commentsHeader}>
