@@ -18,6 +18,7 @@ import deleteUserEvent from './api/users/deleteUserEvent';
 import deleteUserSong from './api/users/deleteUserSongs';
 import queryUserSongs from './api/users/getUserSongs';
 import queryUserData from './api/users/getUserData';
+import trackListStyles from '../styles/TrackList.module.css';
 
 export default function mainProfile({ genreProp }) {
   const { currentUser, setCurrentUser, setValue } = useContext(AppContext);
@@ -180,7 +181,7 @@ export default function mainProfile({ genreProp }) {
     const userSongs = await queryUserSongs(sessionObj.id);
     console.log(userSongs[0]);
     const tempArray = userSongs[0].reverse();
-    setSongList(tempArray);
+    setSongList(tempArray.slice(0, 5));
   }
 
   async function getFriendNames() {
@@ -247,7 +248,7 @@ export default function mainProfile({ genreProp }) {
         <Grid container>
           <Grid item xs={12}>
             <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px 10px' }}>
-              <Typography variant="subtitle1" sx={{ margin: '5px', display: 'flex', justifyContent: 'flex-start' }}>
+              <Typography variant="subtitle1" sx={{ display: 'flex', justifyContent: 'flex-start' }}>
                 Genres
               </Typography>
               <AddIcon onClick={() => handleOpen()} sx={{ display: 'flex', justifyContent: 'flex-start' }} />
@@ -261,9 +262,9 @@ export default function mainProfile({ genreProp }) {
                 )))}
             </Grid>
           </Grid>
-          <Grid item xs={12} md={6} lg={6} xl={6} sx={{ overflow: 'auto', maxHeight: '760px' }}>
+          <Grid item xs={12} md={6} lg={6} xl={6}>
             <Typography variant="subtitle1" sx={{ margin: '5px' }}>
-              Liked Songs
+              Recently Liked Songs
             </Typography>
             {
               songList.length === 0
@@ -279,30 +280,24 @@ export default function mainProfile({ genreProp }) {
                   </Link>
                 )
                 : (
-                  songList.map((song, index) => (
-                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px' }}>
-                      <Grid position="relative">
-                        <CardMedia
-                          component="img"
-                          sx={{ width: 100 }}
-                          image={song.album.images[0].url}
-                          alt="album cover"
-                        />
-                      </Grid>
-                      <CardActionArea position="relative">
-                        <MoreVertIcon onClick={(e) => handleRemoveClick(e, song, 'song')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }} />
-                        <CardContent>
-                          <Typography component="div" variant="h6">
-                            {song.name}
-                          </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" component="div">
-                            {song.artists[0].name}
-                          </Typography>
-                        </CardContent>
 
-                      </CardActionArea>
-                    </Card>
-                  ))
+                  <List position="relative">
+                    {
+                      songList.map((song, index) => (
+                        <ListItem className={trackListStyles.trackListEntry} key={index}>
+                          <img
+                            src={song.album.images[0].url}
+                            alt="album-cover"
+                          />
+                          <MoreVertIcon onClick={(e) => handleRemoveClick(e, song, 'song')} sx={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }} />
+                          <div className={trackListStyles.trackListEntryInfo}>
+                            <Typography noWrap sx={{ width: '230px' }}>{song.name}</Typography>
+                            <Typography component="span">{song.artists[0].name}</Typography>
+                          </div>
+                        </ListItem>
+                      ))
+                    }
+                  </List>
                 )
             }
           </Grid>
@@ -324,32 +319,32 @@ export default function mainProfile({ genreProp }) {
 
                 )
                 : (
-                  events.map((event, index) => (
-                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px', pointer: 'cursor' }}>
-                      <Grid position="relative">
-                        <CardMedia
-                          component="img"
-                          sx={{ width: 100, height: 100 }}
-                          image={event[1].photos[0] || '/userholder.png'}
-                          alt="album cover"
-                        />
-                      </Grid>
-                      <CardActionArea onClick={() => handleEventOpen({ eventDetail: event[1], eventID: event[0] })} position="relative">
-                        <MoreVertIcon onClick={(e) => handleRemoveClick(e, event, 'event')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }} />
-                        <CardContent sx={{ padding: '0 0 0 16px' }}>
-                          <Typography component="div" variant="h6" sx={{ width: '90%' }}>
-                            {event[1].eventName}
-                          </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" component="div" sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '230px' }}>
-                            {event[1].details}
-                          </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" component="div">
-                            {event[1].location}
-                          </Typography>
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
-                  ))
+                  <List position="relative">
+                    {
+                      events.map((event, index) => (
+                        <ListItem
+                          button
+                          className={trackListStyles.trackListEntry}
+                          key={index}
+                          onClick={() => handleEventOpen(
+                            {
+                              eventDetail: event[1], eventID: event[0],
+                            },
+                          )}
+                        >
+                          <img
+                            src={event[1].photos[0] || '/userholder.png'}
+                            alt="event"
+                          />
+                          <MoreVertIcon onClick={(e) => handleRemoveClick(e, event, 'event')} sx={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }} />
+                          <div className={trackListStyles.trackListEntryInfo}>
+                            <Typography noWrap>{event[1].eventName}</Typography>
+                            <Typography component="span" sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '230px' }}>{event[1].details}</Typography>
+                          </div>
+                        </ListItem>
+                      ))
+                    }
+                  </List>
                 )
             }
           </Grid>
@@ -357,7 +352,7 @@ export default function mainProfile({ genreProp }) {
 
         <Grid item xs={12} sx={{ textAlign: 'center' }}>
           <IconButton onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>
-            <LogoutIcon fontSize="large" sx={{ color: 'red' }} />
+            <LogoutIcon fontSize="large" sx={{ color: '#8E8E8E' }} />
           </IconButton>
         </Grid>
 
@@ -425,14 +420,10 @@ export default function mainProfile({ genreProp }) {
               {
                 itemToRemove.type === 'song'
                   ? (
-                    <ListItemText>
-                      <Button color="secondary" onClick={() => deleteSong(itemToRemove.item)}>remove</Button>
-                    </ListItemText>
+                    <ListItemText primary="delete" onClick={() => deleteSong(itemToRemove.item)} sx={{ color: 'red' }} />
                   )
                   : (
-                    <ListItemText>
-                      <Button color="secondary" onClick={() => onDelete(sessionObj.id, itemToRemove.item)}>remove</Button>
-                    </ListItemText>
+                    <ListItemText primary="delete" onClick={() => onDelete(sessionObj.id, itemToRemove.item)} sx={{ color: 'red' }} />
                   )
               }
             </ListItem>
