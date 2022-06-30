@@ -33,7 +33,7 @@ export default function ExploreCard({ myGenres, user }) {
       />
       <CardContent sx={{ py: 0, my: 0 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 0, py: 0 }}>
-          <Typography gutterBottom variant="h6" component="div" sx={{ m: 0, p: 0 }}>
+          <Typography gutterBottom component="div" sx={{ fontWeight: 600, fontSize: 24, m: 0, p: 0 }}>
             {userData.name.stringValue}
           </Typography>
           <CardActions>
