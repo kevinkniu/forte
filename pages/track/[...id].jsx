@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import Paper from '@mui/material/Paper';
@@ -9,8 +9,10 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useSession } from 'next-auth/react';
 import getToken from '../api/spotify/getToken';
 import getTrack from '../api/spotify/getTrack';
-import trackStyles from '../../styles/Track.module.css';
 
+import BottomNav from '../components/BottomNav';
+import updateUserSong from '../api/users/addUserSongs';
+import trackStyles from '../../styles/Track.module.css';
 
 const data = [
   {
@@ -33,13 +35,24 @@ const data = [
     body: 'Break my soul!',
     upvotes: 5,
     url: '',
-  }
+  },
 ];
 
-export default function Track({ tokenProp, trackProp }) {
-  const { data: getSession } = useSession();
+export default function Track({ trackProp }) {
   const router = useRouter();
+  const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
+
+  const [isFavorite, setFavorite] = useState(false);
+
+  async function addSong(song) {
+    await updateUserSong(sessionObj.id, song);
+  }
+
+  function handleFavorite() {
+    setFavorite(true);
+    addSong(trackProp);
+  }
 
   return (
     <div>
@@ -47,7 +60,6 @@ export default function Track({ tokenProp, trackProp }) {
         <ArrowBackIosNewIcon
           className={trackStyles.icon}
           onClick={() => router.back()}
-          className={trackStyles.icon}
         />
         <Typography
           variant="h6"
@@ -55,9 +67,13 @@ export default function Track({ tokenProp, trackProp }) {
         >
           {trackProp.name}
         </Typography>
-        <FavoriteBorderIcon
-          className={trackStyles.icon}
-        />
+        {isFavorite ? <FavoriteIcon className={trackStyles.icon} /> : (
+          <FavoriteBorderIcon
+            onClick={handleFavorite}
+            className={trackStyles.icon}
+          />
+        )}
+
       </header>
 
       <main>
@@ -95,38 +111,40 @@ export default function Track({ tokenProp, trackProp }) {
           uris={[trackProp.uri]}
         />
 
-      <div className={trackStyles.comments}>
-        <div className={trackStyles.commentsHeader}>
-          <p>Comments (35987)</p>
-          <span>Add comment</span>
-        </div>
+        <div className={trackStyles.comments}>
+          <div className={trackStyles.commentsHeader}>
+            <p>Comments (35987)</p>
+            <span>Add comment</span>
+          </div>
 
-        <div className={trackStyles.commentList}>
-          <ul>
-            {data.map(one => (
-              <li>
-              <div className={trackStyles.commentAvatar}>
-                {<img src='/userholder.png' />}
-              </div>
-              <div className={trackStyles.commentContent}>
-                <div className={trackStyles.commentTitle}>
-                  <div className={trackStyles.commentInfo}>
-                    <p>{one.name}</p>
-                    <p>{one.date}</p>
+          <div className={trackStyles.commentList}>
+            <ul>
+              {data.map((one) => (
+                <li>
+                  <div className={trackStyles.commentAvatar}>
+                    <img src="/userholder.png" />
                   </div>
-                  {/* <p>Upvotes: {one.upvotes}</p> */}
-                </div>
-                <div className={trackStyles.commentBody}>
-                  <p>{one.body}</p>
-                </div>
-              </div>
-            </li>
-            ))}
-          </ul>
+                  <div className={trackStyles.commentContent}>
+                    <div className={trackStyles.commentTitle}>
+                      <div className={trackStyles.commentInfo}>
+                        <p>{one.name}</p>
+                        <p>{one.date}</p>
+                      </div>
+                      {/* <p>Upvotes: {one.upvotes}</p> */}
+                    </div>
+                    <div className={trackStyles.commentBody}>
+                      <p>{one.body}</p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </div>
 
       </main>
+
+      <BottomNav />
     </div>
   );
 }
