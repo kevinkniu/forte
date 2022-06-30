@@ -80,7 +80,7 @@ export default function Home() {
       </Head>
 
       <Box>
-        <AppBar position="static" sx={{ bgcolor: '#673ab7' }}>
+        <AppBar position="fixed" sx={{ bgcolor: '#FFFFFF', color: '#5D43BF' }}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Explore' ? 1 : 0 }} onClick={() => { setView('Explore'); }}>
               Explore
@@ -102,7 +102,7 @@ export default function Home() {
       </Box>
 
       <main>
-        <Box sx={{ mb: 8 }}>
+        <Box sx={{ mt: 5, mb: 8 }}>
           {view === 'Explore' && (
             <Explore />
           )}

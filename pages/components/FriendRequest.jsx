@@ -49,21 +49,21 @@ export default function FriendRequest({ request }) {
           />
           <CardContent sx={{ pb: 0 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography gutterBottom variant="h6" component="div" sx={{ my: 0 }}>
+              <Typography gutterBottom component="div" sx={{ fontWeight: 600, fontSize: 18, m: 0, p: 0 }}>
                 {user.name.stringValue}
               </Typography>
-              <CardActions>
+              <CardActions sx={{ width: 150 }}>
                 <Button
                   onClick={() => { handleRequest('accept'); }}
                   size="small"
-                  sx={{ color: '#673ab7', typography: 'body1' }}
+                  sx={{ color: '#673ab7', width: 3 }}
                 >
                   Accept
                 </Button>
                 <Button
                   onClick={() => { handleRequest('delete'); }}
                   size="small"
-                  sx={{ color: '#673ab7', typography: 'body1' }}
+                  sx={{ color: '#673ab7', width: 2, px: 0 }}
                 >
                   Delete
                 </Button>

@@ -27,7 +27,6 @@ export default function Event({ event }) {
   const eventID = event._key.path.segments[6];
   const { currentUser } = useContext(AppContext);
   const [expanded, setExpanded] = useState(false);
-  // const [hidden, setHidden] = useState(false);
   const [attend, setAttend] = useState(currentUser.events.arrayValue.values.some(
     (item) => item.stringValue === eventID,
   ));
@@ -52,25 +51,6 @@ export default function Event({ event }) {
     });
   };
 
-  // const onDelete = () => {
-  //   if (eventData.userID.stringValue !== sessionObj.id) {
-  //     return;
-  //   }
-  //   const deleteEvent = async () => {
-  //     await fetch(`/api/events/${event._key.path.segments[6]}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         userID: sessionObj.id,
-  //       }),
-  //     });
-  //   };
-  //   deleteEvent();
-  //   setHidden(true);
-  // };
-
   return (
     <Card sx={{ mx: 3, my: 1, width: { xs: 325, sm: 500, md: 700 }, maxWidth: 700 }}>
       <CardHeader
@@ -94,8 +74,8 @@ export default function Event({ event }) {
           </Box>
         </Grid>
       )}
-      <CardContent>
-        <Typography sx={{ textDecoration: 'underline' }} variant="body2">
+      <CardContent sx={{ px: 2, py: 1 }}>
+        <Typography sx={{ textDecoration: 'underline', fontWeight: 600 }} variant="body2">
           {`happening on ${new Date(eventData.date.timestampValue.seconds * 1000
             + eventData.timestamp.timestampValue.nanos / 1000000).toLocaleTimeString([], {
             year: 'numeric',
@@ -107,7 +87,7 @@ export default function Event({ event }) {
           {eventData.eventName.stringValue}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
+      <CardActions disableSpacing sx={{ pt: 0, pb: 1 }}>
         <IconButton onClick={() => { onEventChange(); }} aria-label="add to favorites">
           <Checkbox
             icon={<CalendarTodayIcon />}
@@ -125,8 +105,11 @@ export default function Event({ event }) {
         </ExpandMore>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph variant="body2">
+        <CardContent sx={{ px: 2, py: 1 }}>
+          <Typography paragraph variant="body2" sx={{ my: 0, fontWeight: 600, textDecoration: 'underline' }}>
+            Details:
+          </Typography>
+          <Typography paragraph variant="body2" sx={{ my: 0 }}>
             {eventData.details.stringValue}
           </Typography>
         </CardContent>
