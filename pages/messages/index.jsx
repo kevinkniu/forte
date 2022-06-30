@@ -40,6 +40,9 @@ export default function Messages() {
   }, [status]);
 
   useEffect(() => {
+    if (status !== 'authenticated') {
+      return;
+    }
     axios.get(`/api/messages/getAllChatRooms?spotifyId=${sessionObj.id}`)
       .then((rooms) => {
         // console.log(rooms.data);
@@ -57,7 +60,7 @@ export default function Messages() {
         setRenderRooms((results) => results + 1);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [status]);
 
   useEffect(() => {
     // console.log('THESE ARE OUR CHATROOMS', chatRooms);
