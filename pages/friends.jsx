@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useState, useContext, useEffect } from 'react';
 import { Button, Avatar } from '@mui/material';
 import styled from 'styled-components';
 import Router from 'next/router';
+import { AppContext } from './_app';
 import BottomNav from './components/BottomNav';
 
 const dummydata = [
@@ -26,21 +28,55 @@ const dummydata = [
 ];
 
 export default function Friends() {
-  const { getSession } = useSession();
+  const { data: getSession, status } = useSession();
   const sessionObj = getSession?.user;
+  const [friends, setFriends] = useState([]);
+  const { setValue, currentUser, setCurrentUser } = useContext(AppContext);
+
+  const initializeFriends = async () => {
+    setValue(1);
+    const response = await fetch(`/api/users/${sessionObj?.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    const user = result[0]._delegate._document.data.value.mapValue.fields;
+    setCurrentUser(user);
+    setFriends(result[0]._delegate._document.data.value.mapValue.fields.friends.arrayValue.values);
+  };
+
+  useEffect(() => {
+    if (!currentUser) {
+      if (status !== 'authenticated') {
+        return;
+      }
+      initializeFriends();
+    } else {
+      setFriends(currentUser.friends.arrayValue.values);
+    }
+  }, [status]);
+  console.log(currentUser);
 
   const renderFriends = (friendsArray) => (
-    friendsArray.map((friend) => (
-      <FriendsContainer key={friend.id}>
-        <PhotoContainer>
-          <Avatar src={friend.profPic} alt="" sx={{ width: 75, height: 75 }} />
-        </PhotoContainer>
-        <ProfileDetails>
-          <Username>{friend.name}</Username>
-          <Message>Message</Message>
-        </ProfileDetails>
-      </FriendsContainer>
-    ))
+    friendsArray.map((friend) => {
+      axios.get(`/api/friends/getFriends?id=${friend.stringValue}`)
+        .then((results) => {
+          console.log('the gangs all here', results);
+        })
+        .catch((err) => console.log(err));
+      return (<div>hello</div>);
+      // <FriendsContainer key={friend.id}>
+      //   <PhotoContainer>
+      //     <Avatar src={friend.profPic} alt="" sx={{ width: 75, height: 75 }} />
+      //   </PhotoContainer>
+      //   <ProfileDetails>
+      //     <Username>{friend.name}</Username>
+      //     <Message>Message</Message>
+      //   </ProfileDetails>
+      // </FriendsContainer>
+    })
   );
 
   return (
@@ -50,7 +86,7 @@ export default function Friends() {
       </h1>
       <Button variant="contained">Friends</Button>
       <Button variant="contained" onClick={() => { Router.push('/messages'); }}>Messages</Button>
-      {renderFriends(dummydata)}
+      {renderFriends(friends)}
       <BottomNav />
     </div>
   );

@@ -4,9 +4,13 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Router, { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { Button, TextField, InputAdornment, Avatar, List, ListItem } from '@mui/material';
+import { Button, TextField, InputAdornment, ListItemAvatar, ListItemText, Avatar, List, ListItem } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { io } from 'socket.io-client';
+import { collection, getFirestore, where, orderBy, query, onSnapshot } from 'firebase/firestore';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import firebase from 'firebase/compat/app';
+import { db, app } from '../../firebase';
 import BottomNav from '../components/BottomNav';
 
 const socket = io.connect('http://localhost:3001');
@@ -20,6 +24,13 @@ export default function Chats() {
   const [load, setLoad] = useState(false);
 
   const router = useRouter();
+
+  const roomLink = db.collection('rooms').where(firebase.firestore.FieldPath.documentId(), '==', router.query.id);
+  const messageStream = onSnapshot(roomLink, (querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      console.log('messageStream:', doc);
+    });
+  });
 
   socket.on('connect', () => {
     console.log('Successfully connected!');
@@ -44,7 +55,7 @@ export default function Chats() {
         setAllMessages(results.data[0]._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
       })
       .catch((err) => console.log(err));
-  }, [load, messageRecieved, socket, room]);
+  }, [load, messageRecieved, room]);
 
   // console.log('These are our messages', allMessages);
 
@@ -52,13 +63,25 @@ export default function Chats() {
     messagesArray.map((item) => {
       const { userName, userProfilePic, userSpotifyId, timestamp } = item.mapValue.fields;
       const userMessage = item.mapValue.fields.message;
-      // console.log('MESSAGE OBJ', { userName, userProfilePic, userSpotifyId, userMessage, timestamp });
+
+      if (userSpotifyId === sessionObj.id) {
+        return (
+          <ListItem alignItems="flex-end" sx={{ bgcolor: '#673ab7' }}>
+            <ListItemText primary={userMessage.stringValue} />
+            <ListItemAvatar>
+              <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 25, height: 25 }} />
+            </ListItemAvatar>
+          </ListItem>
+        );
+      }
 
       return (
-        <div>
-          <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 75, height: 75 }} />
-          <p>{userMessage.stringValue}</p>
-        </div>
+        <ListItem alignItems="flex-start">
+          <ListItemAvatar>
+            <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 25, height: 25 }} />
+          </ListItemAvatar>
+          <ListItemText primary={userMessage.stringValue} />
+        </ListItem>
       );
     })
   );
@@ -68,6 +91,9 @@ export default function Chats() {
       <h1 align="center">
         chats
       </h1>
+      <div>
+        {messageStream}
+      </div>
       <Button variant="contained" size="small" onClick={() => { Router.push('/messages'); }}>go back to messages</Button>
       <MessagesContainer>
         {/* <input
@@ -99,7 +125,9 @@ export default function Chats() {
         </Button>
       </MessagesContainer>
       {/* {!allMessages.length ? renderMessages(allMessages) : <b>loading messages</b>} */}
-      {renderMessages(allMessages)}
+      <List sx={{ width: '100%' }}>
+        {renderMessages(allMessages)}
+      </List>
       <BottomNav />
     </ChatContainer>
   );

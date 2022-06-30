@@ -1,4 +1,3 @@
-import firebase from 'firebase/compat/app';
 import { db } from '../../../firebase';
 
 export default function addRoomToUser(req, res) {
