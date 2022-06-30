@@ -55,6 +55,7 @@ export default function releaseTracks() {
             <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#8996A6' }}>
               <Link href={`/track/${track.id}`}>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto' }}>
+                  <img src={releaseImage} alt="N/A" style={{ width: '50px', height: '50px', borderRadius: '4px' }} />
                   <Grid sx={{ display: 'flex', flexDirection: 'column', m: 0.5 }}>
                     <Typography sx={{ fontSize: '1rem' }}>
                       {track.name.length > 33 ? `${track.name.slice(0, 30)}...` : track.name}
