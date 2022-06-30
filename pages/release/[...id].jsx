@@ -44,7 +44,7 @@ export default function releaseTracks() {
           <Box sx={{ display: 'flex', pb: 3, borderBottom: 1, borderColor: '#8996A6' }}>
             <img src={releaseImage} alt="N/A" style={{ width: '150px', height: '150px', borderRadius: '4px' }} />
             <Box sx={{ ml: 1 }}>
-              <Typography sx={{ fontSize: '20px' }}>
+              <Typography sx={{ fontSize: '20px', fontWeight: '600' }}>
                 {currentRelease.name || '/userholder.png'}
               </Typography>
               <Typography sx={{ fontSize: '12px', color: '#8996A6' }}>
@@ -57,7 +57,7 @@ export default function releaseTracks() {
               <Link href={`/track/${track.id}`}>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto', justifyContent: 'space-between' }}>
                   <Grid sx={{ display: 'flex', flexDirection: 'column', m: 0.5 }}>
-                    <Typography sx={{ fontSize: '1rem' }}>
+                    <Typography sx={{ fontSize: '1rem', font: '#121435', fontWeight: '600' }}>
                       {track.name.length > 33 ? `${track.name.slice(0, 30)}...` : track.name}
                     </Typography>
                     <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
@@ -65,7 +65,7 @@ export default function releaseTracks() {
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: 'flex', alignItems: 'center' }}>
-                    <PlayCircleOutlineIcon />
+                    <PlayCircleOutlineIcon sx={{ color: '#44566C' }} />
                   </Grid>
                 </Grid>
               </Link>

@@ -36,25 +36,25 @@ export default function albumTracks() {
       <main>
         <Box sx={{ paddingTop: '10px', paddingLeft: '20px', paddingRight: '20px', marginBottom: '70px' }}>
           {allTracks.length && allTracks.map((track, index) => (
-            <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#8996A6' }}>
+            <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#CDCFD2', paddingTop: '12px' }}>
               <Link href={`/track/${track.track.id}`}>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', overflow: 'auto', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Grid sx={{ display: 'flex' }}>
-                  <img src={track.track.album?.images[0]?.url || '/userholder.png'} alt="N/A" style={{ width: '55px', height: '55px', borderRadius: '4px' }} />
-                  <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', marginLeft: '10px' }}>
-                    <Typography sx={{ fontSize: '1rem' }}>
-                      {track.track.name.length > 33 ? `${track.track.name.slice(0, 30)}...` : track.track.name}
-                    </Typography>
-                    <Typography sx={{ fontSize: '13px', color: '#757575' }}>
-                      {track.track.artists[0].name}
-                    </Typography>
-                    <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
-                      {millisToMinutesAndSeconds(track.track.duration_ms)}
-                    </Typography>
-                  </Grid>
+                    <img src={track.track.album?.images[0]?.url || '/userholder.png'} alt="N/A" style={{ width: '55px', height: '55px', borderRadius: '4px' }} />
+                    <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', marginLeft: '10px' }}>
+                      <Typography sx={{ fontSize: '1rem', fontWeight: '600' }}>
+                        {track.track.name.length > 33 ? `${track.track.name.slice(0, 30)}...` : track.track.name}
+                      </Typography>
+                      <Typography sx={{ fontSize: '13px', color: '#757575' }}>
+                        {track.track.artists[0].name}
+                      </Typography>
+                      <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
+                        {millisToMinutesAndSeconds(track.track.duration_ms)}
+                      </Typography>
+                    </Grid>
                   </Grid>
                   <Grid>
-                    <PlayCircleOutlineIcon />
+                    <PlayCircleOutlineIcon sx={{ color: '#44566C' }} />
                   </Grid>
                 </Grid>
               </Link>

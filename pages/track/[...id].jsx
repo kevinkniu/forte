@@ -94,6 +94,8 @@ export default function Track({ tokenProp, trackProp }) {
             token={sessionObj?.tokenID}
             uris={[trackProp.uri]}
             autoPlay={true}
+            persistDeviceSelection={true}
+            initialVolume={0}
             styles={{
               display: 'flex',
               activeColor: '#333',

@@ -26,11 +26,11 @@ export default function TrackListEntry({ track }) {
           alt="album-cover"
         />
         <div className={trackListStyles.trackListEntryInfo}>
-          <Typography noWrap>{track.name.length > 30 ? `${track.name.slice(0, 25)}...` : track.name}</Typography>
+          <Typography noWrap sx={{ fontWeight: '600' }}>{track.name.length > 30 ? `${track.name.slice(0, 25)}...` : track.name}</Typography>
           <Typography component="span">{track.artists[0].name}</Typography>
         </div>
         <div>
-          <PlayCircleOutlineIcon />
+          <PlayCircleOutlineIcon sx={{ color: '#44566C' }} />
         </div>
       </ListItem>
     </Link>
