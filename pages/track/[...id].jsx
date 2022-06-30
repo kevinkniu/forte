@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react';
 import getToken from '../api/spotify/getToken';
 import getTrack from '../api/spotify/getTrack';
 
+import BottomNav from '../components/BottomNav';
 import updateUserSong from '../api/users/addUserSongs';
 import trackStyles from '../../styles/Track.module.css';
 
@@ -142,6 +143,8 @@ export default function Track({ trackProp }) {
         </div>
 
       </main>
+
+      <BottomNav />
     </div>
   );
 }
