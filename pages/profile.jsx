@@ -42,25 +42,22 @@ export default function mainProfile({ genreProp }) {
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
 
-  const sendEventReq = async (friend, eventIdToSend) => {
+  const sendEventReq = async (friend, eventIdToSend, isAdded) => {
     await fetch('/api/users/sendEventReq', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
       },
       body: JSON.stringify({
-        type: true,
-        targetUserID: friend,
+        type: !isAdded,
+        userID: sessionObj.id,
+        targetUser: friend,
         eventID: eventIdToSend,
       }),
     });
-    // setAdded(!added);
     const friendToFind = friendArray.find((targetFriend) => targetFriend.id === friend.id);
-    friendToFind.added = true;
+    friendToFind.added = !isAdded;
     const friendIndex = friendArray.findIndex((targetFriend) => targetFriend.id === friend.id);
-
-    console.log(friendToFind);
-    console.log(friendIndex);
 
     if (friendIndex >= 0) {
       friendArray[friendIndex] = friendToFind;
@@ -186,7 +183,6 @@ export default function mainProfile({ genreProp }) {
   async function getFriendNames() {
     const friendPromises = [];
     const friendresults = [];
-    console.log(currentUser);
     currentUser.friends.arrayValue.values.forEach((user) => {
       friendPromises.push(queryUserData(user.stringValue));
     });
@@ -205,11 +201,8 @@ export default function mainProfile({ genreProp }) {
   }
 
   useEffect(() => {
-    async function getRenderFriendNames() {
-      await reRenderUser();
-      await getFriendNames();
-    }
-    getRenderFriendNames();
+    reRenderUser();
+    getFriendNames();
   }, []);
 
   useEffect(() => {
@@ -225,9 +218,6 @@ export default function mainProfile({ genreProp }) {
       <Head>
         <title>forte</title>
       </Head>
-      {
-        console.log(eventModal)
-      }
       <Grid container sx={{ backgroundColor: '#673ab7' }}>
         <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
           <Avatar
@@ -242,7 +232,7 @@ export default function mainProfile({ genreProp }) {
           {sessionObj.name}
         </Typography>
       </Grid>
-      <Container sx={{ marginBottom: '58px' }}>
+      <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', height: '70vh', overflow: 'auto' }}>
         <Grid container>
           <Grid item xs={12}>
             <Grid item xs={12}>
@@ -261,7 +251,7 @@ export default function mainProfile({ genreProp }) {
               }
             </Grid>
           </Grid>
-          <Grid item xs={12} md={6} lg={6} xl={6}>
+          <Grid item xs={12} md={6} lg={6} xl={6} sx={{ overflow: 'auto', maxHeight: '760px' }}>
             <Typography variant="h5" sx={{ margin: '5px' }}>
               Liked Songs
             </Typography>
@@ -306,7 +296,7 @@ export default function mainProfile({ genreProp }) {
                 )
             }
           </Grid>
-          <Grid item xs={12} md={6} lg={6} xl={6}>
+          <Grid item xs={12} md={6} lg={6} xl={6} sx={{ overflow: 'auto', maxHeight: '760px' }}>
             <Typography variant="h5" sx={{ margin: '5px' }}>
               Events
             </Typography>
@@ -353,7 +343,12 @@ export default function mainProfile({ genreProp }) {
                 )
             }
           </Grid>
+        </Grid>
 
+        <Grid item xs={12} sx={{ textAlign: 'center' }}>
+          <IconButton onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>
+            <LogoutIcon fontSize="large" sx={{ color: 'red' }} />
+          </IconButton>
         </Grid>
 
         <Dialog
@@ -452,17 +447,18 @@ export default function mainProfile({ genreProp }) {
               <List>
                 {
                   friendArray.filter(((friend) => friend.name.toLowerCase().includes(searchName)
-                  && (friend.events.findIndex((eventId) => eventId === eventModal.EventId) === -1 && friend.eventReq.findIndex((eventId) => eventId === eventModal.EventId) === -1)
+                    && (friend.events.findIndex((eventId) => eventId === eventModal.eventID) === -1
+                      && friend.eventReq.findIndex((eventId) => eventId
+                      === eventModal.eventID) === -1)
                   ))
                     .map((singleFriend) => (
                       <ListItem key={singleFriend.id}>
                         <Grid container>
                           <Grid item xs={4} paddingTop="7px">
                             <Typography>{singleFriend.name}</Typography>
-                            <Typography>{singleFriend.id}</Typography>
                           </Grid>
                           <Grid item xs={8} textAlign="right">
-                            <Button onClick={() => { sendEventReq(singleFriend, eventModal.eventID); }} size="small" sx={{ color: (singleFriend.added) ? 'text.secondary' : '#673ab7', typography: 'body1' }}>{singleFriend.added ? 'Invited' : 'Invite'}</Button>
+                            <Button onClick={() => { sendEventReq(singleFriend, eventModal.eventID, singleFriend.added); }} size="small" sx={{ color: (singleFriend.added) ? 'text.secondary' : '#673ab7', typography: 'body1' }}>{singleFriend.added ? 'Invited' : 'Invite'}</Button>
                           </Grid>
                         </Grid>
                       </ListItem>
@@ -503,15 +499,6 @@ export default function mainProfile({ genreProp }) {
             }
           </List>
         </Dialog>
-
-        <Grid container justifyContent="center" alignItems="center" flexDirection="column">
-          <Grid item xs={12}>
-            <IconButton onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>
-              <LogoutIcon fontSize="large" sx={{ color: 'red' }} />
-            </IconButton>
-          </Grid>
-        </Grid>
-
       </Container>
       <BottomNav />
     </div>
