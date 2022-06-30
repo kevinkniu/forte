@@ -218,32 +218,32 @@ export default function mainProfile({ genreProp }) {
       <Head>
         <title>forte</title>
       </Head>
-      <Grid container sx={{ backgroundColor: '#673ab7' }}>
-        <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
-          <Avatar
-            src={`${sessionObj.image}`}
-            alt="Profile picture"
-            sx={{ width: 100, height: 100 }}
-          />
+      <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', overflow: 'auto', padding: '0' }}>
+        <Grid container sx={{ backgroundColor: '#673ab7' }}>
+          <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
+            <Avatar
+              src={`${sessionObj.image}`}
+              alt="Profile picture"
+              sx={{ width: 160, height: 160 }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={12} sx={{ textAlign: 'center' }}>
-        <Typography variant="h5" sx={{ margin: '5px' }}>
-          {sessionObj.name}
-        </Typography>
-      </Grid>
-      <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', height: '70vh', overflow: 'auto' }}>
+        <Grid item xs={12} sx={{ textAlign: 'center', padding: '8px 0 0 0', margin: '0' }}>
+          <Typography variant="h4">
+            {sessionObj.name}
+          </Typography>
+        </Grid>
         <Grid container>
           <Grid item xs={12}>
-            <Grid item xs={12}>
-              <Typography variant="h5" sx={{ margin: '5px', float: 'left' }}>
+            <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px 10px' }}>
+              <Typography variant="subtitle1" sx={{ margin: '5px', display: 'flex', justifyContent: 'flex-start' }}>
                 Genres
               </Typography>
-              <Button onClick={() => handleOpen()} sx={{ float: 'right' }}>+</Button>
+              <AddIcon onClick={() => handleOpen()} sx={{ display: 'flex', justifyContent: 'flex-start' }} />
               <Grid sx={{ clear: 'both' }} />
             </Grid>
 
-            <Grid item xs={12} display="flex" justifyContent="flex-start" flexWrap="wrap" flexDirection="row">
+            <Grid item xs={12} display="flex" justifyContent="space-around" flexWrap="wrap" flexDirection="row" padding="0 5px 5px 10px">
               {
                 currentUser.genres.arrayValue.values.map((genre, index) => (
                   <Chip key={index} label={genre.stringValue} onDelete={() => handleDelete(genre)} sx={{ marginBottom: '10px', marginRight: '10px', backgroundColor: colors[index], color: 'white' }} />
@@ -252,7 +252,7 @@ export default function mainProfile({ genreProp }) {
             </Grid>
           </Grid>
           <Grid item xs={12} md={6} lg={6} xl={6} sx={{ overflow: 'auto', maxHeight: '760px' }}>
-            <Typography variant="h5" sx={{ margin: '5px' }}>
+            <Typography variant="subtitle1" sx={{ margin: '5px' }}>
               Liked Songs
             </Typography>
             {
@@ -297,7 +297,7 @@ export default function mainProfile({ genreProp }) {
             }
           </Grid>
           <Grid item xs={12} md={6} lg={6} xl={6} sx={{ overflow: 'auto', maxHeight: '760px' }}>
-            <Typography variant="h5" sx={{ margin: '5px' }}>
+            <Typography variant="subtitle1" sx={{ margin: '5px' }}>
               Events
             </Typography>
             {
@@ -449,7 +449,7 @@ export default function mainProfile({ genreProp }) {
                   friendArray.filter(((friend) => friend.name.toLowerCase().includes(searchName)
                     && (friend.events.findIndex((eventId) => eventId === eventModal.eventID) === -1
                       && friend.eventReq.findIndex((eventId) => eventId
-                      === eventModal.eventID) === -1)
+                        === eventModal.eventID) === -1)
                   ))
                     .map((singleFriend) => (
                       <ListItem key={singleFriend.id}>
