@@ -16,7 +16,6 @@ export default async function handler(req, res) {
     await updateDoc(userDocRef, {
       events: arrayRemove(docRef.id),
     });
+    res.status(200).json('deleted!');
   }
-
-  res.status(200).json('deleted!');
 }

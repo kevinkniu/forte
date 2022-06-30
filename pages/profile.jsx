@@ -20,7 +20,7 @@ import queryUserSongs from './api/users/getUserSongs';
 import queryUserData from './api/users/getUserData';
 
 export default function mainProfile({ genreProp }) {
-  const { currentUser, setCurrentUser } = useContext(AppContext);
+  const { currentUser, setCurrentUser, setValue } = useContext(AppContext);
   const [open, setOpen] = useState(false);
   const [eventOpen, setEventOpen] = useState(false);
   const [genres, setGenres] = useState(genreProp.genres);
@@ -39,7 +39,7 @@ export default function mainProfile({ genreProp }) {
 
   const colors = ['#5F3DC4', '#66A80F', '#D6336C', '#37b24d', '#FCC419', '#E8590C', '#3B5BDB', '#f03e3e', '#9c36b5', '#0ca678'];
 
-  const { data: getSession } = useSession();
+  const { data: getSession, status } = useSession();
   const sessionObj = getSession?.user;
 
   const sendEventReq = async (friend, eventIdToSend, isAdded) => {
@@ -68,7 +68,7 @@ export default function mainProfile({ genreProp }) {
 
   async function getEvents() {
     const tempEvents = [];
-    currentUser.events.arrayValue.values.map((event) => (
+    currentUser?.events.arrayValue.values.map((event) => (
       tempEvents.push(event.stringValue)
     ));
     const data = await queryUserEvents(tempEvents);
@@ -76,6 +76,7 @@ export default function mainProfile({ genreProp }) {
   }
 
   async function reRenderUser() {
+    setValue(3);
     const response = await fetch(`/api/users/${sessionObj.id}`, {
       method: 'GET',
       headers: {
@@ -177,13 +178,15 @@ export default function mainProfile({ genreProp }) {
 
   async function getSongs() {
     const userSongs = await queryUserSongs(sessionObj.id);
-    setSongList(userSongs[0]);
+    console.log(userSongs[0]);
+    const tempArray = userSongs[0].reverse();
+    setSongList(tempArray);
   }
 
   async function getFriendNames() {
     const friendPromises = [];
     const friendresults = [];
-    currentUser.friends.arrayValue.values.forEach((user) => {
+    currentUser?.friends.arrayValue.values.forEach((user) => {
       friendPromises.push(queryUserData(user.stringValue));
     });
     await Promise.all(friendPromises)
@@ -201,13 +204,19 @@ export default function mainProfile({ genreProp }) {
   }
 
   useEffect(() => {
-    reRenderUser();
-    getFriendNames();
-  }, []);
-
-  useEffect(() => {
-    getSongs();
-  }, []);
+    if (!currentUser) {
+      if (status !== 'authenticated') {
+        return;
+      }
+      reRenderUser();
+      getFriendNames();
+      getSongs();
+    } else {
+      reRenderUser();
+      getFriendNames();
+      getSongs();
+    }
+  }, [status]);
 
   useEffect(() => {
     getEvents();
@@ -218,11 +227,12 @@ export default function mainProfile({ genreProp }) {
       <Head>
         <title>forte</title>
       </Head>
+
       <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', overflow: 'auto', padding: '0' }}>
         <Grid container sx={{ backgroundColor: '#673ab7' }}>
           <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
             <Avatar
-              src={`${sessionObj.image}`}
+              src={sessionObj?.image || '/userholder.png'}
               alt="Profile picture"
               sx={{ width: 160, height: 160 }}
             />
@@ -230,9 +240,10 @@ export default function mainProfile({ genreProp }) {
         </Grid>
         <Grid item xs={12} sx={{ textAlign: 'center', padding: '8px 0 0 0', margin: '0' }}>
           <Typography variant="h4">
-            {sessionObj.name}
+            {sessionObj?.name}
           </Typography>
         </Grid>
+
         <Grid container>
           <Grid item xs={12}>
             <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px 10px' }}>
@@ -244,11 +255,10 @@ export default function mainProfile({ genreProp }) {
             </Grid>
 
             <Grid item xs={12} display="flex" justifyContent="space-around" flexWrap="wrap" flexDirection="row" padding="0 5px 5px 10px">
-              {
+              {currentUser && (
                 currentUser.genres.arrayValue.values.map((genre, index) => (
                   <Chip key={index} label={genre.stringValue} onDelete={() => handleDelete(genre)} sx={{ marginBottom: '10px', marginRight: '10px', backgroundColor: colors[index], color: 'white' }} />
-                ))
-              }
+                )))}
             </Grid>
           </Grid>
           <Grid item xs={12} md={6} lg={6} xl={6} sx={{ overflow: 'auto', maxHeight: '760px' }}>

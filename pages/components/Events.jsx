@@ -74,7 +74,7 @@ export default function Events() {
         currentUserID,
         userID: sessionObj.id,
         userName: sessionObj.name,
-        profPic: sessionObj.image,
+        profPic: sessionObj.image || '/userholder.png',
         eventName: nameRef.current.value,
         date,
         location: locRef.current.value,

@@ -35,7 +35,7 @@ export default function albumTracks() {
       <main>
         <Box sx={{ paddingTop: '10px', paddingLeft: '20px', paddingRight: '20px', marginBottom: '70px' }}>
           {allTracks.length && allTracks.map((track, index) => (
-            <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#8996A6' }}>
+            <Box fullwidth key={index} sx={{ mb: 1.75 }}>
               <Link href={`/track/${track.track.id}`}>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', overflow: 'auto' }}>
                   <img src={track.track.album?.images[0]?.url || '/userholder.png'} alt="N/A" style={{ width: '55px', height: '55px', borderRadius: '4px' }} />
