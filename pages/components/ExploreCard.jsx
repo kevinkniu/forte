@@ -31,9 +31,9 @@ export default function ExploreCard({ myGenres, user }) {
         image={userData.profPic.stringValue}
         alt="N/A"
       />
-      <CardContent sx={{ pb: 0 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography gutterBottom variant="h6" component="div" sx={{ my: 0 }}>
+      <CardContent sx={{ py: 0, my: 0 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 0, py: 0 }}>
+          <Typography gutterBottom component="div" sx={{ fontWeight: 600, fontSize: 24, m: 0, p: 0 }}>
             {userData.name.stringValue}
           </Typography>
           <CardActions>

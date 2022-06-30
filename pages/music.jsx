@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Head from 'next/head';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { Grid, Typography, Card } from '@mui/material';
 import Slider from 'react-slick';
@@ -13,10 +13,7 @@ import getNewReleases from './api/spotify/getNewReleases';
 import { AppContext } from './_app';
 
 export default function Music({ releasesProp, playlistsProp }) {
-  const { setCurrentPlaylist, setCurrentRelease } = useContext(AppContext);
-
-  console.log('releases:', releasesProp);
-  console.log('playlists:', playlistsProp);
+  const { setCurrentPlaylist, setCurrentRelease, setValue } = useContext(AppContext);
 
   const updatePlaylist = (item) => {
     console.log(item);
@@ -29,11 +26,12 @@ export default function Music({ releasesProp, playlistsProp }) {
   };
 
   const settings = {
-    dots: false,
+    dots: true,
     infinite: false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 4,
+    arrows: true,
     initialSlide: 0,
     responsive: [
       {
@@ -41,7 +39,8 @@ export default function Music({ releasesProp, playlistsProp }) {
         settings: {
           slidesToShow: 3,
           slidesToScroll: 3,
-          infinite: true,
+          infinite: false,
+          arrows: true,
           dots: true,
         },
       },
@@ -51,6 +50,8 @@ export default function Music({ releasesProp, playlistsProp }) {
           slidesToShow: 2,
           slidesToScroll: 2,
           initialSlide: 0,
+          infinite: false,
+          dots: true,
         },
       },
       {
@@ -58,10 +59,17 @@ export default function Music({ releasesProp, playlistsProp }) {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
+          initialSlide: 0,
+          infinite: false,
+          dots: true,
         },
       },
     ],
   };
+
+  useEffect(() => {
+    setValue(2);
+  }, []);
 
   return (
     <div>
@@ -80,7 +88,7 @@ export default function Music({ releasesProp, playlistsProp }) {
             </Box>
           </Link>
           <h1>New Releases</h1>
-          <Box sx={{ alignContent: 'center', justifyContent: 'center', width: { xs: 350, sm: 500, md: 700 }, px: 1 }}>
+          <Box sx={{ alignContent: 'center', justifyContent: 'center', width: { xs: 350, sm: 500, md: 700 }, px: 1, mb: 5 }}>
             <Slider {...settings}>
               {releasesProp.length && releasesProp.map((item) => (
                 <Grid container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">

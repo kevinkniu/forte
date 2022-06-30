@@ -1,7 +1,5 @@
 import Head from 'next/head';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
-import { Box, Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Stack, Chip, Container } from '@mui/material';
+import { Button, Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Container } from '@mui/material';
 import { useState, useEffect } from 'react';
 import BottomNav from '../components/BottomNav';
 import queryUserData from '../api/users/getUserData';
@@ -45,6 +43,10 @@ export default function userProfile({ result }) {
       <Container sx={{ marginBottom: '58px' }}>
         <Grid container>
           <Grid item xs={12}>
+            <Grid item xs={12} textAlign="center">
+              <Button> Add Friend </Button>
+              <Button> Message </Button>
+            </Grid>
             <Grid item xs={12}>
               <Typography variant="h5" sx={{ margin: '5px', float: 'left' }}>
                 Genres
