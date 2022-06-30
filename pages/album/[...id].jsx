@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Link from 'next/link';
 import { Grid, Typography } from '@mui/material';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import BottomNav from '../components/BottomNav';
 import { AppContext } from '../_app';
 import getTracks from '../api/spotify/getTracks';
@@ -37,7 +38,8 @@ export default function albumTracks() {
           {allTracks.length && allTracks.map((track, index) => (
             <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#8996A6' }}>
               <Link href={`/track/${track.track.id}`}>
-                <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', overflow: 'auto' }}>
+                <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', overflow: 'auto', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Grid sx={{ display: 'flex' }}>
                   <img src={track.track.album?.images[0]?.url || '/userholder.png'} alt="N/A" style={{ width: '55px', height: '55px', borderRadius: '4px' }} />
                   <Grid sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', marginLeft: '10px' }}>
                     <Typography sx={{ fontSize: '1rem' }}>
@@ -49,6 +51,10 @@ export default function albumTracks() {
                     <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
                       {millisToMinutesAndSeconds(track.track.duration_ms)}
                     </Typography>
+                  </Grid>
+                  </Grid>
+                  <Grid>
+                    <PlayCircleOutlineIcon />
                   </Grid>
                 </Grid>
               </Link>
