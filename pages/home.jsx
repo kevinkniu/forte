@@ -102,7 +102,7 @@ export default function Home() {
       </Box>
 
       <main>
-        <Box sx={{ mt: 5, mb: 8 }}>
+        <Box sx={{ mt: 5, mb: 7 }}>
           {view === 'Explore' && (
             <Explore />
           )}
