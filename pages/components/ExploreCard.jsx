@@ -24,8 +24,6 @@ export default function ExploreCard({ myGenres, user }) {
     setAdded(!added);
   };
 
-  console.log(userData);
-
   return (
     <Card sx={{ width: 390, maxWidth: 700 }}>
       <CardMedia

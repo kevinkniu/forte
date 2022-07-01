@@ -84,7 +84,7 @@ export default function Track({ trackProp }) {
         </Typography>
         {isFavorite ? <FavoriteIcon className={trackStyles.icon} /> : (
           <FavoriteBorderIcon
-            onClick={handleFavorite}
+            onClick={() => { handleFavorite(); }}
             className={trackStyles.icon}
           />
         )}
@@ -102,6 +102,7 @@ export default function Track({ trackProp }) {
 
         <Typography
           className={trackStyles.artist}
+          noWrap
         >
           {trackProp.artists[0].name}
         </Typography>
@@ -109,17 +110,17 @@ export default function Track({ trackProp }) {
           className={trackStyles.trackInfo}
           noWrap
         >
-          {trackProp.album.name} / {trackProp.album.release_date}
+          {`${trackProp.album.name} / ${trackProp.album.release_date}`}
         </Typography>
 
         <Grid sx={{ margin: '40px' }}>
           <SpotifyPlayer
             token={sessionObj?.tokenID}
             uris={[trackProp.uri]}
-            autoPlay={true}
-            persistDeviceSelection={true}
+            autoPlay
+            persistDeviceSelection
             initialVolume={0}
-            magnifySliderOnHover={true}
+            magnifySliderOnHover
             styles={{
               display: 'flex',
               activeColor: '#333',
@@ -140,7 +141,7 @@ export default function Track({ trackProp }) {
           style={{ backgroundColor: cardColor, opacity: '0.8' }}
         >
           <div className={trackStyles.commentsHeader}>
-            <p>Comments ({data.length})</p>
+            <p>{`Comments (${data.length})`}</p>
             <span>Add comment</span>
           </div>
 
