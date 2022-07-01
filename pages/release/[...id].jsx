@@ -43,7 +43,7 @@ export default function releaseTracks() {
             <img src={releaseImage} alt="N/A" style={{ width: '150px', height: '150px', borderRadius: '4px' }} />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', ml: 1 }}>
               <Box>
-                <Typography sx={{ fontSize: '24px', fontWeight: 600 }}>
+                <Typography sx={{ fontSize: '20px', fontWeight: 600 }}>
                   {currentRelease.name || 'No Name'}
                 </Typography>
                 <Typography sx={{ fontSize: '12px', color: '#666666' }}>

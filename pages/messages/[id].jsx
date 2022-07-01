@@ -19,6 +19,9 @@ export default function Chats() {
   const [messageRecieved, setMessageReceived] = useState('');
   const [load, setLoad] = useState(false);
 
+  const [scrollToBottom, setScrollToBottom] = useState(null);
+  const [pageBottom, setPageBottom] = useState(null);
+
   const router = useRouter();
 
   socket.on('connect', () => {
@@ -26,9 +29,11 @@ export default function Chats() {
   });
 
   const handlePost = async () => {
-    await socket.emit('send_message', { message, room, sessionObj });
-    setLoad(!load);
-    setMessage('');
+    if (message.length >= 1) {
+      await socket.emit('send_message', { message, room, sessionObj });
+      setLoad(!load);
+      setMessage('');
+    }
   };
 
   useEffect(() => {
@@ -53,6 +58,10 @@ export default function Chats() {
             setFriend(currUser);
           }
         });
+
+        setScrollToBottom(document.querySelector('#scroll-to-bottom'))
+        setPageBottom(document.querySelector(`#index-${results.data[0]
+          ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.length - 1}`))
       })
       .catch((err) => console.log(err));
   }, [load, messageRecieved, room]);
@@ -62,9 +71,13 @@ export default function Chats() {
       const { userName, userProfilePic, userSpotifyId, timestamp } = item.mapValue.fields;
       const userMessage = item.mapValue.fields.message;
 
+      if (pageBottom) {
+        pageBottom.scrollIntoView();
+      }
+
       if (userSpotifyId.stringValue === sessionObj.id) {
         return (
-          <Box key={index} sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+          <Box key={index} id={'index-' + index} sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
             <ListItem sx={{ width: 'auto' }}>
               <ListItemText primary={userMessage.stringValue} sx={{ color: '#FFF', bgcolor: '#673ab7', borderRadius: 16, padding: 1.5 }} />
               <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -76,7 +89,7 @@ export default function Chats() {
       }
 
       return (
-        <Box key={index} sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
+        <Box key={index} id={'index-' + index} sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
           <ListItem sx={{ width: 'auto' }}>
             <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center' }}>
               <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 40, height: 40 }} />
@@ -88,9 +101,20 @@ export default function Chats() {
     })
   );
 
+
+  // console.log('MESSAGES LENGTH', allMessages.length)
+  // const scrollToBottom = document.querySelector('#scroll-to-bottom');
+  // const pageBottom = document.querySelector(`#${allMessages.length}`);
+
+  if (scrollToBottom && pageBottom) {
+    scrollToBottom.addEventListener('click', function() {
+      pageBottom.scrollIntoView()
+    });
+  }
+
   return (
     <div>
-      <Box position="static" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 2, boxShadow: 2 }}>
+      <Box position="static" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 2, boxShadow: 2, scrollBehavior: 'smooth' }}>
         <IconButton sx={{ flexGrow: 1 }}>
           <ArrowBackIosNewIcon onClick={() => { Router.push('/messages'); }} />
         </IconButton>
@@ -121,8 +145,8 @@ export default function Chats() {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={handlePost}>
-                  <SendIcon pb="19px" />
+                <IconButton sx={{ lineHeight: 0, mb: 2.5 }}>
+                  <SendIcon id="scroll-to-bottom" onClick={handlePost} />
                 </IconButton>
               </InputAdornment>
             ),

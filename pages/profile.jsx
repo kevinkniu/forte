@@ -1,14 +1,16 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
-import { Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Button, Dialog, TextField, Container, ListItem, List, ListItemText, IconButton, CardActionArea, Box, CardActions, Popover } from '@mui/material';
+import { Grid, Typography, Card, CardContent, CardMedia, Avatar, Chip, Button, Dialog, TextField, Container, ListItem, List, ListItemText, IconButton, CardActionArea, Box, CardActions, Popover, Drawer } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
 import MapIcon from '@mui/icons-material/Map';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Input from '@mui/material/Input';
+import Router from 'next/router';
 import BottomNav from './components/BottomNav';
 import { AppContext } from './_app';
 import getToken from './api/spotify/getToken';
@@ -22,6 +24,7 @@ import queryUserSongs from './api/users/getUserSongs';
 import queryUserData from './api/users/getUserData';
 import trackListStyles from '../styles/TrackList.module.css';
 import searchStyles from '../styles/Search.module.css';
+
 
 
 export default function mainProfile({ genreProp }) {
@@ -233,7 +236,7 @@ export default function mainProfile({ genreProp }) {
       </Head>
       <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', overflow: 'auto', padding: '0' }}>
         <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" marginBottom="-100px" flexDirection="column">
-          <img src="/background.jpg" width="412px" height="200px" alt="" />
+          <img src="/background.jpg" width="390px" height="200px" alt="" />
           <Avatar
             src={sessionObj?.image || '/userholder.png'}
             alt="Profile picture"
@@ -351,14 +354,15 @@ export default function mainProfile({ genreProp }) {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} sx={{ textAlign: 'center' }}>
+        <Grid item xs={12} sx={{ textAlign: 'center', mb: 2 }}>
           <IconButton onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>
             <LogoutIcon fontSize="large" sx={{ color: '#8E8E8E' }} />
           </IconButton>
         </Grid>
 
-        <Dialog
+        <Drawer
           onClose={() => handleEventClose()}
+          anchor="top"
           open={eventOpen}
           PaperProps={{
             style: {
@@ -367,9 +371,8 @@ export default function mainProfile({ genreProp }) {
             },
           }}
         >
-
-          <Card sx={{ mx: 3, my: 1, width: '350px', margin: '0' }}>
-            <img src={eventPhoto || '/userholder.png'} alt="" width="350px" />
+          <Card sx={{ display: 'flex', flexDirection: 'column', mx: 3, my: 1, width: 390, m: '0', alignItems: 'center', justifyContent: 'center' }}>
+            <img src={eventPhoto || '/userholder.png'} alt="" width="390px" />
             <CardContent sx={{ pb: 0 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Avatar
@@ -386,13 +389,15 @@ export default function mainProfile({ genreProp }) {
               </Box>
               <Typography variant="h5" margin="10px" padding="10px" textAlign="center">{eventModal.eventDetail.eventName}</Typography>
               <Grid container>
-                <Grid item xs={1}>
-                  <Typography variant="span" color="text.secondary"><MapIcon /></Typography>
-                </Grid>
-                <Grid item xs={11}>
-                  <Typography variant="subtitles2" color="text.secondary">
-                    {eventModal.eventDetail.location}
-                  </Typography>
+                <Grid item sx={{ display: 'flex', alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                  <Grid>
+                    <Typography variant="span" color="text.secondary"><MapIcon color="text.secondary" /></Typography>
+                  </Grid>
+                  <Grid>
+                    <Typography variant="subtitles2" color="text.secondary">
+                      {eventModal.eventDetail.location}
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
 
@@ -400,7 +405,7 @@ export default function mainProfile({ genreProp }) {
             </CardContent>
           </Card>
 
-        </Dialog>
+        </Drawer>
 
         <Popover
           id="removePopover"
@@ -446,6 +451,7 @@ export default function mainProfile({ genreProp }) {
                   fullWidth
                   type="search"
                   placeholder="Search"
+                  onChange={(e) => setSearchName(e.target.value)}
                 />
               </div>
             </Grid>

@@ -28,7 +28,6 @@ export default async function getRoomId(mySpotify, friendSpotify) {
       .catch((err) => console.log(err));
   } else {
     const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
-    console.log(roomid, 'this is the room that we just made');
     return roomid;
   }
 }

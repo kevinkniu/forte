@@ -1,6 +1,11 @@
 import { useSession } from 'next-auth/react';
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
 import { Button, Avatar, List, ListItem, Box, ListItemAvatar, ListItemText } from '@mui/material';
+=======
+import { useState, useEffect, useContext } from 'react';
+import { Button, Avatar, List, ListItem, Box, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+>>>>>>> main
 import Router from 'next/router';
 import axios from 'axios';
 import getRoomId from '../../utils/getRoomId';
@@ -50,9 +55,9 @@ export default function Messages() {
   };
   return (
     <div>
-      <h1 align="center">
+      <Typography sx={{ fontSize: 36, fontWeight: 700, mt: 2 }} align="center">
         Messages
-      </h1>
+      </Typography>
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-evenly',
@@ -60,8 +65,8 @@ export default function Messages() {
         m: 1,
         width: '100%' }}
       >
-        <Button variant="text" onClick={() => { Router.push('/friends'); }}>Friends</Button>
-        <Button variant="text" onClick={() => { Router.push('/messages'); }}>Messages</Button>
+        <Button variant="text" sx={{ color: '#6E4FE2' }} onClick={() => { Router.push('/friends'); }}>Friends</Button>
+        <Button variant="text" sx={{ color: '#6E4FE2' }} onClick={() => { Router.push('/messages'); }}>Messages</Button>
       </Box>
       <List>
         { friendInfo.map((friendObj) => (
@@ -70,7 +75,7 @@ export default function Messages() {
               <Avatar src={friendObj.image} alt="" sx={{ width: 70, height: 70, mr: 1.75 }} />
             </ListItemAvatar>
             <Box>
-              <ListItemText primary={friendObj.name} secondary={friendObj.lastMessage} />
+              <ListItemText primary={friendObj.name} secondary="Message" />
             </Box>
           </ListItem>
         ))}
@@ -79,3 +84,5 @@ export default function Messages() {
     </div>
   );
 }
+
+// <ListItemText primary={friendObj.name} secondary={friendObj.lastMessage} />
