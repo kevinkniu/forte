@@ -31,13 +31,14 @@ export default function albumTracks() {
   useEffect(() => {
     getTracksProps();
   }, []);
-
   return (
     <div>
       <main>
         <Box sx={{ paddingTop: '10px', paddingLeft: '20px', paddingRight: '20px', marginBottom: '70px' }}>
-          <Box sx={{ py: 2 }}>
+          <Box sx={{ display: 'flex', py: 2, justifyContent: 'space-between', alignItems: 'center' }}>
             <ArrowBackIosNewIcon sx={{ color: '#5D43BF' }} onClick={() => { Router.push('/music'); }} />
+            <Typography sx={{ fontSize: 24, fontWeight: 700 }}>{currentPlaylist.name}</Typography>
+            <ArrowBackIosNewIcon sx={{ visibility: 'hidden' }} />
           </Box>
           <Box>
             {allTracks.map((track, index) => (

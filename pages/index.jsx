@@ -22,11 +22,11 @@ export default function Login({ providers }) {
             direction="column"
             alignItems="center"
             justifyContent="center"
-            sx={{ minHeight: '100vh', backgroundImage: `url(${'https://media1.giphy.com/media/Ho2ilhtVp8ymftWOMB/giphy.gif?cid=790b7611364eae3211c8afa5a0cc31f1cb4bb5aaca534d95&rid=giphy.gif&ct=g'})` }}
+            sx={{ minHeight: '100vh', backgroundImage: `url(${'/forte.gif'})` }}
           >
             <img src="/forte.png" alt="" />
             <Box mt={2} onClick={() => { signIn(providers.spotify.id, { callbackUrl: '/home' }); }}>
-              <Typography sx={{ fontWeight: 700 }}>Sign In with Spotify</Typography>
+              <Typography sx={{ fontWeight: 700, px: 2, py: 1, border: 1, borderRadius: 16 }}>Sign In with Spotify</Typography>
             </Box>
           </Grid>
         </main>

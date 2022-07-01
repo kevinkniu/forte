@@ -70,16 +70,17 @@ export default function Friends() {
       name: friend.name.stringValue,
       image: friend.profPic.stringValue,
     };
-    // console.log(friendObj);
     const roomId = await getRoomId(sessionObj, friendObj);
-    Router.push(`/messages/${roomId}`);
+    if (roomId) {
+      Router.push(`/messages/${roomId}`);
+    }
   };
 
   return (
     <div>
-      <h1 align="center">
+      <Typography sx={{ fontSize: 36, fontWeight: 700, mt: 2 }} align="center">
         Friends
-      </h1>
+      </Typography>
       <Box sx={{
         display: 'flex',
         justifyContent: 'space-evenly',
@@ -93,18 +94,17 @@ export default function Friends() {
       <List>
         {friendsData.map((friend) => (
           <ListItem
-            onClick={() => { Router.push(`/profile/${friend.id.stringValue}`); }}
             sx={{ width: '100%' }}
             key={friend.id.stringValue}
             secondaryAction={
                 (
                   <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
-                    <Button variant="contained" size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
+                    <Button variant="contained" sx={{ zIndex: '9999' }} size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
                   </Box>
                 )
               }
           >
-            <ListItemAvatar>
+            <ListItemAvatar onClick={() => { Router.push(`/profile/${friend.id.stringValue}`); }}>
               <Box sx={{ mr: 0.5 }}>
                 <Avatar src={friend.profPic.stringValue} alt="" sx={{ width: 60, height: 60, mr: 1.75 }} />
               </Box>
