@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: "off" */
 import Head from 'next/head';
 import Router from 'next/router';
 import { useSession } from 'next-auth/react';

@@ -7,22 +7,17 @@ const cors = require('cors');
 const axios = require('axios');
 
 app.use(cors());
-
 const server = http.createServer(app);
-
 const io = new Server(server, {
   cors: {
     origin: '*',
     method: ['GET', 'POST'],
   },
 });
-
 io.on('connection', (socket) => {
-
   socket.on('join_room', (data) => {
     socket.join(data);
   });
-
   socket.on('send_message', (data) => {
     axios.post('http://127.0.0.1:3000/api/messages/addMessage', { data }, {
       headers: {
@@ -34,7 +29,6 @@ io.on('connection', (socket) => {
     io.in(data.room).emit('receive_message', data);
   });
 });
-
 server.listen(3001, () => {
   console.log('SERVER IS RUNNING');
 });

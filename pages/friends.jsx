@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: "off" */
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useState, useContext, useEffect } from 'react';

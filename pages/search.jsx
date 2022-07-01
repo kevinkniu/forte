@@ -1,8 +1,7 @@
 import axios from 'axios';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState, useRef, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
@@ -12,19 +11,12 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
-
-import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from '../config';
-
 import getToken from './api/spotify/getToken';
 import TrackList from './components/TrackList';
 import ArtistList from './components/ArtistList';
 import searchStyles from '../styles/Search.module.css';
 
 export default function Search({ tokenProp }) {
-  // const { getSession } = useSession();
-  // const sessionObj = getSession?.user;
-  // const searchRef = useRef();
-
   const [searchKey, setSearchKey] = useState('');
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
@@ -58,26 +50,6 @@ export default function Search({ tokenProp }) {
     setArtists(artistsData.data.artists.items);
   }
 
-  // useEffect(() => {
-  //   const clientId = SPOTIFY_CLIENT_ID;
-  //   const clientSecret = SPOTIFY_CLIENT_SECRET;
-  //   const getToken = async () => {
-  //     const result = await fetch('https://accounts.spotify.com/api/token', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/x-www-form-urlencoded',
-  //         Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
-  //       },
-  //       body: 'grant_type=client_credentials',
-  //     });
-
-  //     const data = await result.json();
-  //     setToken(data.access_token);
-  //     return data.access_token;
-  //   };
-  //   getToken();
-  // }, []);
-
   useEffect(() => {
     if (searchKey.length > 3) {
       searchKeyword(searchKey);
@@ -108,7 +80,7 @@ export default function Search({ tokenProp }) {
               fullWidth
               type="search"
               placeholder="Search"
-              onChange={handleChange}
+              onChange={(e) => { handleChange(e); }}
             />
             <Link href="/music">
               <Button>Cancel</Button>

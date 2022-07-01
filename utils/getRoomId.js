@@ -1,3 +1,4 @@
+/* eslint consistent-return: "off" */
 import axios from 'axios';
 import addRoomToUser from './addRoomToUser';
 
