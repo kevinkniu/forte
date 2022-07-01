@@ -1,10 +1,7 @@
-import Head from 'next/head';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useState, useContext, useEffect } from 'react';
 import { Button, Avatar, Box, List, ListItem, ListItemText, ListItemAvatar, Typography } from '@mui/material';
-import styled from 'styled-components';
 import Router from 'next/router';
 import { AppContext } from './_app';
 import getRoomId from '../utils/getRoomId';
@@ -96,25 +93,20 @@ export default function Friends() {
       <List>
         {friendsData.map((friend) => (
           <ListItem
+            onClick={() => { Router.push(`/profile/${friend.id.stringValue}`); }}
             sx={{ width: '100%' }}
             key={friend.id.stringValue}
             secondaryAction={
                 (
-                  <ListItem>
-                    {/* <Username>{friend.name.stringValue}</Username> */}
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
-                      <Box sx={{ mx: 1 }}>
-                        <Button variant="contained" size="small" onClick={() => { Router.push('/messages'); }}>Profile</Button>
-                      </Box>
-                      <Button variant="contained" size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
-                    </Box>
-                  </ListItem>
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
+                    <Button variant="contained" size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
+                  </Box>
                 )
               }
           >
             <ListItemAvatar>
               <Box sx={{ mr: 0.5 }}>
-                <Avatar src={friend.profPic.stringValue} alt="" sx={{ width: 60, height: 60 }} />
+                <Avatar src={friend.profPic.stringValue} alt="" sx={{ width: 60, height: 60, mr: 1.75 }} />
               </Box>
             </ListItemAvatar>
             <List>
@@ -127,29 +119,3 @@ export default function Friends() {
     </div>
   );
 }
-
-const FriendsContainer = styled.div`
-  display: flex;
-  margin: 1rem;
-`;
-
-const PhotoContainer = styled.div`
-margin-right: 1rem;
-`;
-
-const ProfileDetails = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-`;
-
-const Username = styled.p`
-  margin: 0;
-  font-weight: bold;
-`;
-
-const Message = styled.p`
-  margin: 0;
-`;

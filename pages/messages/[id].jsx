@@ -41,6 +41,7 @@ export default function Chats() {
     axios.get(`/api/messages/getAllMessages?roomId=${router.query.id}`)
       .then((results) => {
         // console.log(results.data, 'these should be all the messages in an array');
+
         setAllMessages(results.data[0]._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
         const usersArray = results.data[0]._delegate._document.data.value.mapValue.fields.users.arrayValue.values;
         usersArray.forEach((user) => {
