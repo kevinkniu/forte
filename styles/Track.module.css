@@ -1,5 +1,5 @@
 .icon {
-  color: #673ab7;
+  color: #fff;
 }
 
 .header {
@@ -9,7 +9,7 @@
   align-items: center;
   padding: 32px 16px 0;
   margin-bottom: 24px;
-  color: #44566C;
+  color: #fff;
 }
 
 .albumCover {
@@ -23,7 +23,7 @@
 .artist {
   margin-bottom: 24px;
   text-align: center;
-  color: #44566C;
+  color: #CDCFD2;
 }
 
 .info {
@@ -32,7 +32,6 @@
   align-items: center;
   padding: 16px 16px;
   margin: 0 48px 32px;
-  color: #44566C;
 }
 
 .info div {
@@ -43,19 +42,18 @@
 }
 
 .info span:first-child {
-  color: #8996A6;
+  color: #CDCFD2;
   font-size: 13px;
 }
 
 .info span:last-child {
-  color: #673ab7;
-  font-weight: 500;
+  color: #fff;
 }
 
 .comments {
-  padding: 16px 24px 0;
-  background-color: #e5e5e5;
+  padding: 16px 24px 64px;
   overflow: hidden;
+  border-radius: 12px 12px 0 0;
 }
 
 .commentsHeader {
