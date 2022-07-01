@@ -386,13 +386,15 @@ export default function mainProfile({ genreProp }) {
               </Box>
               <Typography variant="h5" margin="10px" padding="10px" textAlign="center">{eventModal.eventDetail.eventName}</Typography>
               <Grid container>
-                <Grid item xs={1}>
-                  <Typography variant="span" color="text.secondary"><MapIcon /></Typography>
-                </Grid>
-                <Grid item xs={11}>
-                  <Typography variant="subtitles2" color="text.secondary">
-                    {eventModal.eventDetail.location}
-                  </Typography>
+                <Grid item display="flex">
+                  <Grid>
+                    <Typography variant="span" color="text.secondary"><MapIcon color="text.secondary" /></Typography>
+                  </Grid>
+                  <Grid>
+                    <Typography variant="subtitles2" color="text.secondary">
+                      {eventModal.eventDetail.location}
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Grid>
 
