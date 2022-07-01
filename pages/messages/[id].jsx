@@ -41,12 +41,9 @@ export default function Chats() {
     socket.emit('join_room', room);
     socket.on('receive_message', (data) => {
       setMessageReceived(data.message);
-      // console.log(data.message, 'this is the message from socketIO');
     });
     axios.get(`/api/messages/getAllMessages?roomId=${router.query.id}`)
       .then((results) => {
-        // console.log(results.data, 'these should be all the messages in an array');
-
         setAllMessages(results.data[0]
           ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
         const usersArray = results.data[0]

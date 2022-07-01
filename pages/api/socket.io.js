@@ -18,10 +18,8 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  // console.log(`User connected: ${socket.id}`);
 
   socket.on('join_room', (data) => {
-    // console.log('ROOM', data);
     socket.join(data);
   });
 
@@ -32,7 +30,6 @@ io.on('connection', (socket) => {
       },
     })
       .then(() => console.log('Posted'))
-      // .then(() => socket.in(data.room).emit('receive_message', data))
       .catch((err) => console.log(err));
     io.in(data.room).emit('receive_message', data);
   });

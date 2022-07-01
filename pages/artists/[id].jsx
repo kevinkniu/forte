@@ -49,6 +49,7 @@ export default function Artist({ artistProp, topTracksProp }) {
         >
           {artistProp.genres.map((genre, index) => (
             <Chip
+              key={index}
               label={genre}
               component="span"
               sx={{ backgroundColor: colors[index] }}

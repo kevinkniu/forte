@@ -36,9 +36,7 @@ export default function Messages() {
             image: image.stringValue,
             lastMessage: lastMessageString,
           });
-          console.log(tempInfo, 'this is the temp info');
           setFriendInfo([...tempInfo]);
-          console.log(tempInfo, 'this is the temp info');
         });
       })
       .catch((err) => console.log(err));
