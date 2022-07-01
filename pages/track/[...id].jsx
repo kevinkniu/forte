@@ -11,13 +11,10 @@ import { useSession } from 'next-auth/react';
 import getToken from '../api/spotify/getToken';
 import getTrack from '../api/spotify/getTrack';
 
-<<<<<<< HEAD
-=======
 import BottomNav from '../components/BottomNav';
 import updateUserSong from '../api/users/addUserSongs';
 import trackStyles from '../../styles/Track.module.css';
 
->>>>>>> main
 const data = [
   {
     name: 'Spencer Han',
