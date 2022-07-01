@@ -90,8 +90,8 @@ export default function Friends() {
         m: 1,
         width: '100%' }}
       >
-        <Button variant="text">Friends</Button>
-        <Button variant="text" onClick={() => { Router.push('/messages'); }}>Messages</Button>
+        <Button sx={{ color: '#6E4FE2', textDecoration: 'underline' }} variant="text">Friends</Button>
+        <Button sx={{ color: '#6E4FE2' }} variant="text" onClick={() => { Router.push('/messages'); }}>Messages</Button>
       </Box>
       <List>
         {friendsData.map((friend) => (
@@ -101,7 +101,7 @@ export default function Friends() {
             secondaryAction={
                 (
                   <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
-                    <Button variant="contained" sx={{ zIndex: '9999' }} size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
+                    <Button variant="contained" sx={{ zIndex: '9999', backgroundColor: '#21b6ae' }} size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
                   </Box>
                 )
               }
@@ -112,7 +112,7 @@ export default function Friends() {
               </Box>
             </ListItemAvatar>
             <List>
-              <ListItemText primary={friend.name.stringValue} />
+              <ListItemText primary={<Typography Variant="h3" Style={{ Color: '#21b6ae' }}>{friend.name.stringValue}</Typography>} />
             </List>
           </ListItem>
         ))}
