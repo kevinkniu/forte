@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Router from 'next/router';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button, Grid, Typography, Card, CardContent, Avatar, Chip, Container, List, ListItem } from '@mui/material';
@@ -7,14 +8,29 @@ import BottomNav from '../components/BottomNav';
 import queryUserData from '../api/users/getUserData';
 import queryUserEvents from '../api/events/getUserEvents';
 import trackListStyles from '../../styles/TrackList.module.css';
+import getRoomId from '../../utils/getRoomId';
 
 export default function userProfile({ result }) {
   const [userProf, setUserProf] = useState(result);
   const [userEvents, setUserEvents] = useState([]);
+  const [myInfo, setMyInfo] = useState([]);
+  const [userSongs, setUserSongs] = useState([]);
 
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
   const [added, setAdded] = useState(false);
+
+  const goToFriendMessage = async (friend) => {
+    const roomId = await getRoomId(myInfo, friend);
+    Router.push(`/messages/${roomId}`);
+  };
+
+  async function getMyInfo() {
+    const myResult = await queryUserData(sessionObj.id);
+    setMyInfo(myResult[0]);
+    const tempSongs = userProf.result[0].songs.reverse();
+    setUserSongs(tempSongs.slice(0, 5));
+  }
 
   const sendFriendReq = async () => {
     await fetch('/api/users/sendFriendReq', {
@@ -40,6 +56,7 @@ export default function userProfile({ result }) {
 
   useEffect(() => {
     getEvents();
+    getMyInfo();
   }, []);
 
   return (
@@ -66,9 +83,7 @@ export default function userProfile({ result }) {
           <Grid item xs={12}>
             <Grid item xs={12} display="flex" alignContent="center" justifyContent="space-around" margin="10px">
               <Button onClick={() => { sendFriendReq(); }} size="small" sx={{ color: added ? 'text.secondary' : '#673ab7', typography: 'body1' }}>{added ? 'Sent Request' : 'Add Friend'}</Button>
-              <Link href="/messages">
-                <Button size="small" sx={{ color: '#673ab7', typography: 'body1' }}>Message</Button>
-              </Link>
+              <Button size="small" sx={{ color: '#673ab7', typography: 'body1' }} onClick={() => goToFriendMessage(userProf.result[0])}>Message</Button>
             </Grid>
             <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', margin: '35px 15px 0px 10px' }}>
               <Typography variant="subtitle1" sx={{ display: 'flex', justifyContent: 'flex-start' }}>
@@ -103,7 +118,7 @@ export default function userProfile({ result }) {
 
                   <List position="relative">
                     {
-                      userProf.result[0].songs.map((song, index) => (
+                      userSongs.map((song, index) => (
                         <ListItem className={trackListStyles.trackListEntry} key={index}>
                           <img
                             src={song.album.images[0].url}
