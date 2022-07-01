@@ -1,7 +1,6 @@
 import { db } from '../../../firebase';
 
 export default async function queryUserData(userID) {
-  // console.log(userID);
   const collectionArray = [];
   const result = await db.collection('users').where('id', '==', userID).get();
 

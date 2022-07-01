@@ -3,9 +3,6 @@ export default async function addRoomToUser(
   userSpotify,
   roomId,
 ) {
-  // console.log(mySpotifyId, 'this is the spotifyID of current User');
-  // console.log(userSpotify, 'this is the userSpotify');
-  // console.log(roomId, 'this is the roomid that was made and should be stored ');
   await fetch('/api/messages/addRoomToUser', {
     method: 'POST',
     headers: {

@@ -29,17 +29,14 @@ export default function Messages() {
           const result = await axios.get(`/api/messages/getAllMessages?roomId=${roomId.stringValue}`);
           const lastMessageObj = result.data[0]
             ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.pop();
-          const lastMessageString = lastMessageObj
-            ? lastMessageObj.mapValue.fields.message.stringValue : null;
+          const lastMessageString = lastMessageObj ? lastMessageObj.mapValue.fields.message.stringValue : 'No Messages';
           tempInfo.push({
             id: id.stringValue,
             name: name.stringValue,
             image: image.stringValue,
             lastMessage: lastMessageString,
           });
-          console.log(tempInfo, 'this is the temp info');
           setFriendInfo([...tempInfo]);
-          console.log(tempInfo, 'this is the temp info');
         });
       })
       .catch((err) => console.log(err));
@@ -71,7 +68,7 @@ export default function Messages() {
               <Avatar src={friendObj.image} alt="" sx={{ width: 70, height: 70, mr: 1.75 }} />
             </ListItemAvatar>
             <Box>
-              <ListItemText primary={friendObj.name} secondary="Message" />
+              <ListItemText primary={friendObj.name} secondary={friendObj.lastMessage} />
             </Box>
           </ListItem>
         ))}
@@ -80,5 +77,3 @@ export default function Messages() {
     </div>
   );
 }
-
-// <ListItemText primary={friendObj.name} secondary={friendObj.lastMessage} />

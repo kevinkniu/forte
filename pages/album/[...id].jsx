@@ -24,7 +24,6 @@ export default function albumTracks() {
   async function getTracksProps() {
     const tokenProp = await getToken();
     const tracks = await getTracks(tokenProp, currentPlaylist.tracks.href);
-    console.log('tracks:', tracks);
     setAllTracks(tracks);
   }
 

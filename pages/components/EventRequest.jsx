@@ -16,7 +16,6 @@ export default function FriendRequest({ request }) {
       },
     });
     const result = await response.json();
-    console.log(result);
     setEvent(result[0]._delegate._document.data.value.mapValue.fields);
   };
 

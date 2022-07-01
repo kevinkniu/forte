@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: "off" */
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useState, useContext, useEffect } from 'react';
@@ -26,7 +27,6 @@ export default function Friends() {
     const user = result[0]._delegate._document.data.value.mapValue.fields;
     const tempFriends = result[0]
       ._delegate._document.data.value.mapValue.fields.friends.arrayValue.values;
-    // console.log('tempFriends:', tempFriends);
     setCurrentUser(user);
     setFriends(tempFriends);
     const tempFriendsData = [];
@@ -34,7 +34,6 @@ export default function Friends() {
       axios.get(`/api/users/${friend.stringValue}`)
         .then((results) => {
           const currentFriend = results.data[0]._delegate._document.data.value.mapValue.fields;
-          // console.log(currentFriend, 'hello i am the current friend!');
           tempFriendsData.push(currentFriend);
         })
         .catch((err) => console.log(err))
@@ -55,7 +54,6 @@ export default function Friends() {
         axios.get(`/api/users/${friend.stringValue}`)
           .then((results) => {
             const currentFriend = results.data[0]._delegate._document.data.value.mapValue.fields;
-            // console.log(currentFriend, 'hello i am the current friend!');
             tempFriendsData.push(currentFriend);
           })
           .catch((err) => console.log(err))

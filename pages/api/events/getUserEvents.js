@@ -1,3 +1,5 @@
+/* eslint no-plusplus: "off" */
+/* eslint no-await-in-loop: "off" */
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 

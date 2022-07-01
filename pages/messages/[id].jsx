@@ -41,12 +41,9 @@ export default function Chats() {
     socket.emit('join_room', room);
     socket.on('receive_message', (data) => {
       setMessageReceived(data.message);
-      // console.log(data.message, 'this is the message from socketIO');
     });
     axios.get(`/api/messages/getAllMessages?roomId=${router.query.id}`)
       .then((results) => {
-        // console.log(results.data, 'these should be all the messages in an array');
-
         setAllMessages(results.data[0]
           ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
         const usersArray = results.data[0]
@@ -59,16 +56,16 @@ export default function Chats() {
           }
         });
 
-        setScrollToBottom(document.querySelector('#scroll-to-bottom'))
+        setScrollToBottom(document.querySelector('#scroll-to-bottom'));
         setPageBottom(document.querySelector(`#index-${results.data[0]
-          ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.length - 1}`))
+          ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.length - 1}`));
       })
       .catch((err) => console.log(err));
   }, [load, messageRecieved, room]);
 
   const renderMessages = (messagesArray) => (
     messagesArray.map((item, index) => {
-      const { userName, userProfilePic, userSpotifyId, timestamp } = item.mapValue.fields;
+      const { userProfilePic, userSpotifyId } = item.mapValue.fields;
       const userMessage = item.mapValue.fields.message;
 
       if (pageBottom) {
@@ -101,22 +98,17 @@ export default function Chats() {
     })
   );
 
-
-  // console.log('MESSAGES LENGTH', allMessages.length)
-  // const scrollToBottom = document.querySelector('#scroll-to-bottom');
-  // const pageBottom = document.querySelector(`#${allMessages.length}`);
-
   if (scrollToBottom && pageBottom) {
-    scrollToBottom.addEventListener('click', function() {
-      pageBottom.scrollIntoView()
+    scrollToBottom.addEventListener('click', () => {
+      pageBottom.scrollIntoView();
     });
   }
 
   return (
     <div>
       <Box position="static" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 2, boxShadow: 2, scrollBehavior: 'smooth' }}>
-        <IconButton sx={{ flexGrow: 1 }}>
-          <ArrowBackIosNewIcon onClick={() => { Router.push('/messages'); }} />
+        <IconButton sx={{ flexGrow: 1 }} onClick={() => { Router.push('/messages'); }}>
+          <ArrowBackIosNewIcon />
         </IconButton>
         <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Avatar src={friend.image ? friend.image.stringValue : null} alt="" sx={{ width: 40, height: 40, marginRight: 1.75 }} />
@@ -125,36 +117,33 @@ export default function Chats() {
         <IconButton sx={{ flexGrow: 1 }}>
           <ArrowBackIosNewIcon sx={{ visibility: 'hidden' }} />
         </IconButton>
-        {/* <Box sx={{ flexGrow: 1 }}></Box> */}
       </Box>
       <Box>
         <List sx={{ height: '78.5vh', width: '100%', overflow: 'auto' }}>
           {renderMessages(allMessages)}
         </List>
       </Box>
-      <Box sx={{ position: 'fixed', bottom: 55, width: '100%', zIndex: 10, bg: '#FFF' }}>
+      <Box sx={{ position: 'fixed', bottom: 55, width: '100%', bg: '#FFF' }}>
         <TextField
           id="input-with-icon-textfield"
           label="Message..."
           variant="filled"
-          multiline={true}
-          maxRows={2}
+          multiline
+          maxRows={1}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           sx={{ width: '100%' }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton sx={{ lineHeight: 0, mb: 2.5 }}>
-                  <SendIcon id="scroll-to-bottom" onClick={handlePost} />
+                <IconButton onClick={handlePost} sx={{ lineHeight: 0, mb: 2.5 }}>
+                  <SendIcon id="scroll-to-bottom" />
                 </IconButton>
               </InputAdornment>
             ),
+            disableUnderline: true,
           }}
         />
-        {/* <Button onClick={handlePost} variant="contained" size="small" endIcon={<SendIcon />}>
-          Send
-        </Button> */}
       </Box>
       <BottomNav />
     </div>
