@@ -1,25 +1,43 @@
 import { useSession } from 'next-auth/react';
-import { useState, useEffect, forceUpdate } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Button, Avatar, List, ListItem, Box, ListItemAvatar, ListItemText } from '@mui/material';
 import Router from 'next/router';
 import axios from 'axios';
 import getRoomId from '../../utils/getRoomId';
 import BottomNav from '../components/BottomNav';
+import { AppContext } from '../_app';
 
 export default function Messages() {
   const { data: getSession, status } = useSession();
   const sessionObj = getSession?.user;
   const [chatRooms, setChatRooms] = useState([]);
   const [friendInfo, setFriendInfo] = useState([]);
-  const [loaded, setLoaded] = useState(false);
-  const [changed, setChanged] = useState(false);
+  // const [loaded, setLoaded] = useState(false);
+  // const [changed, setChanged] = useState(false);
+  const { currentUser, setCurrentUser } = useContext(AppContext);
+  const [rendered, setRendered] = useState(0);
+
+  async function reRenderUser() {
+    const response = await fetch(`/api/users/${sessionObj.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    const user = result[0]._delegate._document.data.value.mapValue.fields;
+    setCurrentUser(user);
+  }
 
   useEffect(() => {
     if (status !== 'authenticated') {
       return;
     }
-    setLoaded(true);
-    axios.get(`/api/messages/getAllChatRooms?spotifyId=${sessionObj.id}`)
+    reRenderUser();
+  }, []);
+
+  useEffect(() => {
+    axios.get(`/api/messages/getAllChatRooms?spotifyId=${currentUser.id.stringValue}`)
       .then((rooms) => {
         const filtered = rooms.data.filter((room) => {
           if (Object.keys(room._delegate._document.data.value.mapValue.fields).length === 0) {
@@ -28,32 +46,43 @@ export default function Messages() {
           return true;
         });
         setChatRooms(filtered);
-        // setRenderRooms((results) => results + 1);
         const tempInfo = [];
+        const tempPromise = [];
         filtered.forEach(async (friend) => {
           const { id, name, image, roomId } = friend._delegate._document.data.value.mapValue.fields;
-          const result = await axios.get(`/api/messages/getAllMessages?roomId=${roomId.stringValue}`);
-          console.log('result in renderFriends:', result);
-          const lastMessageObj = { ...result.data[0]
-            ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.pop() };
-          const lastMessage = lastMessageObj.mapValue.fields.message.stringValue;
-          tempInfo.push({
-            id: id.stringValue,
-            name: name.stringValue,
-            image: image.stringValue,
-            lastMessage,
-          });
+          const result = axios.get(`/api/messages/getAllMessages?roomId=${roomId.stringValue}`);
+          tempPromise.push(result);
+          await Promise.all(tempPromise)
+            .then((resultData) => {
+              const lastMessageObj = { ...resultData[0].data[0]
+                ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.pop() };
+              const lastMessage = lastMessageObj.mapValue ? lastMessageObj.mapValue.fields.message.stringValue : null;
+              tempInfo.push({
+                id: id.stringValue,
+                name: name.stringValue,
+                image: image.stringValue,
+                lastMessage,
+              });
+            });
+          // const lastMessageObj = { ...result.data[0]
+          //   ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.pop() };
+          // const lastMessage = lastMessageObj.mapValue ? lastMessageObj.mapValue.fields.message.stringValue : null;
+          // tempInfo.push({
+          //   id: id.stringValue,
+          //   name: name.stringValue,
+          //   image: image.stringValue,
+          //   lastMessage,
+          // });
+          setFriendInfo([...tempInfo]);
         });
-        setFriendInfo(tempInfo);
-        forceUpdate();
+        setRendered((test) => test + 1);
       })
       .catch((err) => console.log(err));
-  }, [status]);
+  }, []);
 
   useEffect(() => {
-    setChanged(true);
-    // console.log('performed rerender');
-  }, [friendInfo]);
+    // setChanged(true);
+  }, [friendInfo, chatRooms, currentUser, rendered]);
 
   const routeToFriendMessage = async (friend) => {
     // console.log(friend);
@@ -61,35 +90,33 @@ export default function Messages() {
     Router.push(`/messages/${roomId}`);
   };
   return (
-    loaded && (
-      <div>
-        <h1 align="center">
-          Messages
-        </h1>
-        <Box sx={{
-          display: 'flex',
-          justifyContent: 'space-evenly',
-          p: 1,
-          m: 1,
-          width: '100%' }}
-        >
-          <Button variant="text" onClick={() => { Router.push('/friends'); }}>Friends</Button>
-          <Button variant="text" onClick={() => { Router.push('/messages'); }}>Messages</Button>
-        </Box>
-        <List>
-          { changed && friendInfo.map((friendObj) => (
-            <ListItem key={friendObj.id} onClick={() => routeToFriendMessage(friendObj)}>
-              <ListItemAvatar>
-                <Avatar src={friendObj.image} alt="" sx={{ width: 70, height: 70, mr: 1.75 }} />
-              </ListItemAvatar>
-              <Box>
-                <ListItemText primary={friendObj.name} secondary={friendObj.lastMessage} />
-              </Box>
-            </ListItem>
-          ))}
-        </List>
-        <BottomNav />
-      </div>
-    )
+    <div>
+      <h1 align="center">
+        Messages
+      </h1>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        p: 1,
+        m: 1,
+        width: '100%' }}
+      >
+        <Button variant="text" onClick={() => { Router.push('/friends'); }}>Friends</Button>
+        <Button variant="text" onClick={() => { Router.push('/messages'); }}>Messages</Button>
+      </Box>
+      <List>
+        { friendInfo.map((friendObj) => (
+          <ListItem key={friendObj.id} onClick={() => routeToFriendMessage(friendObj)}>
+            <ListItemAvatar>
+              <Avatar src={friendObj.image} alt="" sx={{ width: 70, height: 70, mr: 1.75 }} />
+            </ListItemAvatar>
+            <Box>
+              <ListItemText primary={friendObj.name} secondary={friendObj.lastMessage} />
+            </Box>
+          </ListItem>
+        ))}
+      </List>
+      <BottomNav />
+    </div>
   );
 }
