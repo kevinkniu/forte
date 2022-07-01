@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import analyze from 'rgbaster';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import Paper from '@mui/material/Paper';
@@ -45,6 +46,15 @@ export default function Track({ trackProp }) {
   const sessionObj = getSession?.user;
 
   const [isFavorite, setFavorite] = useState(false);
+  const [cardColor, setCardColor] = useState('');
+
+  async function getBgColor() {
+    const result = await analyze(trackProp.album.images[1].url);
+    const priColor = result[1].color;
+    const bgColor = priColor.slice(0, 3) + 'a(' + priColor.slice(4, priColor.length - 1) + ',0.8)';
+    setCardColor(priColor.slice(0, 3) + 'a(' + priColor.slice(4, priColor.length - 1) + ',0.85)');
+    document.querySelector('#bg').style.backgroundColor = bgColor;
+  }
 
   async function addSong(song) {
     await updateUserSong(sessionObj.id, song);
@@ -55,8 +65,12 @@ export default function Track({ trackProp }) {
     addSong(trackProp);
   }
 
+  useEffect(() => {
+    getBgColor();
+  });
+
   return (
-    <div>
+    <div id="bg">
       <header className={trackStyles.header}>
         <ArrowBackIosNewIcon
           className={trackStyles.icon}
@@ -92,7 +106,11 @@ export default function Track({ trackProp }) {
           {trackProp.artists[0].name}
         </Typography>
 
-        <Paper elevation={2} className={trackStyles.info}>
+        <Paper
+          elevation={2}
+          className={trackStyles.info}
+          sx={{ backgroundColor: cardColor }}
+        >
           <div>
             <span>Popularity</span>
             <span>{trackProp.popularity}</span>
@@ -128,7 +146,10 @@ export default function Track({ trackProp }) {
           />
         </Grid>
 
-        <div className={trackStyles.comments}>
+        <div
+          className={trackStyles.comments}
+          style={{ backgroundColor: cardColor, opacity: '0.8' }}
+        >
           <div className={trackStyles.commentsHeader}>
             <p>Comments (35987)</p>
             <span>Add comment</span>
