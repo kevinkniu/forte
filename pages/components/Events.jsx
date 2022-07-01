@@ -109,7 +109,7 @@ export default function Events() {
   return (
     <div>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <Box sx={{ display: 'flex', mx: 5, mb: 3, mt: 2, alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', mx: 5, mb: 3, mt: 4, alignItems: 'center', justifyContent: 'center' }}>
           <Avatar src={sessionObj?.image} alt="N/A" />
           <Box
             sx={{ ml: 1, p: 1.5, bgcolor: '#f5f5f5', borderRadius: 5 }}

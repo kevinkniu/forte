@@ -1,9 +1,7 @@
-import Head from 'next/head';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Router, { useRouter } from 'next/router';
-import styled from 'styled-components';
 import { Box, Typography, IconButton, Button, TextField, InputAdornment, ListItemAvatar, ListItemText, Avatar, List, ListItem } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import SendIcon from '@mui/icons-material/Send';
@@ -15,6 +13,7 @@ export default function Chats() {
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
   const [room, setRoom] = useState('');
+  const [friend, setFriend] = useState({});
   const [message, setMessage] = useState('');
   const [allMessages, setAllMessages] = useState([]);
   const [messageRecieved, setMessageReceived] = useState('');
@@ -42,13 +41,19 @@ export default function Chats() {
     axios.get(`/api/messages/getAllMessages?roomId=${router.query.id}`)
       .then((results) => {
         // console.log(results.data, 'these should be all the messages in an array');
-        setAllMessages(results.data[0]
-          ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
+
+        setAllMessages(results.data[0]._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
+        const usersArray = results.data[0]._delegate._document.data.value.mapValue.fields.users.arrayValue.values;
+        usersArray.forEach((user) => {
+          const currUser = user.mapValue.fields;
+
+          if (currUser.id.stringValue !== sessionObj.id) {
+            setFriend(currUser);
+          }
+        });
       })
       .catch((err) => console.log(err));
   }, [load, messageRecieved, room]);
-
-  // console.log('These are our messages', allMessages);
 
   const renderMessages = (messagesArray) => (
     messagesArray.map((item) => {
@@ -57,88 +62,75 @@ export default function Chats() {
 
       if (userSpotifyId.stringValue === sessionObj.id) {
         return (
-          <ListItem sx={{ display: 'flex', justifyContent: 'flex-end', color: '#FFF', bgcolor: '#673ab7', width: '80%', borderRadius: 16, margin: 1.75 }}>
-            <ListItemText primary={userMessage.stringValue} />
-            <ListItemAvatar>
-              <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 25, height: 25 }} />
-            </ListItemAvatar>
-          </ListItem>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+            <ListItem sx={{ width: 'auto' }}>
+              <ListItemText primary={userMessage.stringValue} sx={{ color: '#FFF', bgcolor: '#673ab7', borderRadius: 16, padding: 1.5 }} />
+              <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 40, height: 40 }} />
+              </ListItemAvatar>
+            </ListItem>
+          </Box>
         );
       }
 
       return (
-        <ListItem alignItems="center" sx={{ bgcolor: '#E8E8E8', width: '80%', borderRadius: 16, margin: 1.75 }}>
-          <ListItemAvatar>
-            <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 25, height: 25 }} />
-          </ListItemAvatar>
-          <ListItemText primary={userMessage.stringValue} />
-        </ListItem>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
+          <ListItem sx={{ width: 'auto' }}>
+            <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 40, height: 40 }} />
+            </ListItemAvatar>
+            <ListItemText primary={userMessage.stringValue} sx={{ bgcolor: '#E8E8E8', width: '80%', borderRadius: 16, padding: 1.5 }} />
+          </ListItem>
+        </Box>
       );
     })
   );
 
   return (
-    <ChatContainer>
-      <h1 align="center">
-        chats
-      </h1>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <IconButton sx={{ position: 'relative', left: -100 }}>
+    <div>
+      <Box position="static" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 2, boxShadow: 2 }}>
+        <IconButton sx={{ flexGrow: 1 }}>
           <ArrowBackIosNewIcon onClick={() => { Router.push('/messages'); }} />
         </IconButton>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Avatar src={sessionObj.image} alt="" sx={{ width: 25, height: 25 }} />
-          <Typography sx={{ fontWeight: 'bold' }}>{sessionObj.name}</Typography>
+        <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Avatar src={friend.image ? friend.image.stringValue : null} alt="" sx={{ width: 40, height: 40, marginRight: 1.75 }} />
+          <Typography sx={{ fontWeight: 'bold' }}>{friend.name ? friend.name.stringValue : null }</Typography>
         </Box>
+        <IconButton sx={{ flexGrow: 1 }}>
+          <ArrowBackIosNewIcon sx={{ visibility: 'hidden' }} />
+        </IconButton>
+        {/* <Box sx={{ flexGrow: 1 }}></Box> */}
       </Box>
-      <Box sx={{ overflow: 'scroll' }}>
-        <List sx={{ width: '100%' }}>
+      <Box>
+        <List sx={{ height: '78.5vh', width: '100%', overflow: 'auto' }}>
           {renderMessages(allMessages)}
         </List>
       </Box>
-      <MessagesContainer>
+      <Box sx={{ position: 'fixed', bottom: 55, width: '100%', zIndex: 10, bg: '#FFF' }}>
         <TextField
           id="input-with-icon-textfield"
           label="Message..."
           variant="filled"
           multiline={true}
-          fullWidth={true}
+          maxRows={2}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
+          sx={{ width: '100%' }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handlePost}>
+                  <SendIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
-        <Button onClick={handlePost} variant="contained" size="small" endIcon={<SendIcon />} sx={{ mb: 8 }}>
+        {/* <Button onClick={handlePost} variant="contained" size="small" endIcon={<SendIcon />}>
           Send
-        </Button>
-      </MessagesContainer>
+        </Button> */}
+      </Box>
       <BottomNav />
-    </ChatContainer>
+    </div>
   );
 }
-
-const ChatContainer = styled.div`
-  border: 1px solid blue;
-
-`;
-
-const MessagesContainer = styled.div`
-  border: 1px solid green;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  align-items: flex-end;
-  border 1px solid red;
-`;
-
-
-{/* <Grid container>
-        <Grid item xs={6}>
-          <IconButton>
-            <ArrowBackIosNewIcon onClick={() => { Router.push('/messages'); }} />
-          </IconButton>
-        </Grid>
-        <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Avatar src={sessionObj.image} alt="" sx={{ width: 25, height: 25 }} />
-          <Typography sx={{ fontWeight: 'bold' }}>{sessionObj.name}</Typography>
-        </Grid>
-      </Grid> */}

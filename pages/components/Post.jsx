@@ -1,36 +1,18 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 import { Card, CardHeader, CardContent, CardActions,
-  Collapse, Avatar, IconButton, Typography, Checkbox, Box, Grid } from '@mui/material';
+  Avatar, IconButton, Typography, Checkbox, Box, Grid } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Carousel from 'react-material-ui-carousel';
 
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
-
 export default function Post({ post }) {
-  const [expanded, setExpanded] = useState(false);
   const [hidden, setHidden] = useState(false);
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
   const postData = post._document.data.value.mapValue.fields;
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
 
   const onDelete = () => {
     if (postData.userID.stringValue !== sessionObj.id) {
@@ -72,8 +54,8 @@ export default function Post({ post }) {
         }
       />
       {postData.photos.arrayValue.values.length === 1 && (
-        <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
-          <Box sx={{ width: 300, p: 2 }}>
+        <Grid container spacing={0} direction="column" alignItems="flex-start" justifyContent="center">
+          <Box sx={{ width: 300 }}>
             <Image
               height={10}
               width={10}
@@ -87,7 +69,7 @@ export default function Post({ post }) {
       )}
       {postData.photos.arrayValue.values.length > 1 && (
         <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
-          <Box sx={{ width: 300, px: 2 }}>
+          <Box sx={{ width: 300 }}>
             <Carousel
               autoPlay={false}
               swipe
@@ -111,41 +93,16 @@ export default function Post({ post }) {
         </Grid>
       )}
 
-      <CardContent>
+      <CardContent sx={{ px: 3, py: 1 }}>
         <Typography variant="body2">
           {postData.message.stringValue}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
+      <CardActions disableSpacing sx={{ pt: 0, pb: 1 }}>
         <IconButton aria-label="add to favorites">
           <Checkbox icon={<ThumbUpOutlinedIcon />} checkedIcon={<ThumbUpIcon sx={{ color: '#673ab7' }} />} />
         </IconButton>
-        {/* <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore> */}
       </CardActions>
-      {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph variant="body2">
-            Comment hardcode test.
-          </Typography>
-          <Typography paragraph variant="body2">
-            Long Comment hardcode test.
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-            nisi ut aliquip ex ea commodo consequat.
-          </Typography>
-          <Typography paragraph variant="body2">
-            Additional comment hardcode test.
-          </Typography>
-        </CardContent>
-      </Collapse> */}
     </Card>
   );
 }

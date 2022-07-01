@@ -45,16 +45,16 @@ export default function Notifications() {
       </Head>
       <div>
         <Box>
-          <AppBar position="static" sx={{ bgcolor: '#673ab7' }}>
+          <AppBar position="fixed" sx={{ bgcolor: '#FFFFFF', color: '#5D43BF' }}>
             <Toolbar>
               <Grid container justifyContent="flex-start">
                 <ArrowBackIosNewIcon color="inherit" sx={{ mx: 1 }} onClick={() => { Router.push('/home'); }} />
               </Grid>
               <Grid container justifyContent="flex-end">
-                <Badge badgeContent={currentUser && currentUser.friendRequests.arrayValue.values.length} color="primary" sx={{ mx: 2 }}>
+                <Badge badgeContent={currentUser && currentUser.friendRequests.arrayValue.values.length} color="success" sx={{ mx: 2 }}>
                   <PersonAddIcon color="inherit" onClick={() => { setView('friends'); }} />
                 </Badge>
-                <Badge badgeContent={currentUser && currentUser.eventRequests.arrayValue.values.length} color="primary" sx={{ mx: 2 }}>
+                <Badge badgeContent={currentUser && currentUser.eventRequests.arrayValue.values.length} color="success" sx={{ mx: 2 }}>
                   <EventIcon color="inherit" onClick={() => { setView('events'); }} />
                 </Badge>
               </Grid>
@@ -62,7 +62,7 @@ export default function Notifications() {
           </AppBar>
         </Box>
         <main>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', my: 7, alignItems: 'center', justifyContent: 'center' }}>
             <h1>{view === 'friends' ? 'Friend Requests' : 'Event Invitations'}</h1>
             <Box sx={{ mb: 8 }}>
               {view === 'friends' && (

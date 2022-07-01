@@ -37,7 +37,13 @@ export default function ExploreCard({ myGenres, user }) {
             {userData.name.stringValue}
           </Typography>
           <CardActions>
-            <Button onClick={() => { sendFriendReq(); }} size="small" sx={{ color: added ? 'text.secondary' : '#673ab7', typography: 'body1' }}>{added ? 'Sent Request' : 'Add Friend'}</Button>
+            <Button
+              onClick={() => { sendFriendReq(); }}
+              size="small"
+              sx={{ color: added ? '#e5dcfd' : '#6E4FE2', fontWeight: 700 }}
+            >
+              {added ? 'Request Sent' : 'Add Friend'}
+            </Button>
           </CardActions>
         </Box>
         <Typography variant="body2" color="text.secondary" sx={{ pb: 1 }}>
