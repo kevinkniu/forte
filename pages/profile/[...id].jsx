@@ -14,6 +14,7 @@ export default function userProfile({ result }) {
   const [userProf, setUserProf] = useState(result);
   const [userEvents, setUserEvents] = useState([]);
   const [myInfo, setMyInfo] = useState([]);
+  const [userSongs, setUserSongs] = useState([]);
 
   const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
@@ -27,6 +28,8 @@ export default function userProfile({ result }) {
   async function getMyInfo() {
     const myResult = await queryUserData(sessionObj.id);
     setMyInfo(myResult[0]);
+    const tempSongs = userProf.result[0].songs.reverse();
+    setUserSongs(tempSongs.slice(0, 5));
   }
 
   const sendFriendReq = async () => {
@@ -115,7 +118,7 @@ export default function userProfile({ result }) {
 
                   <List position="relative">
                     {
-                      userProf.result[0].songs.map((song, index) => (
+                      userSongs.map((song, index) => (
                         <ListItem className={trackListStyles.trackListEntry} key={index}>
                           <img
                             src={song.album.images[0].url}
