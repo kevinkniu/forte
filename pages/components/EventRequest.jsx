@@ -64,8 +64,8 @@ export default function FriendRequest({ request }) {
               </Box>
             </Grid>
           )}
-          <CardContent>
-            <Typography sx={{ textDecoration: 'underline' }} variant="body2">
+          <CardContent sx={{ px: 2, py: 1 }}>
+            <Typography sx={{ textDecoration: 'underline', fontWeight: 600 }} variant="body2">
               {`happening on ${new Date(event.date.timestampValue.seconds * 1000
                 + event.timestamp.timestampValue.nanos / 1000000).toLocaleTimeString([], {
                 year: 'numeric',
@@ -75,6 +75,12 @@ export default function FriendRequest({ request }) {
             </Typography>
             <Typography variant="body1">
               {event.eventName.stringValue}
+            </Typography>
+            <Typography paragraph variant="body2" sx={{ my: 0, fontWeight: 600, textDecoration: 'underline' }}>
+              Details:
+            </Typography>
+            <Typography paragraph variant="body2" sx={{ my: 0 }}>
+              {event.details.stringValue}
             </Typography>
           </CardContent>
           <CardActions sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
