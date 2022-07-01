@@ -52,7 +52,7 @@ export default function Event({ event }) {
   };
 
   return (
-    <Card sx={{ mx: 3, my: 1, width: { xs: 325, sm: 500, md: 700 }, maxWidth: 700 }}>
+    <Card sx={{ boxShadow: 5, width: { xs: 390, sm: 500, md: 700 }, maxWidth: 700 }}>
       <CardHeader
         avatar={(
           <Avatar src={eventData.profPic.stringValue} />

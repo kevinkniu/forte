@@ -54,7 +54,7 @@ export default function Home() {
             sentEventRequests: [],
           }),
         });
-        const subColl = await fetch(`/api/users/createMessCollection/${sessionObj?.id}`, {
+        await fetch(`/api/users/createMessCollection/${sessionObj?.id}`, {
           method: 'POST',
           header: {
             'Content-type': 'application/json',
@@ -63,7 +63,6 @@ export default function Home() {
             id: sessionObj?.id,
           },
         });
-        const data = await subColl.json();
         initializeUser();
         return;
       }
