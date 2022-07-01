@@ -21,14 +21,14 @@ export default async function getRoomId(mySpotify, friendSpotify) {
       headers: { 'Content-type': 'application/json' },
     })
       .then((id) => {
-        // console.log(id, 'this id was just made');
         addRoomToUser(mySpotify.id, friendSpotify, id.data);
         addRoomToUser(friendSpotify.id, mySpotify, id.data);
+        return (id.data);
       })
-      .then(() => getRoomId(mySpotify, friendSpotify))
       .catch((err) => console.log(err));
   } else {
     const roomid = result[0]._delegate._document.data.value.mapValue.fields.roomId.stringValue;
+    console.log(roomid, 'this is the room that we just made');
     return roomid;
   }
 }

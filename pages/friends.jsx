@@ -70,9 +70,10 @@ export default function Friends() {
       name: friend.name.stringValue,
       image: friend.profPic.stringValue,
     };
-    // console.log(friendObj);
     const roomId = await getRoomId(sessionObj, friendObj);
-    Router.push(`/messages/${roomId}`);
+    if (!roomId) {
+      Router.push(`/messages/${roomId}`);
+    }
   };
 
   return (
