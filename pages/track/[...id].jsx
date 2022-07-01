@@ -2,7 +2,6 @@ import analyze from 'rgbaster';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SpotifyPlayer from 'react-spotify-web-playback';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { Grid } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -18,25 +17,25 @@ import trackStyles from '../../styles/Track.module.css';
 
 const data = [
   {
-    name: 'Spencer Han',
-    date: '06-28-2022',
-    body: 'Good!',
+    name: 'Esmy Xu',
+    date: '2022-06-28',
+    body: 'I come back to this song every once and a while bc it seems like the world had a different light!',
     upvotes: 6,
-    url: '',
+    url: 'https://i.scdn.co/image/ab6775700000ee85a892735df8a1324f906d7a34',
   },
   {
     name: 'John Ong',
-    date: '06-28-2022',
-    body: 'Break my soul!',
+    date: '2022-06-28',
+    body: "What I love about is that it feels familiar. Like a voice I would hear in my home town. It's not the greatest voice I've ever heard, it's not glamorous or larger than life, but it feels like me and my best friend riding bikes on a Summer evening, joking about skipping town and seeing the world. Somehow that means more than what singing legends can offer me.",
     upvotes: 5,
-    url: '',
+    url: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=667637673271813&height=300&width=300&ext=1658933944&hash=AeT60TalF_3HYAf3xfs',
   },
   {
-    name: 'John Ong',
-    date: '06-28-2022',
+    name: 'Andy Luu',
+    date: '2022-06-28',
     body: 'Break my soul!',
-    upvotes: 5,
-    url: '',
+    upvotes: 3,
+    url: 'https://scontent-iad3-2.xx.fbcdn.net/v/t1.6435-1/42317090_2330550456971517_4823046255326265344_n.jpg?stp=dst-jpg_p320x320&_nc_cat=108&ccb=1-7&_nc_sid=0c64ff&_nc_ohc=gVijmNqD3EAAX_PjdO3&_nc_ht=scontent-iad3-2.xx&edm=AP4hL3IEAAAA&oh=00_AT_1hIgPeZdgCm3qcZNMsVjDnEpfyiI_HyuygUMMDrnZOA&oe=62E00E27',
   },
 ];
 
@@ -50,9 +49,9 @@ export default function Track({ trackProp }) {
 
   async function getBgColor() {
     const result = await analyze(trackProp.album.images[1].url);
-    const priColor = result[1].color;
+    const priColor = result[0].color;
     const bgColor = priColor.slice(0, 3) + 'a(' + priColor.slice(4, priColor.length - 1) + ',0.8)';
-    setCardColor(priColor.slice(0, 3) + 'a(' + priColor.slice(4, priColor.length - 1) + ',0.85)');
+    setCardColor(priColor.slice(0, 3) + 'a(' + priColor.slice(4, priColor.length - 1) + ',0.8)');
     document.querySelector('#bg').style.backgroundColor = bgColor;
   }
 
@@ -79,6 +78,7 @@ export default function Track({ trackProp }) {
         <Typography
           variant="h6"
           component="h1"
+          noWrap
         >
           {trackProp.name}
         </Typography>
@@ -105,27 +105,14 @@ export default function Track({ trackProp }) {
         >
           {trackProp.artists[0].name}
         </Typography>
-
-        <Paper
-          elevation={2}
-          className={trackStyles.info}
-          sx={{ backgroundColor: cardColor }}
+        <Typography
+          className={trackStyles.trackInfo}
+          noWrap
         >
-          <div>
-            <span>Popularity</span>
-            <span>{trackProp.popularity}</span>
-          </div>
-          <div>
-            <span>Likes</span>
-            <span>99999+</span>
-          </div>
-          <div>
-            <span>Comments</span>
-            <span>35987</span>
-          </div>
-        </Paper>
+          {trackProp.album.name} / {trackProp.album.release_date}
+        </Typography>
 
-        <Grid sx={{ margin: '16px' }}>
+        <Grid sx={{ margin: '40px' }}>
           <SpotifyPlayer
             token={sessionObj?.tokenID}
             uris={[trackProp.uri]}
@@ -136,9 +123,10 @@ export default function Track({ trackProp }) {
               display: 'flex',
               activeColor: '#333',
               bgColor: '#fff',
-              color: '#333',
+              color: '#121435',
               loaderColor: '#333',
-              sliderColor: '#8264F1',
+              sliderColor: '#5D43BF',
+              sliderHandleColor: '#00A57A',
               trackArtistColor: '#8996A6',
               trackNameColor: 'black',
               sliderHandleBorderRadius: 5,
@@ -151,24 +139,22 @@ export default function Track({ trackProp }) {
           style={{ backgroundColor: cardColor, opacity: '0.8' }}
         >
           <div className={trackStyles.commentsHeader}>
-            <p>Comments (35987)</p>
+            <p>Comments ({data.length})</p>
             <span>Add comment</span>
           </div>
 
           <div className={trackStyles.commentList}>
             <ul>
-              {data.map((one) => (
-                <li>
+              {data.map((one, index) => (
+                <li key={index}>
                   <div className={trackStyles.commentAvatar}>
-                    <img src="/userholder.png" />
+                    <img src={one.url} alt="" />
                   </div>
+
                   <div className={trackStyles.commentContent}>
-                    <div className={trackStyles.commentTitle}>
-                      <div className={trackStyles.commentInfo}>
-                        <p>{one.name}</p>
-                        <p>{one.date}</p>
-                      </div>
-                      {/* <p>Upvotes: {one.upvotes}</p> */}
+                    <div className={trackStyles.commentInfo}>
+                      <p className={trackStyles.commentName}>{one.name}</p>
+                      <p className={trackStyles.commentDate}>{one.date}</p>
                     </div>
                     <div className={trackStyles.commentBody}>
                       <p>{one.body}</p>

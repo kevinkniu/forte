@@ -12,6 +12,10 @@
   color: #fff;
 }
 
+.header h1 {
+  padding: 0 16px;
+}
+
 .albumCover {
   margin: 0 auto;
   display: flex;
@@ -21,9 +25,17 @@
 }
 
 .artist {
-  margin-bottom: 24px;
+  margin: 24px auto 12px;
+  color: #fff;
+  font-size: 20px;
   text-align: center;
-  color: #CDCFD2;
+}
+
+.trackInfo {
+  margin-bottom: 24px;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
 }
 
 .info {
@@ -54,6 +66,7 @@
   padding: 16px 24px 64px;
   overflow: hidden;
   border-radius: 12px 12px 0 0;
+  color: #fff;
 }
 
 .commentsHeader {
@@ -70,7 +83,7 @@
 .commentList ul {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   padding: 0;
   list-style: none;
 }
@@ -79,6 +92,12 @@
   display: flex;
   align-items: flex-start;
   gap: 24px;
+  padding-bottom: 16px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.3);
+}
+
+.commentList ul li:last-child {
+  border-bottom: none;
 }
 
 .commentList p {
@@ -94,22 +113,27 @@
 }
 
 .commentContent {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.commentTitle {
-  width: 100%;
+.commentInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.commentInfo p:first-child {
+.commentName {
   font-size: 14px;
 }
 
-.commentInfo p:last-child {
+.commentDate {
+  margin-left: auto;
   font-size: 12px;
+}
+
+.commentBody {
+  line-height: 1.5;
 }
