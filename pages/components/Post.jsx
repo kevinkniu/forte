@@ -55,7 +55,7 @@ export default function Post({ post }) {
       />
       {postData.photos.arrayValue.values.length === 1 && (
         <Grid container spacing={0} direction="column" alignItems="flex-start" justifyContent="center">
-          <Box sx={{ width: 300 }}>
+          <Box sx={{ width: 390 }}>
             <Image
               height={10}
               width={10}

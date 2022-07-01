@@ -66,7 +66,7 @@ export default function userProfile({ result }) {
       </Head>
       <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', overflow: 'auto', padding: '0' }}>
         <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" marginBottom="-100px" flexDirection="column">
-          <img src="/background.jpg" width="412px" height="200px" alt="" />
+          <img src="/background.jpg" width="390px" height="200px" alt="" />
           <Avatar
             src={userProf.result[0].profPic || '/userholder.png'}
             alt="Profile picture"

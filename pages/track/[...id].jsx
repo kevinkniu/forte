@@ -119,6 +119,7 @@ export default function Track({ trackProp }) {
             autoPlay={true}
             persistDeviceSelection={true}
             initialVolume={0}
+            magnifySliderOnHover={true}
             styles={{
               display: 'flex',
               activeColor: '#333',
