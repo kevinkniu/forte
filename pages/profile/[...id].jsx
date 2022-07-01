@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Router from 'next/router';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { Button, Grid, Typography, Card, CardContent, Avatar, Chip, Container, List, ListItem } from '@mui/material';
+import { Button, Grid, Typography, Card, CardContent, Avatar, Chip, Container, List, ListItem, Box, Drawer } from '@mui/material';
+import MapIcon from '@mui/icons-material/Map';
 import { useState, useEffect } from 'react';
 import BottomNav from '../components/BottomNav';
 import queryUserData from '../api/users/getUserData';
@@ -15,10 +15,12 @@ export default function userProfile({ result }) {
   const [userEvents, setUserEvents] = useState([]);
   const [myInfo, setMyInfo] = useState([]);
   const [userSongs, setUserSongs] = useState([]);
-
-  const { data: getSession } = useSession();
+  const [clickedEvent, setClickedEvent] = useState([]);
+  const { data: getSession, status } = useSession();
   const sessionObj = getSession?.user;
   const [added, setAdded] = useState(false);
+  const [eventPhoto, setEventPhoto] = useState('');
+  const [eventOpen, setEventOpen] = useState(false);
 
   const goToFriendMessage = async (friend) => {
     const roomId = await getRoomId(myInfo, friend);
@@ -54,10 +56,23 @@ export default function userProfile({ result }) {
     setUserEvents(data);
   }
 
+  function handleEventOpen(eventObj) {
+    setEventPhoto(eventObj.photos[0]);
+    setClickedEvent(eventObj);
+    setEventOpen(true);
+  }
+
+  function handleEventClose() {
+    setEventOpen(false);
+  }
+
   useEffect(() => {
+    if (status !== 'authenticated') {
+      return;
+    }
     getEvents();
     getMyInfo();
-  }, []);
+  }, [status]);
 
   return (
     <div>
@@ -158,6 +173,7 @@ export default function userProfile({ result }) {
                           button
                           className={trackListStyles.trackListEntry}
                           key={index}
+                          onClick={() => handleEventOpen(event[1])}
                         >
                           <img
                             src={event[1].photos[0] || '/userholder.png'}
@@ -175,6 +191,50 @@ export default function userProfile({ result }) {
             }
           </Grid>
         </Grid>
+
+        <Drawer
+          onClose={() => handleEventClose()}
+          anchor="top"
+          open={eventOpen}
+          PaperProps={{
+            style: {
+              width: '100%',
+              alignItems: 'center',
+            },
+          }}
+        >
+          <Card sx={{ display: 'flex', flexDirection: 'column', mx: 3, my: 1, width: 390, m: '0', alignItems: 'center', justifyContent: 'center' }}>
+            <img src={eventPhoto || '/userholder.png'} alt="" width="390px" />
+            <CardContent sx={{ pb: 0 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Avatar
+                  src={clickedEvent.profPic}
+                  alt="Profile picture"
+                  sx={{ width: 50, height: 50 }}
+                />
+                <Typography variant="h6" component="div">
+                  {clickedEvent.userName}
+                </Typography>
+                <MapIcon sx={{ visibility: 'hidden' }} />
+              </Box>
+              <Typography variant="h5" margin="10px" padding="10px" textAlign="center">{clickedEvent.eventName}</Typography>
+              <Grid container>
+                <Grid item sx={{ display: 'flex', alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                  <Grid>
+                    <Typography variant="span" color="text.secondary"><MapIcon color="text.secondary" /></Typography>
+                  </Grid>
+                  <Grid>
+                    <Typography variant="subtitles2" color="text.secondary">
+                      {clickedEvent.location}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Typography sx={{ overflowWrap: 'anywhere', padding: '10px' }}>{clickedEvent.details}</Typography>
+            </CardContent>
+          </Card>
+        </Drawer>
+
       </Container>
       <BottomNav />
     </div>
