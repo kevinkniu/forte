@@ -448,6 +448,7 @@ export default function mainProfile({ genreProp }) {
                   fullWidth
                   type="search"
                   placeholder="Search"
+                  onChange={(e) => setSearchName(e.target.value)}
                 />
               </div>
             </Grid>
