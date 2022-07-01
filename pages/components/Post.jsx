@@ -31,7 +31,7 @@ export default function Post({ post }) {
   };
 
   return (
-    <Card sx={{ mx: 3, my: 1, width: { xs: 325, sm: 500, md: 700 }, maxWidth: 700, display: hidden === true ? 'none' : '' }}>
+    <Card sx={{ boxShadow: 5, width: { xs: 390, sm: 500, md: 700 }, maxWidth: 700, display: hidden === true ? 'none' : '' }}>
       <CardHeader
         avatar={(
           <Avatar src={postData.profPic.stringValue} />

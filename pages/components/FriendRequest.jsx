@@ -40,7 +40,7 @@ export default function FriendRequest({ request }) {
   return (
     <div>
       {user && (
-        <Card sx={{ mx: 3, my: 1, width: 325, maxWidth: 700, display: hidden === true ? 'none' : '' }}>
+        <Card sx={{ width: 390, maxWidth: 700, display: hidden === true ? 'none' : '' }}>
           <CardMedia
             component="img"
             height="300"
