@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { Card, CardActions, CardContent, CardMedia, Button, Chip, Box, Typography } from '@mui/material';
+import Router from 'next/router';
 
 export default function ExploreCard({ myGenres, user }) {
   const { data: getSession } = useSession();
@@ -23,13 +24,16 @@ export default function ExploreCard({ myGenres, user }) {
     setAdded(!added);
   };
 
+  console.log(userData);
+
   return (
-    <Card sx={{ mx: 3, my: 1, width: 325, maxWidth: 700 }}>
+    <Card sx={{ width: 390, maxWidth: 700 }}>
       <CardMedia
         component="img"
         height="300"
         image={userData.profPic.stringValue}
         alt="N/A"
+        onClick={() => { Router.push(`/profile/${userData.id.stringValue}`); }}
       />
       <CardContent sx={{ py: 0, my: 0 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: 0, py: 0 }}>
