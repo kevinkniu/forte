@@ -190,7 +190,6 @@ export default function mainProfile({ genreProp }) {
   async function getFriendNames() {
     const friendPromises = [];
     const friendresults = [];
-    console.log(currentUser?.friends.arrayValue.values);
     currentUser?.friends.arrayValue.values.forEach((user) => {
       friendPromises.push(queryUserData(user.stringValue));
     });
@@ -205,7 +204,6 @@ export default function mainProfile({ genreProp }) {
           });
         });
       });
-    console.log(friendresults);
     setFriendArray([...friendresults]);
   }
 
