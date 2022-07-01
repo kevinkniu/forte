@@ -16,12 +16,10 @@ export default function Music({ releasesProp, playlistsProp }) {
   const { setCurrentPlaylist, setCurrentRelease, setValue } = useContext(AppContext);
 
   const updatePlaylist = (item) => {
-    console.log(item);
     setCurrentPlaylist(item);
   };
 
   const updateRelease = (item) => {
-    console.log(item);
     setCurrentRelease(item);
   };
 
@@ -90,8 +88,8 @@ export default function Music({ releasesProp, playlistsProp }) {
           <h1>New Releases</h1>
           <Box sx={{ alignContent: 'center', justifyContent: 'center', width: { xs: 350, sm: 500, md: 700 }, px: 1, mb: 5 }}>
             <Slider {...settings}>
-              {releasesProp.length && releasesProp.map((item) => (
-                <Grid container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
+              {releasesProp.length && releasesProp.map((item, number) => (
+                <Grid key={number} container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
                   <Card elevation={0} onClick={() => updateRelease(item)}>
                     <Link href={`/release/${item.id}`}>
                       <img src={item.images[0].url} alt="N/A" style={{ width: '150px', margin: 'auto' }} />
@@ -105,8 +103,8 @@ export default function Music({ releasesProp, playlistsProp }) {
           <h1>Top Playlists</h1>
           <Box sx={{ alignContent: 'center', justifyContent: 'center', width: { xs: 350, sm: 500, md: 700 }, px: 1 }}>
             <Slider {...settings}>
-              {playlistsProp.length && playlistsProp.map((item) => (
-                <Grid container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
+              {playlistsProp.length && playlistsProp.map((item, number) => (
+                <Grid key={number} container spacing={0} direction="column" alignContent="center" justifyContent="center" textAlign="center">
                   <Card elevation={0} onClick={() => updatePlaylist(item)}>
                     <Link href={`/album/${item.id}`}>
                       <img src={item.images[0].url} alt="N/A" style={{ width: '150px', margin: 'auto' }} />
