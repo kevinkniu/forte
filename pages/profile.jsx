@@ -18,6 +18,7 @@ import deleteUserEvent from './api/users/deleteUserEvent';
 import deleteUserSong from './api/users/deleteUserSongs';
 import queryUserSongs from './api/users/getUserSongs';
 import queryUserData from './api/users/getUserData';
+import trackListStyles from '../styles/TrackList.module.css';
 
 export default function mainProfile({ genreProp }) {
   const { currentUser, setCurrentUser, setValue } = useContext(AppContext);
@@ -178,9 +179,8 @@ export default function mainProfile({ genreProp }) {
 
   async function getSongs() {
     const userSongs = await queryUserSongs(sessionObj.id);
-    console.log(userSongs[0]);
     const tempArray = userSongs[0].reverse();
-    setSongList(tempArray);
+    setSongList(tempArray.slice(0, 5));
   }
 
   async function getFriendNames() {
@@ -227,41 +227,43 @@ export default function mainProfile({ genreProp }) {
       <Head>
         <title>forte</title>
       </Head>
-      <Grid container sx={{ backgroundColor: '#673ab7' }}>
-        <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
-          <Avatar
-            src={sessionObj?.image || '/userholder.png'}
-            alt="Profile picture"
-            sx={{ width: 100, height: 100 }}
-          />
+
+      <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', overflow: 'auto', padding: '0' }}>
+        <Grid container sx={{ backgroundColor: '#673ab7', width: '100%' }}>
+          <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" paddingTop="5px" paddingBottom="5px">
+            <Avatar
+              src={sessionObj?.image || '/userholder.png'}
+              alt="Profile picture"
+              sx={{ width: 160, height: 160 }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={12} sx={{ textAlign: 'center' }}>
-        <Typography variant="h5" sx={{ margin: '5px' }}>
-          {sessionObj?.name}
-        </Typography>
-      </Grid>
-      <Container sx={{ marginBottom: '58px', display: 'flex', flexDirection: 'column', height: '70vh', overflow: 'auto' }}>
+        <Grid item xs={12} sx={{ textAlign: 'center', padding: '8px 0 0 0', margin: '0' }}>
+          <Typography variant="h4">
+            {sessionObj?.name}
+          </Typography>
+        </Grid>
+
         <Grid container>
           <Grid item xs={12}>
-            <Grid item xs={12}>
-              <Typography variant="h5" sx={{ margin: '5px', float: 'left' }}>
+            <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center', margin: '15px 15px 25px 10px' }} position="relative">
+              <Typography variant="subtitle1" sx={{ position: 'absolute', left: '0' }}>
                 Genres
               </Typography>
-              <Button onClick={() => handleOpen()} sx={{ float: 'right' }}>+</Button>
+              <AddIcon onClick={() => handleOpen()} sx={{ position: 'absolute', right: '0' }} />
               <Grid sx={{ clear: 'both' }} />
             </Grid>
 
-            <Grid item xs={12} display="flex" justifyContent="flex-start" flexWrap="wrap" flexDirection="row">
-              { currentUser && (
+            <Grid item xs={12} display="flex" justifyContent="space-around" flexWrap="wrap" flexDirection="row" padding="0 5px 5px 10px">
+              {currentUser && (
                 currentUser.genres.arrayValue.values.map((genre, index) => (
                   <Chip key={index} label={genre.stringValue} onDelete={() => handleDelete(genre)} sx={{ marginBottom: '10px', marginRight: '10px', backgroundColor: colors[index], color: 'white' }} />
                 )))}
             </Grid>
           </Grid>
-          <Grid item xs={12} md={6} lg={6} xl={6} sx={{ overflow: 'auto', maxHeight: '760px' }}>
-            <Typography variant="h5" sx={{ margin: '5px' }}>
-              Liked Songs
+          <Grid item xs={12} md={6} lg={6} xl={6}>
+            <Typography variant="subtitle1" sx={{ margin: '15px 15px 10px 10px' }}>
+              Recently Liked Songs
             </Typography>
             {
               songList.length === 0
@@ -277,35 +279,29 @@ export default function mainProfile({ genreProp }) {
                   </Link>
                 )
                 : (
-                  songList.map((song, index) => (
-                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px' }}>
-                      <Grid position="relative">
-                        <CardMedia
-                          component="img"
-                          sx={{ width: 100 }}
-                          image={song.album.images[0].url}
-                          alt="album cover"
-                        />
-                      </Grid>
-                      <CardActionArea position="relative">
-                        <MoreVertIcon onClick={(e) => handleRemoveClick(e, song, 'song')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }} />
-                        <CardContent>
-                          <Typography component="div" variant="h6">
-                            {song.name}
-                          </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" component="div">
-                            {song.artists[0].name}
-                          </Typography>
-                        </CardContent>
 
-                      </CardActionArea>
-                    </Card>
-                  ))
+                  <List position="relative">
+                    {
+                      songList.map((song, index) => (
+                        <ListItem className={trackListStyles.trackListEntry} key={index}>
+                          <img
+                            src={song.album.images[0].url}
+                            alt="album-cover"
+                          />
+                          <MoreVertIcon onClick={(e) => handleRemoveClick(e, song, 'song')} sx={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }} />
+                          <div className={trackListStyles.trackListEntryInfo}>
+                            <Typography noWrap sx={{ width: '230px' }}>{song.name}</Typography>
+                            <Typography component="span">{song.artists[0].name}</Typography>
+                          </div>
+                        </ListItem>
+                      ))
+                    }
+                  </List>
                 )
             }
           </Grid>
-          <Grid item xs={12} md={6} lg={6} xl={6} sx={{ overflow: 'auto', maxHeight: '760px' }}>
-            <Typography variant="h5" sx={{ margin: '5px' }}>
+          <Grid item xs={12} md={6} lg={6} xl={6}>
+            <Typography variant="subtitle1" sx={{ margin: '5px 15px 10px 10px' }}>
               Events
             </Typography>
             {
@@ -322,32 +318,32 @@ export default function mainProfile({ genreProp }) {
 
                 )
                 : (
-                  events.map((event, index) => (
-                    <Card key={index} sx={{ display: 'flex', flexDirection: 'row', margin: '5px', pointer: 'cursor' }}>
-                      <Grid position="relative">
-                        <CardMedia
-                          component="img"
-                          sx={{ width: 100, height: 100 }}
-                          image={event[1].photos[0] || '/userholder.png'}
-                          alt="album cover"
-                        />
-                      </Grid>
-                      <CardActionArea onClick={() => handleEventOpen({ eventDetail: event[1], eventID: event[0] })} position="relative">
-                        <MoreVertIcon onClick={(e) => handleRemoveClick(e, event, 'event')} sx={{ position: 'absolute', top: '0', right: '0', padding: '0' }} />
-                        <CardContent sx={{ padding: '0 0 0 16px' }}>
-                          <Typography component="div" variant="h6" sx={{ width: '90%' }}>
-                            {event[1].eventName}
-                          </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" component="div" sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '230px' }}>
-                            {event[1].details}
-                          </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" component="div">
-                            {event[1].location}
-                          </Typography>
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
-                  ))
+                  <List position="relative">
+                    {
+                      events.map((event, index) => (
+                        <ListItem
+                          button
+                          className={trackListStyles.trackListEntry}
+                          key={index}
+                          onClick={() => handleEventOpen(
+                            {
+                              eventDetail: event[1], eventID: event[0],
+                            },
+                          )}
+                        >
+                          <img
+                            src={event[1].photos[0] || '/userholder.png'}
+                            alt="event"
+                          />
+                          <MoreVertIcon onClick={(e) => handleRemoveClick(e, event, 'event')} sx={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }} />
+                          <div className={trackListStyles.trackListEntryInfo}>
+                            <Typography noWrap>{event[1].eventName}</Typography>
+                            <Typography component="span" sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '230px' }}>{event[1].details}</Typography>
+                          </div>
+                        </ListItem>
+                      ))
+                    }
+                  </List>
                 )
             }
           </Grid>
@@ -355,7 +351,7 @@ export default function mainProfile({ genreProp }) {
 
         <Grid item xs={12} sx={{ textAlign: 'center' }}>
           <IconButton onClick={() => { signOut({ redirect: true, callbackUrl: '/' }); }}>
-            <LogoutIcon fontSize="large" sx={{ color: 'red' }} />
+            <LogoutIcon fontSize="large" sx={{ color: '#8E8E8E' }} />
           </IconButton>
         </Grid>
 
@@ -364,34 +360,35 @@ export default function mainProfile({ genreProp }) {
           open={eventOpen}
           PaperProps={{
             style: {
-              width: '350px',
+              width: '100%',
               alignItems: 'center',
             },
           }}
         >
 
-          <Card sx={{ mx: 3, my: 1, width: 350, margin: '0' }}>
+          <Card sx={{ mx: 3, my: 1, width: '350px', margin: '0' }}>
             <CardMedia
               component="img"
-              height="200"
+              height="300px"
+              width="100%"
               image={eventPhoto || '/userholder.png'}
               alt="N/A"
             />
             <CardContent sx={{ pb: 0 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Avatar
-                  src={`${eventModal.eventDetail.profPic}`}
+                  src={eventModal.eventDetail.profPic}
                   alt="Profile picture"
                   sx={{ width: 50, height: 50 }}
                 />
-                <Typography gutterBottom variant="h6" component="div" sx={{ my: 0 }}>
+                <Typography variant="h6" component="div" sx={{ paddingLeft: '55px' }}>
                   {eventModal.eventDetail.userName}
                 </Typography>
                 <CardActions>
-                  <Button onClick={(e) => handlePopClick(e)}>Invite</Button>
+                  <Button onClick={(e) => handlePopClick(e)} sx={{ paddingLeft: '35px' }}>Invite</Button>
                 </CardActions>
               </Box>
-              <Typography variant="h4">{eventModal.eventDetail.eventName}</Typography>
+              <Typography variant="h5" margin="10px" padding="10px" textAlign="center">{eventModal.eventDetail.eventName}</Typography>
               <Grid container>
                 <Grid item xs={1}>
                   <Typography variant="span" color="text.secondary"><MapIcon /></Typography>
@@ -403,7 +400,7 @@ export default function mainProfile({ genreProp }) {
                 </Grid>
               </Grid>
 
-              <Typography sx={{ overflowWrap: 'anywhere' }}>{eventModal.eventDetail.details}</Typography>
+              <Typography sx={{ overflowWrap: 'anywhere', padding: '10px' }}>{eventModal.eventDetail.details}</Typography>
             </CardContent>
           </Card>
         </Dialog>
@@ -423,14 +420,10 @@ export default function mainProfile({ genreProp }) {
               {
                 itemToRemove.type === 'song'
                   ? (
-                    <ListItemText>
-                      <Button color="secondary" onClick={() => deleteSong(itemToRemove.item)}>remove</Button>
-                    </ListItemText>
+                    <ListItemText primary="Delete" onClick={() => deleteSong(itemToRemove.item)} sx={{ color: 'red' }} />
                   )
                   : (
-                    <ListItemText>
-                      <Button color="secondary" onClick={() => onDelete(sessionObj.id, itemToRemove.item)}>remove</Button>
-                    </ListItemText>
+                    <ListItemText primary="Delete" onClick={() => onDelete(sessionObj.id, itemToRemove.item)} sx={{ color: 'red' }} />
                   )
               }
             </ListItem>
@@ -457,7 +450,7 @@ export default function mainProfile({ genreProp }) {
                   friendArray.filter(((friend) => friend.name.toLowerCase().includes(searchName)
                     && (friend.events.findIndex((eventId) => eventId === eventModal.eventID) === -1
                       && friend.eventReq.findIndex((eventId) => eventId
-                      === eventModal.eventID) === -1)
+                        === eventModal.eventID) === -1)
                   ))
                     .map((singleFriend) => (
                       <ListItem key={singleFriend.id}>
