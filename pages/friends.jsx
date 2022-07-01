@@ -99,11 +99,7 @@ export default function Friends() {
             secondaryAction={
                 (
                   <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
-<<<<<<< HEAD
-                    <Button sx={{ zIndex: 1 }} variant="contained" size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
-=======
                     <Button variant="contained" sx={{ zIndex: '9999' }} size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
->>>>>>> main
                   </Box>
                 )
               }

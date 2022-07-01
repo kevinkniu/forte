@@ -1,11 +1,6 @@
 import { useSession } from 'next-auth/react';
-<<<<<<< HEAD
 import { useState, useEffect } from 'react';
-import { Button, Avatar, List, ListItem, Box, ListItemAvatar, ListItemText } from '@mui/material';
-=======
-import { useState, useEffect, useContext } from 'react';
 import { Button, Avatar, List, ListItem, Box, ListItemAvatar, ListItemText, Typography } from '@mui/material';
->>>>>>> main
 import Router from 'next/router';
 import axios from 'axios';
 import getRoomId from '../../utils/getRoomId';
@@ -75,7 +70,7 @@ export default function Messages() {
               <Avatar src={friendObj.image} alt="" sx={{ width: 70, height: 70, mr: 1.75 }} />
             </ListItemAvatar>
             <Box>
-              <ListItemText primary={friendObj.name} secondary="Message" />
+              <ListItemText primary={friendObj.name} secondary={friendObj.lastMessage} />
             </Box>
           </ListItem>
         ))}
