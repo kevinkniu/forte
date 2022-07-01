@@ -139,8 +139,8 @@ export default function Chats() {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton sx={{ lineHeight: 0, mb: 2.5 }}>
-                  <SendIcon id="scroll-to-bottom" onClick={handlePost} />
+                <IconButton onClick={handlePost} sx={{ lineHeight: 0, mb: 2.5 }}>
+                  <SendIcon id="scroll-to-bottom" />
                 </IconButton>
               </InputAdornment>
             ),
