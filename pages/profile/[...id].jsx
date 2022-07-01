@@ -206,15 +206,16 @@ export default function userProfile({ result }) {
           <Card sx={{ display: 'flex', flexDirection: 'column', mx: 3, my: 1, width: 390, m: '0', alignItems: 'center', justifyContent: 'center' }}>
             <img src={eventPhoto || '/userholder.png'} alt="" width="390px" />
             <CardContent sx={{ pb: 0 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Avatar
                   src={clickedEvent.profPic}
                   alt="Profile picture"
                   sx={{ width: 50, height: 50 }}
                 />
-                <Typography variant="h6" component="div" sx={{ paddingLeft: '55px' }}>
+                <Typography variant="h6" component="div">
                   {clickedEvent.userName}
                 </Typography>
+                <MapIcon sx={{ visibility: 'hidden' }} />
               </Box>
               <Typography variant="h5" margin="10px" padding="10px" textAlign="center">{clickedEvent.eventName}</Typography>
               <Grid container>
@@ -233,13 +234,6 @@ export default function userProfile({ result }) {
             </CardContent>
           </Card>
         </Drawer>
-
-
-
-
-
-
-
 
       </Container>
       <BottomNav />
