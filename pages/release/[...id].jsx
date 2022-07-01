@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Grid, Typography } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Router from 'next/router';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import BottomNav from '../components/BottomNav';
 import { AppContext } from '../_app';
 import getReleaseTracks from '../api/spotify/getReleaseTracks';
@@ -62,14 +63,17 @@ export default function releaseTracks() {
           {allTracks.length && allTracks.map((track, index) => (
             <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#F2F2F2' }}>
               <Link href={`/track/${track.id}`}>
-                <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto' }}>
+                <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto', justifyContent: 'space-between' }}>
                   <Grid sx={{ display: 'flex', flexDirection: 'column', m: 0.5 }}>
-                    <Typography sx={{ fontSize: '1rem' }}>
+                    <Typography sx={{ fontSize: '1rem', font: '#121435', fontWeight: '600' }}>
                       {track.name.length > 33 ? `${track.name.slice(0, 30)}...` : track.name}
                     </Typography>
                     <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
                       {millisToMinutesAndSeconds(track.duration_ms)}
                     </Typography>
+                  </Grid>
+                  <Grid sx={{ display: 'flex', alignItems: 'center' }}>
+                    <PlayCircleOutlineIcon sx={{ color: '#44566C' }} />
                   </Grid>
                 </Grid>
               </Link>
