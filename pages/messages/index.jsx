@@ -1,11 +1,6 @@
 import { useSession } from 'next-auth/react';
-<<<<<<< HEAD
 import { useState, useEffect } from 'react';
-import { Button, Avatar, List, ListItem, Box, ListItemAvatar, ListItemText } from '@mui/material';
-=======
-import { useState, useEffect, useContext } from 'react';
 import { Button, Avatar, List, ListItem, Box, ListItemAvatar, ListItemText, Typography } from '@mui/material';
->>>>>>> main
 import Router from 'next/router';
 import axios from 'axios';
 import getRoomId from '../../utils/getRoomId';
@@ -34,7 +29,8 @@ export default function Messages() {
           const result = await axios.get(`/api/messages/getAllMessages?roomId=${roomId.stringValue}`);
           const lastMessageObj = result.data[0]
             ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.pop();
-          const lastMessageString = lastMessageObj.mapValue.fields.message.stringValue;
+          const lastMessageString = lastMessageObj
+            ? lastMessageObj.mapValue.fields.message.stringValue : null;
           tempInfo.push({
             id: id.stringValue,
             name: name.stringValue,
