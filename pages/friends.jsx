@@ -34,7 +34,7 @@ export default function Friends() {
       axios.get(`/api/users/${friend.stringValue}`)
         .then((results) => {
           const currentFriend = results.data[0]._delegate._document.data.value.mapValue.fields;
-          // console.log(currentFriend, 'hello i am the current friend!');
+          // console.log(currentFriend, 'hello i am the current friend!');git s
           tempFriendsData.push(currentFriend);
         })
         .catch((err) => console.log(err))
@@ -70,7 +70,6 @@ export default function Friends() {
       name: friend.name.stringValue,
       image: friend.profPic.stringValue,
     };
-    // console.log(friendObj);
     const roomId = await getRoomId(sessionObj, friendObj);
     Router.push(`/messages/${roomId}`);
   };
@@ -106,7 +105,7 @@ export default function Friends() {
           >
             <ListItemAvatar>
               <Box sx={{ mr: 0.5 }}>
-                <Avatar src={friend.profPic.stringValue} alt="" sx={{ width: 60, height: 60, mr: 1.75 }} />
+                <Avatar src={friend.profPic.stringValue} alt="" sx={{ width: 60, height: 60, mr: 1.75, border: '4px', borderColor: 'linear-gradient(#e66465, #9198e5)' }} />
               </Box>
             </ListItemAvatar>
             <List>
