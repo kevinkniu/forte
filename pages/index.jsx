@@ -1,9 +1,9 @@
 import Head from 'next/head';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession, signIn, getProviders } from 'next-auth/react';
 import Router from 'next/router';
 import { Grid, Box } from '@mui/material';
 
-export default function Login() {
+export default function Login({ providers }) {
   const { status } = useSession();
 
   if (status === 'authenticated') {
@@ -24,10 +24,10 @@ export default function Login() {
             justifyContent="center"
             style={{ minHeight: '100vh' }}
           >
-            <h1>Welcome to forte.</h1>
+            <img src="/forte.png" alt="" />
             <Box mt={2}>
-              <button type="submit" onClick={() => { signIn(); }}>
-                Sign In
+              <button type="submit" onClick={() => { signIn(providers.spotify.id, { callbackUrl: '/home' }); }}>
+                Sign In with Spotify
               </button>
             </Box>
           </Grid>
@@ -35,4 +35,13 @@ export default function Login() {
       </div>
     );
   }
+}
+
+export async function getServerSideProps() {
+  const providers = await getProviders();
+  return {
+    props: {
+      providers,
+    },
+  };
 }
