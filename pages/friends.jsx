@@ -1,4 +1,5 @@
 /* eslint no-unused-vars: "off" */
+import Head from 'next/head';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useState, useContext, useEffect } from 'react';
@@ -76,6 +77,9 @@ export default function Friends() {
 
   return (
     <div>
+      <Head>
+        <title>forte</title>
+      </Head>
       <Typography sx={{ fontSize: 36, fontWeight: 700, mt: 2 }} align="center">
         Friends
       </Typography>
