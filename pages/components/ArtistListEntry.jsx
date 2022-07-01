@@ -16,7 +16,7 @@ export default function ArtistListEntry({ artist }) {
         }
           alt="artist-pic"
         />
-        <Typography>{artist.name}</Typography>
+        <Typography sx={{ fontWeight: '600' }}>{artist.name}</Typography>
       </ListItem>
     </Link>
   );

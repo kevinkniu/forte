@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { Grid } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -106,10 +107,26 @@ export default function Track({ trackProp }) {
           </div>
         </Paper>
 
-        <SpotifyPlayer
-          token={sessionObj?.tokenID}
-          uris={[trackProp.uri]}
-        />
+        <Grid sx={{ margin: '16px' }}>
+          <SpotifyPlayer
+            token={sessionObj?.tokenID}
+            uris={[trackProp.uri]}
+            autoPlay={true}
+            persistDeviceSelection={true}
+            initialVolume={0}
+            styles={{
+              display: 'flex',
+              activeColor: '#333',
+              bgColor: '#fff',
+              color: '#333',
+              loaderColor: '#333',
+              sliderColor: '#8264F1',
+              trackArtistColor: '#8996A6',
+              trackNameColor: 'black',
+              sliderHandleBorderRadius: 5,
+            }}
+          />
+        </Grid>
 
         <div className={trackStyles.comments}>
           <div className={trackStyles.commentsHeader}>

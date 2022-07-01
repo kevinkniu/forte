@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Link from 'next/link';
 import { Grid, Typography } from '@mui/material';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import BottomNav from '../components/BottomNav';
 import { AppContext } from '../_app';
 import getReleaseTracks from '../api/spotify/getReleaseTracks';
@@ -43,7 +44,7 @@ export default function releaseTracks() {
           <Box sx={{ display: 'flex', pb: 3, borderBottom: 1, borderColor: '#8996A6' }}>
             <img src={releaseImage} alt="N/A" style={{ width: '150px', height: '150px', borderRadius: '4px' }} />
             <Box sx={{ ml: 1 }}>
-              <Typography sx={{ fontSize: '20px' }}>
+              <Typography sx={{ fontSize: '20px', fontWeight: '600' }}>
                 {currentRelease.name || '/userholder.png'}
               </Typography>
               <Typography sx={{ fontSize: '12px', color: '#8996A6' }}>
@@ -54,14 +55,17 @@ export default function releaseTracks() {
           {allTracks.length && allTracks.map((track, index) => (
             <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#8996A6' }}>
               <Link href={`/track/${track.id}`}>
-                <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto' }}>
+                <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto', justifyContent: 'space-between' }}>
                   <Grid sx={{ display: 'flex', flexDirection: 'column', m: 0.5 }}>
-                    <Typography sx={{ fontSize: '1rem' }}>
+                    <Typography sx={{ fontSize: '1rem', font: '#121435', fontWeight: '600' }}>
                       {track.name.length > 33 ? `${track.name.slice(0, 30)}...` : track.name}
                     </Typography>
                     <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
                       {millisToMinutesAndSeconds(track.duration_ms)}
                     </Typography>
+                  </Grid>
+                  <Grid sx={{ display: 'flex', alignItems: 'center' }}>
+                    <PlayCircleOutlineIcon sx={{ color: '#44566C' }} />
                   </Grid>
                 </Grid>
               </Link>
