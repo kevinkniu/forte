@@ -26,7 +26,6 @@ export default function Search({ tokenProp }) {
   // const searchRef = useRef();
 
   const [searchKey, setSearchKey] = useState('');
-  // const [token, setToken] = useState('');
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
   const [type, setType] = useState('track');
