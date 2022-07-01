@@ -47,7 +47,7 @@ export default function releaseTracks() {
                   {currentRelease.name || 'No Name'}
                 </Typography>
                 <Typography sx={{ fontSize: '12px', color: '#666666' }}>
-                  {currentRelease.artists[0].name}
+                  {currentRelease.artists[0].name || 'No Artist'}
                 </Typography>
               </Box>
               <Box>
@@ -55,21 +55,21 @@ export default function releaseTracks() {
                   Released on:
                 </Typography>
                 <Typography sx={{ fontSize: '12px', color: '#666666' }}>
-                  {currentRelease.release_date}
+                  {currentRelease.release_date || 'No Date'}
                 </Typography>
               </Box>
             </Box>
           </Box>
           {allTracks.length && allTracks.map((track, index) => (
             <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#F2F2F2' }}>
-              <Link href={`/track/${track.id}`}>
+              <Link href={track?.track?.id ? `/track/${track?.track?.id}` : '/music'}>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '6px', overflow: 'auto', justifyContent: 'space-between' }}>
                   <Grid sx={{ display: 'flex', flexDirection: 'column', m: 0.5 }}>
                     <Typography sx={{ fontSize: '1rem', font: '#121435', fontWeight: '600' }}>
-                      {track.name.length > 33 ? `${track.name.slice(0, 30)}...` : track.name}
+                      {track.name?.length > 33 ? `${track.name?.slice(0, 30)}...` : track?.name || 'Removed Song'}
                     </Typography>
                     <Typography sx={{ fontSize: '10px', color: '#8996A6' }}>
-                      {millisToMinutesAndSeconds(track.duration_ms)}
+                      {millisToMinutesAndSeconds(track.duration_ms) || ''}
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: 'flex', alignItems: 'center' }}>
