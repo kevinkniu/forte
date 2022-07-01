@@ -26,7 +26,11 @@ export default function Login({ providers }) {
           >
             <img src="/forte.png" alt="" />
             <Box mt={2} onClick={() => { signIn(providers.spotify.id, { callbackUrl: '/home' }); }}>
-              <Typography sx={{ fontWeight: 700, px: 2, py: 1, border: 1, borderRadius: 16 }}>Sign In with Spotify</Typography>
+              <Typography
+                sx={{ fontWeight: 700, px: 2, py: 1, border: 1, borderRadius: 16 }}
+              >
+                Sign In with Spotify
+              </Typography>
             </Box>
           </Grid>
         </main>
@@ -43,5 +47,3 @@ export async function getServerSideProps() {
     },
   };
 }
-
-//backgroundImage: `url(${'https://i.gifer.com/g32L.gif'})`

@@ -29,7 +29,7 @@ export default function Messages() {
           const result = await axios.get(`/api/messages/getAllMessages?roomId=${roomId.stringValue}`);
           const lastMessageObj = result.data[0]
             ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.pop();
-          const lastMessageString = lastMessageObj.mapValue.fields.message.stringValue;
+          const lastMessageString = lastMessageObj ? lastMessageObj.mapValue.fields.message.stringValue : 'No Messages';
           tempInfo.push({
             id: id.stringValue,
             name: name.stringValue,
