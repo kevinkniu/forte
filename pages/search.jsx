@@ -15,17 +15,18 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from '../config';
 
+import getToken from './api/spotify/getToken';
 import TrackList from './components/TrackList';
 import ArtistList from './components/ArtistList';
 import searchStyles from '../styles/Search.module.css';
 
-export default function Search() {
+export default function Search({ tokenProp }) {
   // const { getSession } = useSession();
   // const sessionObj = getSession?.user;
   // const searchRef = useRef();
 
   const [searchKey, setSearchKey] = useState('');
-  const [token, setToken] = useState('');
+  // const [token, setToken] = useState('');
   const [tracks, setTracks] = useState([]);
   const [artists, setArtists] = useState([]);
   const [type, setType] = useState('track');
@@ -37,7 +38,7 @@ export default function Search() {
   async function searchKeyword(keyword) {
     const tracksData = await axios.get('https://api.spotify.com/v1/search', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${tokenProp}`,
       },
       params: {
         q: keyword,
@@ -48,7 +49,7 @@ export default function Search() {
 
     const artistsData = await axios.get('https://api.spotify.com/v1/search', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${tokenProp}`,
       },
       params: {
         q: keyword,
@@ -58,25 +59,25 @@ export default function Search() {
     setArtists(artistsData.data.artists.items);
   }
 
-  useEffect(() => {
-    const clientId = SPOTIFY_CLIENT_ID;
-    const clientSecret = SPOTIFY_CLIENT_SECRET;
-    const getToken = async () => {
-      const result = await fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
-        },
-        body: 'grant_type=client_credentials',
-      });
+  // useEffect(() => {
+  //   const clientId = SPOTIFY_CLIENT_ID;
+  //   const clientSecret = SPOTIFY_CLIENT_SECRET;
+  //   const getToken = async () => {
+  //     const result = await fetch('https://accounts.spotify.com/api/token', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/x-www-form-urlencoded',
+  //         Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+  //       },
+  //       body: 'grant_type=client_credentials',
+  //     });
 
-      const data = await result.json();
-      setToken(data.access_token);
-      return data.access_token;
-    };
-    getToken();
-  }, []);
+  //     const data = await result.json();
+  //     setToken(data.access_token);
+  //     return data.access_token;
+  //   };
+  //   getToken();
+  // }, []);
 
   useEffect(() => {
     if (searchKey.length > 3) {
@@ -160,4 +161,12 @@ export default function Search() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  const tokenProp = await getToken();
+
+  return {
+    props: { tokenProp },
+  };
 }
