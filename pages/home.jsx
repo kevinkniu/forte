@@ -82,18 +82,18 @@ export default function Home() {
       <Box>
         <AppBar position="fixed" sx={{ bgcolor: '#FFFFFF', color: '#5D43BF' }}>
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Explore' ? 1 : 0 }} onClick={() => { setView('Explore'); }}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Explore' ? 2 : 0 }} onClick={() => { setView('Explore'); }}>
               Explore
             </Typography>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Posts' ? 1 : 0 }} onClick={() => { setView('Posts'); }}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Posts' ? 2 : 0 }} onClick={() => { setView('Posts'); }}>
               Forum
             </Typography>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Events' ? 1 : 0 }} onClick={() => { setView('Events'); }}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, px: 1, borderBottom: view === 'Events' ? 2 : 0 }} onClick={() => { setView('Events'); }}>
               Events
             </Typography>
             <Grid container justifyContent="flex-end">
               <ChatIcon color="inherit" sx={{ mx: 1 }} onClick={() => { Router.push('/messages'); setValue(1); }} />
-              <Badge badgeContent={currentUser && currentUser.friendRequests.arrayValue.values.length + currentUser.eventRequests.arrayValue.values.length} color="primary" sx={{ mx: 1 }}>
+              <Badge badgeContent={currentUser && currentUser.friendRequests.arrayValue.values.length + currentUser.eventRequests.arrayValue.values.length} color="success" sx={{ mx: 1 }}>
                 <NotificationsIcon color="inherit" onClick={() => { Router.push('/notifications'); }} />
               </Badge>
             </Grid>

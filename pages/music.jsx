@@ -16,12 +16,10 @@ export default function Music({ releasesProp, playlistsProp }) {
   const { setCurrentPlaylist, setCurrentRelease, setValue } = useContext(AppContext);
 
   const updatePlaylist = (item) => {
-    console.log(item);
     setCurrentPlaylist(item);
   };
 
   const updateRelease = (item) => {
-    console.log(item);
     setCurrentRelease(item);
   };
 
