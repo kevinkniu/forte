@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import Paper from '@mui/material/Paper';
@@ -10,8 +10,14 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useSession } from 'next-auth/react';
 import getToken from '../api/spotify/getToken';
 import getTrack from '../api/spotify/getTrack';
+
+<<<<<<< HEAD
+=======
+import BottomNav from '../components/BottomNav';
+import updateUserSong from '../api/users/addUserSongs';
 import trackStyles from '../../styles/Track.module.css';
 
+>>>>>>> main
 const data = [
   {
     name: 'Spencer Han',
@@ -33,13 +39,24 @@ const data = [
     body: 'Break my soul!',
     upvotes: 5,
     url: '',
-  }
+  },
 ];
 
-export default function Track({ tokenProp, trackProp }) {
-  const { data: getSession } = useSession();
+export default function Track({ trackProp }) {
   const router = useRouter();
+  const { data: getSession } = useSession();
   const sessionObj = getSession?.user;
+
+  const [isFavorite, setFavorite] = useState(false);
+
+  async function addSong(song) {
+    await updateUserSong(sessionObj.id, song);
+  }
+
+  function handleFavorite() {
+    setFavorite(true);
+    addSong(trackProp);
+  }
 
   return (
     <div>
@@ -54,9 +71,13 @@ export default function Track({ tokenProp, trackProp }) {
         >
           {trackProp.name}
         </Typography>
-        <FavoriteBorderIcon
-          className={trackStyles.icon}
-        />
+        {isFavorite ? <FavoriteIcon className={trackStyles.icon} /> : (
+          <FavoriteBorderIcon
+            onClick={handleFavorite}
+            className={trackStyles.icon}
+          />
+        )}
+
       </header>
 
       <main>
@@ -118,10 +139,10 @@ export default function Track({ tokenProp, trackProp }) {
 
           <div className={trackStyles.commentList}>
             <ul>
-              {data.map(one => (
+              {data.map((one) => (
                 <li>
                   <div className={trackStyles.commentAvatar}>
-                    {<img src='/userholder.png' />}
+                    <img src="/userholder.png" />
                   </div>
                   <div className={trackStyles.commentContent}>
                     <div className={trackStyles.commentTitle}>
@@ -142,6 +163,8 @@ export default function Track({ tokenProp, trackProp }) {
         </div>
 
       </main>
+
+      <BottomNav />
     </div>
   );
 }

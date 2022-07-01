@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Router, { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { Button, TextField, InputAdornment, Avatar, List, ListItem } from '@mui/material';
+import { Box, Typography, IconButton, Button, TextField, InputAdornment, ListItemAvatar, ListItemText, Avatar, List, ListItem } from '@mui/material';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import SendIcon from '@mui/icons-material/Send';
 import { io } from 'socket.io-client';
 import BottomNav from '../components/BottomNav';
@@ -44,7 +45,7 @@ export default function Chats() {
         setAllMessages(results.data[0]._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
       })
       .catch((err) => console.log(err));
-  }, [load, messageRecieved, socket, room]);
+  }, [load, messageRecieved, room]);
 
   // console.log('These are our messages', allMessages);
 
@@ -52,13 +53,25 @@ export default function Chats() {
     messagesArray.map((item) => {
       const { userName, userProfilePic, userSpotifyId, timestamp } = item.mapValue.fields;
       const userMessage = item.mapValue.fields.message;
-      // console.log('MESSAGE OBJ', { userName, userProfilePic, userSpotifyId, userMessage, timestamp });
+
+      if (userSpotifyId.stringValue === sessionObj.id) {
+        return (
+          <ListItem sx={{ display: 'flex', justifyContent: 'flex-end', color: '#FFF', bgcolor: '#673ab7', width: '80%', borderRadius: 16, margin: 1.75 }}>
+            <ListItemText primary={userMessage.stringValue} />
+            <ListItemAvatar>
+              <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 25, height: 25 }} />
+            </ListItemAvatar>
+          </ListItem>
+        );
+      }
 
       return (
-        <div>
-          <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 75, height: 75 }} />
-          <p>{userMessage.stringValue}</p>
-        </div>
+        <ListItem alignItems="center" sx={{ bgcolor: '#E8E8E8', width: '80%', borderRadius: 16, margin: 1.75 }}>
+          <ListItemAvatar>
+            <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 25, height: 25 }} />
+          </ListItemAvatar>
+          <ListItemText primary={userMessage.stringValue} />
+        </ListItem>
       );
     })
   );
@@ -68,14 +81,21 @@ export default function Chats() {
       <h1 align="center">
         chats
       </h1>
-      <Button variant="contained" size="small" onClick={() => { Router.push('/messages'); }}>go back to messages</Button>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <IconButton sx={{ position: 'relative', left: -100 }}>
+          <ArrowBackIosNewIcon onClick={() => { Router.push('/messages'); }} />
+        </IconButton>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Avatar src={sessionObj.image} alt="" sx={{ width: 25, height: 25 }} />
+          <Typography sx={{ fontWeight: 'bold' }}>{sessionObj.name}</Typography>
+        </Box>
+      </Box>
+      <Box sx={{ overflow: 'scroll' }}>
+        <List sx={{ width: '100%' }}>
+          {renderMessages(allMessages)}
+        </List>
+      </Box>
       <MessagesContainer>
-        {/* <input
-          type="text"
-          placeholder="Message..."
-          value={message}
-          onChange={(event) => setMessage(event.target.value)}
-        /> */}
         <TextField
           id="input-with-icon-textfield"
           label="Message..."
@@ -84,22 +104,11 @@ export default function Chats() {
           fullWidth={true}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          // InputProps={{
-          //   startAdornment: (
-          //     <InputAdornment position="end">
-          //       <Button onClick={handlePost} variant="contained" endIcon={<SendIcon />}>
-          //         Send
-          //       </Button>
-          //     </InputAdornment>
-          //   ),
-          // }}
         />
-        <Button onClick={handlePost} variant="contained" size="small" endIcon={<SendIcon />}>
+        <Button onClick={handlePost} variant="contained" size="small" endIcon={<SendIcon />} sx={{ mb: 8 }}>
           Send
         </Button>
       </MessagesContainer>
-      {/* {!allMessages.length ? renderMessages(allMessages) : <b>loading messages</b>} */}
-      {renderMessages(allMessages)}
       <BottomNav />
     </ChatContainer>
   );
@@ -107,7 +116,7 @@ export default function Chats() {
 
 const ChatContainer = styled.div`
   border: 1px solid blue;
-  overflow: scroll;
+
 `;
 
 const MessagesContainer = styled.div`
@@ -119,3 +128,16 @@ const InputContainer = styled.div`
   align-items: flex-end;
   border 1px solid red;
 `;
+
+
+{/* <Grid container>
+        <Grid item xs={6}>
+          <IconButton>
+            <ArrowBackIosNewIcon onClick={() => { Router.push('/messages'); }} />
+          </IconButton>
+        </Grid>
+        <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Avatar src={sessionObj.image} alt="" sx={{ width: 25, height: 25 }} />
+          <Typography sx={{ fontWeight: 'bold' }}>{sessionObj.name}</Typography>
+        </Grid>
+      </Grid> */}

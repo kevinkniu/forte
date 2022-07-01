@@ -36,7 +36,7 @@ export default function albumTracks() {
       <main>
         <Box sx={{ paddingTop: '10px', paddingLeft: '20px', paddingRight: '20px', marginBottom: '70px' }}>
           {allTracks.length && allTracks.map((track, index) => (
-            <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#CDCFD2', paddingTop: '12px' }}>
+            <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#CDCFD2', paddingTop: '12px', mb: 1.75 }}>
               <Link href={`/track/${track.track.id}`}>
                 <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', overflow: 'auto', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Grid sx={{ display: 'flex' }}>

@@ -1,56 +1,128 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-import { Button, Avatar } from '@mui/material';
+import axios from 'axios';
+import { useState, useContext, useEffect } from 'react';
+import { Button, Avatar, Box, List, ListItem, ListItemText, ListItemAvatar, Typography } from '@mui/material';
 import styled from 'styled-components';
 import Router from 'next/router';
+import { AppContext } from './_app';
+import getRoomId from '../utils/getRoomId';
 import BottomNav from './components/BottomNav';
 
-const dummydata = [
-  {
-    id: '22paoydtvhtdv6w2xfoziovby',
-    name: 'Esmy Xu',
-    profPic: 'https://i.scdn.co/image/ab6775700000ee85a892735df8a1324f906d7a34',
-  },
-  {
-    id: 'o001k7jmdq3wdg3hklndxjotq',
-    name: 'Andy Luu',
-    profPic: 'https://scontent-iad3-1.xx.fbcdn.net/v/t1.6435-1/42317090_2330550456971517_4823046255326265344_n.jpg?stp=dst-jpg_p320x320&_nc_cat=108&ccb=1-7&_nc_sid=0c64ff&_nc_ohc=MzkhNOjHUVQAX8vbFA8&_nc_ht=scontent-iad3-1.xx&edm=AP4hL3IEAAAA&oh=00_AT80ipfo_KZcpuRhnSFtIp41iYU5z16alzCAH3hFXDjKwg&oe=62DC19A7',
-  },
-  {
-    id: 'resowner92',
-    name: 'Neil Johnson',
-    profPic: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1485456691670202&height=300&width=300&ext=1658766891&hash=AeSq3Duc6nWchK4KAUg',
-  },
-];
-
 export default function Friends() {
-  const { getSession } = useSession();
+  const { data: getSession, status } = useSession();
   const sessionObj = getSession?.user;
+  const [friends, setFriends] = useState([]);
+  const [friendsData, setFriendsData] = useState([]);
+  const { setValue, currentUser, setCurrentUser } = useContext(AppContext);
 
-  const renderFriends = (friendsArray) => (
-    friendsArray.map((friend) => (
-      <FriendsContainer key={friend.id}>
-        <PhotoContainer>
-          <Avatar src={friend.profPic} alt="" sx={{ width: 75, height: 75 }} />
-        </PhotoContainer>
-        <ProfileDetails>
-          <Username>{friend.name}</Username>
-          <Message>Message</Message>
-        </ProfileDetails>
-      </FriendsContainer>
-    ))
-  );
+  const initializeFriends = async () => {
+    setValue(1);
+    const response = await fetch(`/api/users/${sessionObj?.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+    const result = await response.json();
+    const user = result[0]._delegate._document.data.value.mapValue.fields;
+    const tempFriends = result[0]
+      ._delegate._document.data.value.mapValue.fields.friends.arrayValue.values;
+    // console.log('tempFriends:', tempFriends);
+    setCurrentUser(user);
+    setFriends(tempFriends);
+    const tempFriendsData = [];
+    Promise.all(user.friends.arrayValue.values.map((friend) => (
+      axios.get(`/api/users/${friend.stringValue}`)
+        .then((results) => {
+          const currentFriend = results.data[0]._delegate._document.data.value.mapValue.fields;
+          // console.log(currentFriend, 'hello i am the current friend!');
+          tempFriendsData.push(currentFriend);
+        })
+        .catch((err) => console.log(err))
+    )))
+      .then(() => setFriendsData(tempFriendsData));
+  };
+
+  useEffect(() => {
+    if (!currentUser) {
+      if (status !== 'authenticated') {
+        return;
+      }
+      initializeFriends();
+    } else {
+      setFriends(currentUser.friends.arrayValue.values);
+      const tempFriendsData = [];
+      Promise.all(currentUser.friends.arrayValue.values.map((friend) => (
+        axios.get(`/api/users/${friend.stringValue}`)
+          .then((results) => {
+            const currentFriend = results.data[0]._delegate._document.data.value.mapValue.fields;
+            // console.log(currentFriend, 'hello i am the current friend!');
+            tempFriendsData.push(currentFriend);
+          })
+          .catch((err) => console.log(err))
+      )))
+        .then(() => setFriendsData(tempFriendsData));
+    }
+  }, [status]);
+
+  const routeToFriendMessage = async (friend) => {
+    const friendObj = {
+      id: friend.id.stringValue,
+      name: friend.name.stringValue,
+      image: friend.profPic.stringValue,
+    };
+    // console.log(friendObj);
+    const roomId = await getRoomId(sessionObj, friendObj);
+    Router.push(`/messages/${roomId}`);
+  };
 
   return (
     <div>
       <h1 align="center">
-        This is a friends page.
+        Friends
       </h1>
-      <Button variant="contained">Friends</Button>
-      <Button variant="contained" onClick={() => { Router.push('/messages'); }}>Messages</Button>
-      {renderFriends(dummydata)}
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        p: 1,
+        m: 1,
+        width: '100%' }}
+      >
+        <Button variant="text">Friends</Button>
+        <Button variant="text" onClick={() => { Router.push('/messages'); }}>Messages</Button>
+      </Box>
+      <List>
+        {friendsData.map((friend) => (
+          <ListItem
+            sx={{ width: '100%' }}
+            key={friend.id.stringValue}
+            secondaryAction={
+                (
+                  <ListItem>
+                    {/* <Username>{friend.name.stringValue}</Username> */}
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
+                      <Box sx={{ mx: 1 }}>
+                        <Button variant="contained" size="small" onClick={() => { Router.push('/messages'); }}>Profile</Button>
+                      </Box>
+                      <Button variant="contained" size="small" onClick={() => routeToFriendMessage(friend)}>Message</Button>
+                    </Box>
+                  </ListItem>
+                )
+              }
+          >
+            <ListItemAvatar>
+              <Box sx={{ mr: 0.5 }}>
+                <Avatar src={friend.profPic.stringValue} alt="" sx={{ width: 60, height: 60 }} />
+              </Box>
+            </ListItemAvatar>
+            <List>
+              <ListItemText primary={friend.name.stringValue} />
+            </List>
+          </ListItem>
+        ))}
+      </List>
       <BottomNav />
     </div>
   );
