@@ -42,7 +42,8 @@ export default function Chats() {
     axios.get(`/api/messages/getAllMessages?roomId=${router.query.id}`)
       .then((results) => {
         // console.log(results.data, 'these should be all the messages in an array');
-        setAllMessages(results.data[0]._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
+        setAllMessages(results.data[0]
+          ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
       })
       .catch((err) => console.log(err));
   }, [load, messageRecieved, room]);
