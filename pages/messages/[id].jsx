@@ -42,8 +42,10 @@ export default function Chats() {
       .then((results) => {
         // console.log(results.data, 'these should be all the messages in an array');
 
-        setAllMessages(results.data[0]._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
-        const usersArray = results.data[0]._delegate._document.data.value.mapValue.fields.users.arrayValue.values;
+        setAllMessages(results.data[0]
+          ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values);
+        const usersArray = results.data[0]
+          ._delegate._document.data.value.mapValue.fields.users.arrayValue.values;
         usersArray.forEach((user) => {
           const currUser = user.mapValue.fields;
 
@@ -56,13 +58,13 @@ export default function Chats() {
   }, [load, messageRecieved, room]);
 
   const renderMessages = (messagesArray) => (
-    messagesArray.map((item) => {
+    messagesArray.map((item, index) => {
       const { userName, userProfilePic, userSpotifyId, timestamp } = item.mapValue.fields;
       const userMessage = item.mapValue.fields.message;
 
       if (userSpotifyId.stringValue === sessionObj.id) {
         return (
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+          <Box key={index} sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
             <ListItem sx={{ width: 'auto' }}>
               <ListItemText primary={userMessage.stringValue} sx={{ color: '#FFF', bgcolor: '#673ab7', borderRadius: 16, padding: 1.5 }} />
               <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -74,7 +76,7 @@ export default function Chats() {
       }
 
       return (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
+        <Box key={index} sx={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
           <ListItem sx={{ width: 'auto' }}>
             <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center' }}>
               <Avatar src={userProfilePic.stringValue} alt="" sx={{ width: 40, height: 40 }} />
@@ -120,7 +122,7 @@ export default function Chats() {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton onClick={handlePost}>
-                  <SendIcon />
+                  <SendIcon pb="19px" />
                 </IconButton>
               </InputAdornment>
             ),
