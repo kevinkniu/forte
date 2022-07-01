@@ -12,32 +12,30 @@ export default function Messages() {
   const sessionObj = getSession?.user;
   const [chatRooms, setChatRooms] = useState([]);
   const [friendInfo, setFriendInfo] = useState([]);
-  // const [loaded, setLoaded] = useState(false);
-  // const [changed, setChanged] = useState(false);
-  const { currentUser, setCurrentUser } = useContext(AppContext);
-  const [rendered, setRendered] = useState(0);
 
-  async function reRenderUser() {
-    const response = await fetch(`/api/users/${sessionObj.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-type': 'application/json',
-      },
-    });
-    const result = await response.json();
-    const user = result[0]._delegate._document.data.value.mapValue.fields;
-    setCurrentUser(user);
-  }
+  // async function reRenderUser() {
+  //   const response = await fetch(`/api/users/${sessionObj.id}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-type': 'application/json',
+  //     },
+  //   });
+  //   const result = await response.json();
+  //   const user = result[0]._delegate._document.data.value.mapValue.fields;
+  //   setCurrentUser(user);
+  // }
+  // useEffect(() => {
+  //   if (status !== 'authenticated') {
+  //     return;
+  //   }
+  //   reRenderUser();
+  // }, [status]);
 
   useEffect(() => {
     if (status !== 'authenticated') {
       return;
     }
-    reRenderUser();
-  }, []);
-
-  useEffect(() => {
-    axios.get(`/api/messages/getAllChatRooms?spotifyId=${currentUser.id.stringValue}`)
+    axios.get(`/api/messages/getAllChatRooms?spotifyId=${sessionObj.id}`)
       .then((rooms) => {
         const filtered = rooms.data.filter((room) => {
           if (Object.keys(room._delegate._document.data.value.mapValue.fields).length === 0) {
@@ -56,7 +54,8 @@ export default function Messages() {
             .then((resultData) => {
               const lastMessageObj = { ...resultData[0].data[0]
                 ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.pop() };
-              const lastMessage = lastMessageObj.mapValue ? lastMessageObj.mapValue.fields.message.stringValue : null;
+              const lastMessage = lastMessageObj.mapValue
+                ? lastMessageObj.mapValue.fields.message.stringValue : null;
               tempInfo.push({
                 id: id.stringValue,
                 name: name.stringValue,
@@ -64,25 +63,16 @@ export default function Messages() {
                 lastMessage,
               });
             });
-          // const lastMessageObj = { ...result.data[0]
-          //   ._delegate._document.data.value.mapValue.fields.messages.arrayValue.values.pop() };
-          // const lastMessage = lastMessageObj.mapValue ? lastMessageObj.mapValue.fields.message.stringValue : null;
-          // tempInfo.push({
-          //   id: id.stringValue,
-          //   name: name.stringValue,
-          //   image: image.stringValue,
-          //   lastMessage,
-          // });
           setFriendInfo([...tempInfo]);
         });
-        setRendered((test) => test + 1);
+        // setRendered((test) => test + 1);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [status]);
 
-  useEffect(() => {
-    // setChanged(true);
-  }, [friendInfo, chatRooms, currentUser, rendered]);
+  // useEffect(() => {
+  //   // setChanged(true);
+  // }, [friendInfo, chatRooms, currentUser, rendered]);
 
   const routeToFriendMessage = async (friend) => {
     // console.log(friend);
