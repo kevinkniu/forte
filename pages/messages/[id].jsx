@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Router, { useRouter } from 'next/router';
-import { Box, Typography, IconButton, Button, TextField, InputAdornment, ListItemAvatar, ListItemText, Avatar, List, ListItem } from '@mui/material';
+import { Box, Typography, IconButton, TextField, InputAdornment, ListItemAvatar, ListItemText, Avatar, List, ListItem } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import SendIcon from '@mui/icons-material/Send';
 import { io } from 'socket.io-client';
@@ -101,11 +101,6 @@ export default function Chats() {
     })
   );
 
-
-  // console.log('MESSAGES LENGTH', allMessages.length)
-  // const scrollToBottom = document.querySelector('#scroll-to-bottom');
-  // const pageBottom = document.querySelector(`#${allMessages.length}`);
-
   if (scrollToBottom && pageBottom) {
     scrollToBottom.addEventListener('click', function() {
       pageBottom.scrollIntoView()
@@ -125,36 +120,33 @@ export default function Chats() {
         <IconButton sx={{ flexGrow: 1 }}>
           <ArrowBackIosNewIcon sx={{ visibility: 'hidden' }} />
         </IconButton>
-        {/* <Box sx={{ flexGrow: 1 }}></Box> */}
       </Box>
       <Box>
         <List sx={{ height: '78.5vh', width: '100%', overflow: 'auto' }}>
           {renderMessages(allMessages)}
         </List>
       </Box>
-      <Box sx={{ position: 'fixed', bottom: 55, width: '100%', zIndex: 10, bg: '#FFF' }}>
+      <Box sx={{ position: 'fixed', bottom: 55, width: '100%', bg: '#FFF' }}>
         <TextField
           id="input-with-icon-textfield"
           label="Message..."
           variant="filled"
           multiline={true}
-          maxRows={2}
+          maxRows={1}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           sx={{ width: '100%' }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton sx={{ lineHeight: 0 }}>
+                <IconButton>
                   <SendIcon id="scroll-to-bottom" onClick={handlePost} />
                 </IconButton>
               </InputAdornment>
             ),
+            disableUnderline: true,
           }}
         />
-        {/* <Button onClick={handlePost} variant="contained" size="small" endIcon={<SendIcon />}>
-          Send
-        </Button> */}
       </Box>
       <BottomNav />
     </div>
