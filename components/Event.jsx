@@ -7,7 +7,7 @@ import { Card, CardHeader, CardContent, CardActions,
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AppContext } from '../_app';
+import { AppContext } from '../pages/_app';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;

@@ -4,7 +4,7 @@ import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
-import trackListStyles from '../../styles/TrackList.module.css';
+import trackListStyles from '../styles/TrackList.module.css';
 
 export default function TrackListEntry({ track }) {
   return (

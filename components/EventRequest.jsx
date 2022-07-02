@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import { Card, CardHeader, CardContent, CardActions, Avatar, Typography, Button, Box, Grid } from '@mui/material';
-import { AppContext } from '../_app';
+import { AppContext } from '../pages/_app';
 
 export default function FriendRequest({ request }) {
   const { currentUser } = useContext(AppContext);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Card, CardActions, CardContent, CardMedia, Button, Box, Typography } from '@mui/material';
-import { AppContext } from '../_app';
+import { AppContext } from '../pages/_app';
 
 export default function FriendRequest({ request }) {
   const { currentUser } = useContext(AppContext);

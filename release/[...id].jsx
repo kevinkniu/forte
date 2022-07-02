@@ -7,9 +7,9 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Router from 'next/router';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import BottomNav from '../components/BottomNav';
-import { AppContext } from '../_app';
-import getReleaseTracks from '../api/spotify/getReleaseTracks';
-import getToken from '../api/spotify/getToken';
+import { AppContext } from '../pages/_app';
+import getReleaseTracks from '../pages/api/spotify/getReleaseTracks';
+import getToken from '../pages/api/spotify/getToken';
 
 const millisToMinutesAndSeconds = (millis) => {
   const minutes = Math.floor(millis / 60000);

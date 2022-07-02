@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { Box } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import BottomNav from './BottomNav';
-import { AppContext } from '../_app';
+import { AppContext } from '../pages/_app';
 import ExploreCard from './ExploreCard';
 
 export default function Explore() {

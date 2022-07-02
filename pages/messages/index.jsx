@@ -4,7 +4,7 @@ import { Button, Avatar, List, ListItem, Box, ListItemAvatar, ListItemText, Typo
 import Router from 'next/router';
 import axios from 'axios';
 import getRoomId from '../../utils/getRoomId';
-import BottomNav from '../components/BottomNav';
+import BottomNav from '../../components/BottomNav';
 
 export default function Messages() {
   const { data: getSession, status } = useSession();
