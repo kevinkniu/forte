@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Link from 'next/link';
@@ -32,6 +33,9 @@ export default function albumTracks() {
   }, []);
   return (
     <div>
+      <Head>
+        <title>forte</title>
+      </Head>
       <main>
         <Box sx={{ paddingTop: '10px', paddingLeft: '20px', paddingRight: '20px', marginBottom: '70px' }}>
           <Box sx={{ display: 'flex', py: 2, justifyContent: 'space-between', alignItems: 'center' }}>
@@ -40,7 +44,7 @@ export default function albumTracks() {
             <ArrowBackIosNewIcon sx={{ visibility: 'hidden' }} />
           </Box>
           <Box>
-            {allTracks.map((track, index) => (
+            {allTracks?.map((track, index) => (
               <Box fullwidth key={index} sx={{ borderBottom: 1, borderColor: '#CDCFD2', paddingTop: '12px', mb: 1.75 }}>
                 <Link href={track?.track?.id ? `/track/${track?.track?.id}` : '/music'}>
                   <Grid sx={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', overflow: 'auto', alignItems: 'center', justifyContent: 'space-between' }}>

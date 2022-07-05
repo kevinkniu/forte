@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Link from 'next/link';
@@ -34,6 +35,9 @@ export default function releaseTracks() {
 
   return (
     <div>
+      <Head>
+        <title>forte</title>
+      </Head>
       <main>
         <Box sx={{ paddingTop: '10px', paddingLeft: '20px', paddingRight: '20px', marginBottom: '70px' }}>
           <Box sx={{ py: 2 }}>

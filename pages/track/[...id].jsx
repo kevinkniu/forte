@@ -1,4 +1,5 @@
 import analyze from 'rgbaster';
+import Head from 'next/head';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SpotifyPlayer from 'react-spotify-web-playback';
@@ -70,6 +71,9 @@ export default function Track({ trackProp }) {
 
   return (
     <div id="bg">
+      <Head>
+        <title>forte</title>
+      </Head>
       <header className={trackStyles.header}>
         <ArrowBackIosNewIcon
           className={trackStyles.icon}

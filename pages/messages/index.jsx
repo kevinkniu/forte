@@ -59,7 +59,7 @@ export default function Messages() {
         width: '100%' }}
       >
         <Button variant="text" sx={{ color: '#6E4FE2' }} onClick={() => { Router.push('/friends'); }}>Friends</Button>
-        <Button variant="text" sx={{ color: '#6E4FE2' }} onClick={() => { Router.push('/messages'); }}>Messages</Button>
+        <Button variant="text" sx={{ color: '#6E4FE2', textDecoration: 'underline' }} onClick={() => { Router.push('/messages'); }}>Messages</Button>
       </Box>
       <List>
         { friendInfo.map((friendObj) => (
@@ -77,5 +77,3 @@ export default function Messages() {
     </div>
   );
 }
-
-// <ListItemText primary={friendObj.name} secondary={friendObj.lastMessage} />
