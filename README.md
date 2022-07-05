@@ -29,7 +29,7 @@ Install dependencies for the project.
 
 ### `config.js`
 
-Duplicate `exampleConfig.js` in the root directory.\
+Duplicate `config-example.js` in the root directory.\
 Rename to `config.js`.\
 Get Spotify API tokens.\
 Edit `config.js` file with obtained tokens.
