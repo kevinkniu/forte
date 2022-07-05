@@ -27,6 +27,10 @@ In the project directory, you can run:
 
 Install dependencies for the project.
 
+### `npm run server-chat`
+
+Start socket.io server for user messaging.
+
 ### `config.js`
 
 Duplicate `config-example.js` in the root directory.\
