@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-import TrackList from '../components/TrackList';
+import TrackList from '../../components/TrackList';
 import getToken from '../api/spotify/getToken';
 import getArtist from '../api/spotify/getArtist';
 import getTopTracks from '../api/spotify/getTopTracks';

@@ -6,10 +6,10 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import EventIcon from '@mui/icons-material/Event';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Router from 'next/router';
-import BottomNav from './components/BottomNav';
+import BottomNav from '../components/BottomNav';
 import { AppContext } from './_app';
-import FriendRequest from './components/FriendRequest';
-import EventRequest from './components/EventRequest';
+import FriendRequest from '../components/FriendRequest';
+import EventRequest from '../components/EventRequest';
 
 export default function Notifications() {
   const { data: getSession, status } = useSession();

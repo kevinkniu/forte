@@ -10,7 +10,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import BottomNav from './BottomNav';
 import Event from './Event';
-import { AppContext } from '../_app';
+import { AppContext } from '../pages/_app';
 
 export default function Events() {
   const [events, setEvents] = useState([]);

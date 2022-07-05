@@ -6,7 +6,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import PersonIcon from '@mui/icons-material/Person';
 import { styled } from '@mui/material/styles';
-import { AppContext } from '../_app';
+import { AppContext } from '../pages/_app';
 
 const NewBottomNavigationAction = styled(BottomNavigationAction)(`
   MuiBottomNavigationAction-root {

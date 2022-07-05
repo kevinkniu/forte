@@ -5,11 +5,11 @@ import { AppBar, Box, Toolbar, Typography, Grid, Badge } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Router from 'next/router';
-import BottomNav from './components/BottomNav';
+import BottomNav from '../components/BottomNav';
 import { AppContext } from './_app';
-import Posts from './components/Posts';
-import Events from './components/Events';
-import Explore from './components/Explore';
+import Posts from '../components/Posts';
+import Events from '../components/Events';
+import Explore from '../components/Explore';
 
 export default function Home() {
   const { data: getSession, status } = useSession();
