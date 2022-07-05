@@ -6,7 +6,7 @@ import { Box, Typography, IconButton, TextField, InputAdornment, ListItemAvatar,
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import SendIcon from '@mui/icons-material/Send';
 import { io } from 'socket.io-client';
-import BottomNav from '../components/BottomNav';
+import BottomNav from '../../components/BottomNav';
 
 const socket = io.connect('http://localhost:3001');
 export default function Chats() {

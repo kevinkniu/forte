@@ -6,7 +6,7 @@ import { Grid, Typography, Card } from '@mui/material';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import BottomNav from './components/BottomNav';
+import BottomNav from '../components/BottomNav';
 import getToken from './api/spotify/getToken';
 import getPlaylists from './api/spotify/getPlaylists';
 import getNewReleases from './api/spotify/getNewReleases';

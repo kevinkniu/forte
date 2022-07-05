@@ -5,7 +5,7 @@ import { Grid, Typography } from '@mui/material';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Router from 'next/router';
-import BottomNav from '../components/BottomNav';
+import BottomNav from '../../components/BottomNav';
 import { AppContext } from '../_app';
 import getTracks from '../api/spotify/getTracks';
 import getToken from '../api/spotify/getToken';

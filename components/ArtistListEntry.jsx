@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
-import artistListStyles from '../../styles/ArtistList.module.css';
+import artistListStyles from '../styles/ArtistList.module.css';
 
 export default function ArtistListEntry({ artist }) {
   return (

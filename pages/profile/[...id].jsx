@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { Button, Grid, Typography, Card, CardContent, Avatar, Chip, Container, List, ListItem, Box, Drawer } from '@mui/material';
 import MapIcon from '@mui/icons-material/Map';
 import { useState, useEffect } from 'react';
-import BottomNav from '../components/BottomNav';
+import BottomNav from '../../components/BottomNav';
 import queryUserData from '../api/users/getUserData';
 import queryUserEvents from '../api/events/getUserEvents';
 import trackListStyles from '../../styles/TrackList.module.css';

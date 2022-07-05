@@ -12,8 +12,8 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import SearchIcon from '@mui/icons-material/Search';
 import getToken from './api/spotify/getToken';
-import TrackList from './components/TrackList';
-import ArtistList from './components/ArtistList';
+import TrackList from '../components/TrackList';
+import ArtistList from '../components/ArtistList';
 import searchStyles from '../styles/Search.module.css';
 
 export default function Search({ tokenProp }) {

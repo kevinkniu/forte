@@ -9,7 +9,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
 import Input from '@mui/material/Input';
-import BottomNav from './components/BottomNav';
+import BottomNav from '../components/BottomNav';
 import { AppContext } from './_app';
 import getToken from './api/spotify/getToken';
 import getAllGenres from './api/spotify/getAllGenres';

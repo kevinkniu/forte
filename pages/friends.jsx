@@ -6,7 +6,7 @@ import { Button, Avatar, Box, List, ListItem, ListItemText, ListItemAvatar, Typo
 import Router from 'next/router';
 import { AppContext } from './_app';
 import getRoomId from '../utils/getRoomId';
-import BottomNav from './components/BottomNav';
+import BottomNav from '../components/BottomNav';
 
 export default function Friends() {
   const { data: getSession, status } = useSession();
