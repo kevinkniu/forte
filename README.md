@@ -1,6 +1,18 @@
 # Forte
 
 ## Description
+<p align='center'>
+forte is a music-based social media application made using Next.js, Socket.io + Node/Express, and Firebase. 
+</p>
+
+## ✨ Features
+- Customize user personal profile with favorite songs and genres
+- View other users and add friends based on their music genre preferences
+- Create, like, and RSVP to posts/events
+- Instant messaging with friends
+- View top playlists and newest album releases
+- Search for and play any songs or artists in any language
+
 ![homepage](https://user-images.githubusercontent.com/20469293/177424751-1430606b-8ec2-4179-8669-a909670448c8.gif)
 ![messages](https://user-images.githubusercontent.com/20469293/177424776-8f7078df-3978-42e8-ae81-1d62594d3259.gif)
 ![playlist-fixed](https://user-images.githubusercontent.com/20469293/177424801-a8e9d7b8-9814-4fdf-a6bb-d622f3d943d1.gif)\
@@ -10,14 +22,13 @@
 A responsive social media application where music lover can create their own profile and meet with music lovers of the same taste.
 
 
-## Components and Contributers
-
-Login Authentication: Kevin Niu, Andy Luu \
-Explore, Post, Events, : Kevin Niu \
-Friends and Messages: Esmy Xu, Neil Johnson \
-Playlists: John Ong \
-Songs and Artists: Spencer Han \
-User Profile: Andy Luu
+## 🤝 Authors
+- [Kevin Niu](https://github.com/kevinkniu)
+- [Andy Luu](https://github.com/LuuLuu0)
+- [Esmy Xu](https://github.com/ExYY98)
+- [Neil Johnson](https://github.com/nxjohnson)
+- [Spencer Xiao Han](https://github.com/Lesson9)
+- [John Ong](https://github.com/itsjohnong)
 
 ## Available Scripts
 
