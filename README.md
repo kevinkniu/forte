@@ -1,9 +1,7 @@
 # Forte
 
 ## Description
-<p align='center'>
 forte is a music-based social media application made using Next.js, Socket.io + Node/Express, and Firebase. 
-</p>
 
 ## ✨ Features
 - Customize user personal profile with favorite songs and genres
