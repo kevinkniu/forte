@@ -11,7 +11,7 @@ forte is a music-based social media application made using Next.js, Socket.io + 
 - View top playlists and newest album releases
 - Search for and play any songs or artists in any language
 
-<p display='flex'>
+<div display='flex'>
 Homepage
 ![homepage](https://user-images.githubusercontent.com/20469293/177424751-1430606b-8ec2-4179-8669-a909670448c8.gif)
 
@@ -26,7 +26,7 @@ Songs
 
 Profile
 ![profile-fixed](https://user-images.githubusercontent.com/20469293/177424836-89af1c3b-463f-4dfe-8b88-10bf40a2ee1a.gif)
-</p>
+</div>
 
 ## 🤝 Authors
 - [Kevin Niu](https://github.com/kevinkniu)
